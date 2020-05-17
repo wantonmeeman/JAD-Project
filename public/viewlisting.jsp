@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-thankyou.jsp<!DOCTYPE html>
+<%  String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");%><!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -66,11 +67,11 @@ thankyou.jsp<!DOCTYPE html>
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp">Home</a></li>
-            <li><a href="about.jsp">About</a></li>
-            <li><a href="categories.jsp">Shop</a></li>
-            <li><a href="all-listings.jsp">Catalogue</a></li>
-            <li><a href="contact.jsp">Contact</a></li>
+            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
+            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
+            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
+            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
+            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
           </ul>
         </div>
       </nav>

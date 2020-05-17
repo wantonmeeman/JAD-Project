@@ -4,6 +4,8 @@
 <html lang="en">
 
 <head>
+<%  String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");%>
   <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -63,11 +65,11 @@
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp">Home</a></li>
-            <li><a href="about.jsp">About</a></li>
-            <li><a href="categories.jsp">Shop</a></li>
-            <li><a href="all-listings.jsp">Catalogue</a></li>
-            <li><a href="contact.jsp">Contact</a></li>
+            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
+            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
+            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
+            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
+            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
           </ul>
         </div>
       </nav>

@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
   <title>Digit Games &mdash; Contact Us</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -25,6 +27,64 @@
 
 
 </head>
+<% 
+try{
+	String Error = request.getParameter("Err");
+	String[] ErrorArray = Error.split("-",0);
+	for(int i = 0;ErrorArray.length>i;i++){
+		if(ErrorArray[i].equals("PasswordSizeInvalid")){
+			out.print("<script>alert('Password either too long or too short!')</script>");
+		}
+		if(ErrorArray[i].equals("UsernameSizeInvalid")){
+			out.print("<script>alert('Username either too long or too short!')</script>");
+		}
+		if(ErrorArray[i].equals("Success")){
+			out.print("<script>alert('User Details were successfully changed!')</script>");
+		}
+		if(ErrorArray[i].equals("PasswordNotEqual")){
+			out.print("<script>alert('Passwords do not match!')</script>");
+		}
+		if(ErrorArray[i].equals("PasswordNotValid")){
+			out.print("<script>alert('Invalid Password!')</script>");
+		}
+		if(ErrorArray[i].equals("PasswordSuccess")){
+			out.print("<script>alert('Password was successfully changed!')</script>");
+		}
+		if(ErrorArray[i].equals("ProfileSuccess")){
+			out.print("<script>alert('Profile Details were successfully changed!')</script>");
+		}
+	}
+}catch(Exception e){
+	
+}
+String userid = request.getParameter("userid"); 
+String role = request.getParameter("role");
+String email = "";
+String username = "";
+Connection conn = null; 
+try{
+	Class.forName("com.mysql.jdbc.Driver");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+}catch(Exception e){
+    out.print(e);
+}
+	if(conn == null){
+		out.print("Conn Error");
+		conn.close();
+	}else{
+		String query = "SELECT * FROM users WHERE user_id = "+userid;
+	    Statement st = conn.createStatement();
+	    ResultSet rs = st.executeQuery(query);
+	    while (rs.next()) {
+	    	email = rs.getString("email");
+	    	username = rs.getString("username");
+	    }
+	}
+
+	 	conn.close();
+	
+
+%>
 
 <body>
 
@@ -62,11 +122,11 @@
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp">Home</a></li>
-            <li><a href="about.jsp">About</a></li>
-            <li><a href="categories.jsp">Shop</a></li>
-            <li><a href="all-listings.jsp">Catalogue</a></li>
-            <li><a href="contact.jsp">Contact</a></li>
+            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
+            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
+            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
+            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
+            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
           </ul>
         </div>
       </nav>
@@ -80,7 +140,6 @@
         </div>
       </div>
     </div>
-
 
 
     <div class="site-section">
@@ -103,7 +162,7 @@
               <div class="profile-contents" id="profile-contents">
 
                 <div class="profile-header">
-                  <h1 class="display4"><text class="text-dark font-weight-bold">Welcome, @alastair-tan!</text></h1>
+                  <h1 class="display4"><text class="text-dark font-weight-bold">Welcome, <%=username %>!</text></h1>
                 </div>
 
                 <div class="profilepic-wrapper row mt-2 ml-4">
@@ -112,28 +171,30 @@
                   </div>
 
                   <div class="profilepic-text mt-2 ml-4">
-                    <div><text class="text-dark font-weight-bold">@alastair-tan</text></div>
+                    <div><text class="text-dark font-weight-bold"><%=username %></text></div>
                     <div><text class="text-dark font-weight-normal">Alastair Tan</text></div>
                   </div>
                 </div>
 
                 <div class="profile-info ml-3 mt-3">
-                  <div><text class="text-dark font-weight-normal">Email: alastair@dgmail.com</text></div>
+                  <div><text class="text-dark font-weight-normal">Email: <%=email%></text></div>
 
                   <div><text class="text-dark font-weight-normal">Phone Number: 9123 4567</text></div>
 
-                  <div><text class="text-dark font-weight-normal">Membership Status: </text><text class="text-dark font-weight-bold">Regular</text></div>
+                  <div><text class="text-dark font-weight-normal">Membership Status: </text><text class="text-dark font-weight-bold"><%=role %></text></div>
 
 
                   <div class="col-md-12 mb-5 d-flex flex-row">
                     <div class="p-2 mt-4">
                       <button class="tablinks btn btn-sm btn-secondary" onclick="openCity(event, 'editProfileTab')">Edit
                         Profile</button>
+                        
                     </div>
+                   
                   </div>
 
                 </div>
-
+					
               </div>
             </div>
           </div>
@@ -141,8 +202,7 @@
           <div id="editProfileTab" class="tabcontent">
             <div class="col-md-12">
 
-
-              <form action="#" method="post">
+              <form action="VerifyChange.jsp?userid=<%=userid %>&role=<%=role %>" method="post" class="test">
 
                 <div class="p-3 p-lg-5 border">
 
@@ -159,11 +219,10 @@
                   <div class="form-group row">
                     <div class="col-md-6">
                       <label for="username" class="text-black">Username <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="username" name="username" value="alastair-tan"
-                        disabled>
+                      <input type="text" class="form-control" id="username" name="username" value="<%=username %>"
+                        readonly>
                     </div>
                   </div>
-
                   <div class="form-group row">
                     <div class="col-md-6">
                       <label for="firstName" class="text-black">First Name <span class="text-danger">*</span></label>
@@ -179,18 +238,18 @@
                     <div class="col-md-7">
                       <label for="email" class="text-black">Email <span class="text-danger">*</span></label>
                       <input type="email" class="form-control" id="email" name="email" placeholder=""
-                        value="alastair@dgmail.com">
+                        value="<%=email%>">
                     </div>
 
                     <div class="col-md-5">
                       <label for="email" class="text-black">Phone Number <span class="text-danger">*</span></label>
-                      <input type="email" class="form-control" id="email" name="email" placeholder="" value="91234567">
+                      <input type="text" class="form-control" id="email" name="email" placeholder="" value="91234567">
                     </div>
                   </div>
 
                   <div class="form-group row">
                     <div class="col-lg-12">
-                      <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save Changes">
+                      <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save Changes"/>
                     </div>
                   </div>
                 </div>
@@ -250,12 +309,12 @@
           <div id="chgPwTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="#" method="post">
+              <form action="VerifyChange.jsp?userid=<%=userid %>&role=<%=role%>" method="post">
 
                 <div class="p-5 p-lg-10 border">
 
                   <div class="form-group row">
-
+					
                     <div class="col-md-12">
                       <label for="oldPw" class="text-black">Enter your old password: <span
                           class="text-danger">*</span></label>

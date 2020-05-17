@@ -24,56 +24,32 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-
-	<script>
-		$(document).ready(function () {
-
-			$("#Login").click(function () {
-				var id = $('#username').val();
-				var pwd = $('#pwd').val();
-				var data = "{\"username\":\"" + id + "\", \"password\":\"" + pwd + "\"}";
-				console.log(data);
-
-				$.ajax({
-					url: 'http://localhost:8081/users/login',
-					type: 'POST',
-					data: data,
-					contentType: "application/json; charset=utf-8",
-					dataType: "json",
-					success: function (data, textStatus, xhr) {
-						if (data != null) {
-							localStorage.setItem('accessToken', data.token);				// from res.json (accessToken)
-							localStorage.setItem('userInfo', data.UserData);				// from res.json (User Details)
-							localStorage.setItem('userOffers', data.offerData);				// from res.json (Offer Details)
-							window.location.assign("http://localhost:3001/index.jsp");
-
-						} else {
-							console.log("Error")
-						}
-					},
-
-					error: function (xhr, textStatus, errorThrown) {
-						console.log('Error in Operation');
-						alert("Invalid Password. Please type again.")
-
-					}
-				});
-				return false;
-			});
-
-
-		});  
-	</script>
-
+<%  String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");%>
 
 </head>
-
+<% try{
+	String Error = request.getParameter("Err");
+	String[] ErrorArray = Error.split("-",0);
+	for(int i = 0;ErrorArray.length>i;i++){
+		if(ErrorArray[i].equals("PasswordNotEqual")){
+			out.print("<script>alert('Passwords do not match')</script>");
+		}
+		if(ErrorArray[i].equals("PasswordSizeInvalid")){
+			out.print("<script>alert('Password either too long or too short')</script>");
+		}
+		if(ErrorArray[i].equals("UsernameSizeInvalid")){
+			out.print("<script>alert('Username either too long or too short')</script>");
+		}
+	}
+}catch(Exception e){
+	
+}%>
 <body>
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form">
+				<form class="login100-form validate-form" action="VerifyReg.jsp">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
@@ -102,14 +78,14 @@
 					
 
 					<div class="container-login100-form-btn">
-						<button id="Login" class="login100-form-btn">Create Account</button>
+						<button id="Login" type="submit" class="login100-form-btn">Create Account</button>
 					</div>
 
 				</form>
 			</div>
 		</div>
 	</div>
-
+	
 
 	<div id="dropDownSelect1"></div>
 

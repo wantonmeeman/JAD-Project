@@ -1,7 +1,10 @@
+<%@ page import="java.sql.*" %>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
+
 
 <head>
 	<title>Login Page</title>
@@ -25,50 +28,53 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-
-	<script>
-		$(document).ready(function () {
-
-			$("#Login").click(function () {
-				var id = $('#username').val();
-				var pwd = $('#pwd').val();
-				var data = "{\"username\":\"" + id + "\", \"password\":\"" + pwd + "\"}";
-				console.log(data);
-
-				$.ajax({
-					url: 'http://localhost:8081/users/login',
-					type: 'POST',
-					data: data,
-					contentType: "application/json; charset=utf-8",
-					dataType: "json",
-					success: function (data, textStatus, xhr) {
-						if (data != null) {
-							localStorage.setItem('accessToken', data.token);				// from res.json (accessToken)
-							localStorage.setItem('userInfo', data.UserData);				// from res.json (User Details)
-							localStorage.setItem('userOffers', data.offerData);				// from res.json (Offer Details)
-							window.location.assign("http://localhost:3001/index.jsp");
-
-						} else {
-							console.log("Error")
-						}
-					},
-
-					error: function (xhr, textStatus, errorThrown) {
-						console.log('Error in Operation');
-						alert("Invalid Password. Please type again.")
-
-					}
-				});
-				return false;
-			});
-
-
-		});  
-	</script>
-
-
 </head>
+<% 
+String input_Login = request.getParameter("Login");
 
+try{
+if(input_Login.equals("Err")){
+	out.print("<script>alert('That Username or Password was Invalid!')</script>");
+}}catch(Exception e){
+	
+}
+
+String input_username = request.getParameter("username");  
+String input_password = request.getParameter("pass");
+Connection conn = null; 
+try{
+	Class.forName("com.mysql.jdbc.Driver");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+	if(conn == null){
+		out.print("Conn Error");
+		conn.close();
+	}else{
+		//out.print("Database has been connected to!<br>");
+
+	      String query = "SELECT * FROM users";
+
+	      // create the java statement
+	      Statement st = conn.createStatement();
+	      
+	      // execute the query, and get a java resultset
+	      ResultSet rs = st.executeQuery(query);//executeUpdate if Insert statement or modifying database
+	      while (rs.next()) {
+	    	  String password = rs.getString("password");
+	    	  String username = rs.getString("username");
+	    	  int user_id = rs.getInt("user_id");
+	    	  String role = rs.getString("role");
+	    	  //out.println("<table><tr><th>Password:" + password + "</th><th>userName:" +username +"</th></table>");
+			if(input_username.equals(username) && input_password.equals(password)){
+				response.sendRedirect("index.jsp?userid="+user_id+"&role="+role);
+			}else{
+				response.sendRedirect("loginpage.jsp?Login=Err");
+			}
+	      }}
+	 conn.close();
+	}catch(Exception e){
+}
+
+%>
 <body>
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
@@ -79,7 +85,6 @@
 					</span>
 
 					<span class="login100-form-title p-b-34 p-t-27">Log in</span>
-
 					<div class="wrap-input100 validate-input" data-validate="Enter username">
 						<input id="username" class="input100" type="text" name="username" placeholder="Username">
 						<span class="focus-input100" data-placeholder="&#xf207;"></span>
@@ -96,9 +101,9 @@
 					</div>
 
 					<div class="container-login100-form-btn">
-						<button id="Login" class="login100-form-btn">Login</button>
+						<button type="submit" id="Login" class="login100-form-btn">Login</button>
 					</div>
-
+						<%%>
 					<div class="text-center p-t-50">
 						<a class="txt1" href="#">Forgot Password?</a>
 					</div>

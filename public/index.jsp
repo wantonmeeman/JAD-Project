@@ -2,8 +2,18 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
-
+<%  String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  	}}catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}
+      %>
 <head>
+
   <title>Digit Games &mdash; Home</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,30 +34,14 @@
 
   <link rel="stylesheet" href="css/aos.css">
   <link rel="stylesheet" href="css/style.css">
-
-  <script>
-
-    $(document).ready(function () {
-      if (localStorage.getItem('accessToken') != null) {        // if accessToken is not empty: user is logged in
-
-        $('#logoutButton').append('&emsp; <button type="submit" id="Logout">Log Out</button>')
-        $('#toProfile').empty()
-        $('#toProfile').append('<a href="http://localhost:3001/profile.jsp"><span class="icon icon-person">')
-      }
-    })
-  </script>
-
 </head>
 
 <body>
-
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
       <div class="site-navbar-top">
         <div class="container">
-
           <div class="row align-items-center">
-
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
 
             </div>
@@ -60,13 +54,9 @@
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Login</a></li>
-
-                  <li><a href="register.jsp">Register</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
+       
+	  		
+                <%=Header%>
 
               </div>
             </div>
@@ -79,11 +69,11 @@
 
           <!-- Navigation Bar -->
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp">Home</a></li>
-            <li><a href="about.jsp">About</a></li>
-            <li><a href="categories.jsp">Shop</a></li>
-            <li><a href="all-listings.jsp">Catalogue</a></li>
-            <li><a href="contact.jsp">Contact</a></li>
+            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
+            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
+            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
+            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
+            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
           </ul>
 
         </div>
