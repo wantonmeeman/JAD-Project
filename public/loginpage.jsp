@@ -33,18 +33,19 @@
 String input_Login = request.getParameter("Login");
 
 try{
-if(input_Login.equals("Err")){
-	out.print("<script>alert('That Username or Password was Invalid!')</script>");
-}}catch(Exception e){
+	if(input_Login.equals("Err")){
+		out.print("<script>alert('That Username or Password was Invalid!')</script>");
+	}}catch(Exception e){
 	
 }
 
 String input_username = request.getParameter("username");  
 String input_password = request.getParameter("pass");
 Connection conn = null; 
+
 try{
 	Class.forName("com.mysql.jdbc.Driver");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	if(conn == null){
 		out.print("Conn Error");
 		conn.close();

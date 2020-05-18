@@ -1,20 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html lang="en">
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
-	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
         		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
 	  	}}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}%><!DOCTYPE html>
-<html lang="en">
-
+    	}%>
 <head>
-  <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
+  <title>Digit Games &mdash; Upload Product</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -34,7 +32,6 @@
 
   <link rel="stylesheet" href="css/style.css">
 
-
 </head>
 
 <body>
@@ -46,15 +43,12 @@
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-              <form action="" class="site-block-top-search">
-                <span class="icon icon-search2"></span>
-                <input type="text" class="form-control border-0" placeholder="Search">
-              </form>
+
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Snapsell</a>
+                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -78,7 +72,6 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
-            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -88,7 +81,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Product</strong></div>
+              class="text-black">Upload Product</strong></div>
         </div>
       </div>
     </div>
@@ -96,64 +89,95 @@
     <div class="site-section">
       <div class="container">
         <div class="row">
+
           <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Product Detail</h2>
+            <h2 class="h3 mb-3 text-black">Upload Product (Admin)</h2>
           </div>
+
           <div class="col-md-12">
 
             <form action="#" method="post">
 
-              <div id="shownListing" class="p-3 p-lg-5 border row">
+              <div class="p-3 p-lg-5 border row justify-content-center">
 
-                <div class="col-md-6">
-                  <img class="img-fluid" src="images/upload_pic.PNG" width="400" height="10" alt="Upload Picture"
-                    title="Upload Picture">
+                <div class="col-md-10">
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="title" class="text-black">Title <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="title" name="title" placeholder="Title of Product">
+                    </div>
+
+                  </div>
+
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="c_price" class="text-black">Current Price <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="c_price" name="c_price"
+                        placeholder="Current Price ($)">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="r_price" class="text-black">Retail Price <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="r_price" name="r_price"
+                        placeholder="Retail Price ($)">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="stockQty" class="text-black">Stock Quantity <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="stockQty" name="stockQty" placeholder="Quantity">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="productCat" class="text-black">Product Category <span
+                          class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="productCat" name="productCat" placeholder="Category">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-8">
+                      <label for="briefDesc" class="text-black">Brief Description: </label>
+                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control"
+                        placeholder="Brief Description of Product"></textarea>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-8">
+                      <label for="fullDesc" class="text-black">Full Description: </label>
+                      <textarea name="fullDesc" id="fullDesc" cols="30" rows="10" class="form-control"
+                        placeholder="Detailed Description of Product"></textarea>
+                    </div>
+
+                  </div>
+
                 </div>
 
+                <div class="form-group col-md-12 mb-5 d-flex flex-row-reverse">
 
-                <div class="col-md-6">
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <div id="title" class="text-black font-weight-bold">iPhone 8 Plus </div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <div for="description" class="text-black">Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
-                        book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-                        Aldus PageMaker including versions of Lorem Ipsum. </div>
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <label for="offer" class="text-black">Make Offer: </label>
-                      <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-                    </div>
-
-                  </div>
-
-
-                </div>
-
-                <div class="form-group row">
-
-                  <div class="col-lg-12">
-                    <form>
-                      <input id="makeOffer" type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
-                    </form>
-
+                  <div class="col-lg-3 p-3">
+                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"
+                      value="Upload Product">
                   </div>
 
                 </div>

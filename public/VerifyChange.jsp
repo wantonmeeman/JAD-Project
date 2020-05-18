@@ -10,7 +10,7 @@
 </head>
 <body>
 <%
-
+  Connection conn = null; 
   String Error = "";
   String Username = request.getParameter("username"); 
   String Email = request.getParameter("email");
@@ -23,20 +23,41 @@
 	  if(4 > Username.length() || Username.length() > 20){
 		  Error += "UsernameSizeInvalid-";
 	  }
-	  
-	  //add email verification and maybe duplication verification
-	if(Error.length() == 0){
-		response.sendRedirect("profile.jsp?Err=ProfileSuccess&userid="+userid+"&role="+role);
-	}else{
-		response.sendRedirect("profile.jsp?Err="+Error+"&userid="+userid+"&role="+role);
-	}
+  
+  
+		if(Error.length() == 0){
+			try{
+			  	Class.forName("com.mysql.jdbc.Driver");
+			  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+			 }catch(Exception e){
+				    out.print(e);
+			 }
+			  	if(conn == null){
+			  		out.print("Conn Error");
+			  		conn.close();
+			  	}else{
+			  		  String query = "UPDATE users SET Email = '"+Email+"'WHERE user_id ="+userid; //Check if old password is equal to new password.Do we need to change Username?
+			  		  Statement st = conn.createStatement();
+				      int rs = st.executeUpdate(query);
+				      if(rs == 1){
+				      response.sendRedirect("profile.jsp?Err=ProfileSuccess&userid="+userid+"&role="+role);
+				      conn.close();
+				      }else{
+				    	  out.print("Conn Error");
+					  		conn.close();
+				      }
+				}
+
+		}else{
+			response.sendRedirect("profile.jsp?Err="+Error+"&userid="+userid+"&role="+role);
+		}
   }else{//CHANGE PASSWORD
 	  
-	  Connection conn = null; 
+
 	  
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
 		  	}

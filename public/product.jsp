@@ -1,11 +1,68 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");
+	String productID = request.getParameter("productid");
+	String name = "";
+	String briefDescription = "";
+	String detailedDescription = "";
+	String cPrice = "";
+	String rPrice = "";
+	int stockQuantity = 0;
+	String productCat = "";
+	String image = "";
+	String AdminPage = "";
+	
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  	}}catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}
+        Connection conn = null;
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+            if(conn == null){
+            	out.print("Conn Error");
+            	conn.close();
+            }else{
+            	    String query = "SELECT * FROM products WHERE product_id = "+productID;
+    				
+            	    Statement st = conn.createStatement();
+            	    
+            	    ResultSet rs = st.executeQuery(query);
+            	    
+            	    while(rs.next()){
+          	    		name = rs.getString("name");
+          	    		briefDescription = rs.getString("brief_description");
+          	    		detailedDescription = rs.getString("detailed_description");
+          	    		cPrice = format.format(rs.getDouble("c_price"));
+          	    		rPrice = format.format(rs.getDouble("r_price"));
+          	    		stockQuantity = rs.getInt("stock_quantity");
+          	    		productCat = rs.getString("product_cat");
+          	    		image = rs.getString("image");
+            		}
+            }
+        }catch(Exception e){
+        	out.print(e);
+        }
+    	
+    	
+    	
+    	
+    	
+    	
+    	%>
   <title>Digit Games &mdash; Product Details</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -46,13 +103,10 @@
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Login</a></li>
+       
+	  		
+                <%=Header%>
 
-                  <li><a href="register.jsp">Register</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
               </div>
             </div>
 
@@ -67,6 +121,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -75,8 +130,8 @@
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="categories.jsp">Gaming Gear</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Logitech G331</strong></div>
+          <div class="col-md-12 mb-0"><a href="categories.jsp">Gaming Gear</a> <span class="mx-2 mb-0">/</span> 
+          <strong class="text-black">></strong></div>
         </div>
       </div>
     </div>
@@ -85,40 +140,29 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <img src="images/gear/logitech_headset.jpg" alt="Image" class="img-fluid">
+            <img src="<%=image %>" alt="Image" class="img-fluid">
           </div>
           <div class="col-md-6">
-            <h2 class="text-black">Logitech G331</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur, vitae, explicabo? Incidunt facere,
-              natus soluta dolores iusto! Molestiae expedita veritatis nesciunt doloremque sint asperiores fuga
-              voluptas, distinctio, aperiam, ratione dolore.</p>
-            <p class="mb-4">Ex numquam veritatis debitis minima quo error quam eos dolorum quidem perferendis. Quos
+            <h2 class="text-black"><%=name %></h2>
+            <p><%=detailedDescription %></p>
+            <!--  <p class="mb-4">Ex numquam veritatis debitis minima quo error quam eos dolorum quidem perferendis. Quos
               repellat dignissimos minus, eveniet nam voluptatibus molestias omnis reiciendis perspiciatis illum hic
-              magni iste, velit aperiam quis.</p>
+              magni iste, velit aperiam quis.</p>-->
 
 
-            <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"><s>$100</s>
-                $80</strong></p>
+            <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"><!-- <s>$100</s> -->
+                $<%=cPrice %></strong></p>
 
-
-            <form action="#">
-
+	
+            <form action="cart.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
               <div class="mb-5 row">
                 <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
-                <div class="input-group ml-3 mb-3" style="max-width: 120px;">
-                  <div class="input-group-prepend">
-                    <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-                  </div>
-                  <input type="text" class="form-control text-center" value="1" placeholder=""
-                    aria-label="Example text with button addon" aria-describedby="button-addon1">
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-                  </div>
-                </div>
+                	
+                  <input type="number" placeholder=1 name="quantity" style="margin-top: 4px;margin-bottom: 50px;margin-right:30px;"></input>
+                  <input type="hidden" name="productid"></input>
               </div>
-              <p><a href="cart.jsp" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
+              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;">Add To Cart</a></p>
             </form>
-
           </div>
         </div>
       </div>
