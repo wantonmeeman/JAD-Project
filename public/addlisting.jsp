@@ -4,15 +4,35 @@
 <html lang="en">
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
+	String AdminPage = "";
 	//Still todo: Edit page
 	//image path?
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  	}}catch(Exception e){// if no id or role is detected
+                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+              } else if (role.equals("member")) {
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+        	  }}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}%>
+    	}
+    	String Error = request.getParameter("Err");
+    	try{
+    	if(Error.equals("NullError")){
+    		out.print("<script>alert('Please Fill in all required fields!')</script>");
+    	}
+		if(Error.equals("NegativeError")){
+			out.print("<script>alert('Do not enter negative numbers!')</script>");
+    	}
+		if(Error.equals("AddSuccess")){
+			out.print("<script>alert('Product Successfully Added!')</script>");
+    	}
+    	}catch(Exception e){
+    		
+    	}
+    	
+    	%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
   <meta charset="utf-8">
@@ -74,6 +94,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -169,6 +190,14 @@
                       <label for="fullDesc" class="text-black">Full Description: </label>
                       <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control"
                         placeholder="Detailed Description of Product"></textarea>
+                    </div>
+
+                  </div>
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Image Path</label>
+                      <input type="text" name="image" id="image" class="form-control" placeholder="Image Path"></textarea>
                     </div>
 
                   </div>

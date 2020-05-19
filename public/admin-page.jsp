@@ -24,14 +24,17 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  	}}catch(Exception e){// if no id or role is detected
+                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+              } else if (role.equals("member")) {
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+        	  }}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
+		  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
@@ -53,7 +56,7 @@
 		        	    	stockQuantity = rs.getInt("stock_quantity");
 		        	    	productCat = rs.getString("product_cat");
 		        	    	image = rs.getString("image");
-		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='#'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
 		        }
 			}
 		  	
