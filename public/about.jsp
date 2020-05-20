@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html>
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
@@ -13,15 +11,15 @@
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
-        	  }}catch(Exception e){// if no id or role is detected
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+        	  }
+            }catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}%>
-  <title>Digit Games &mdash; Contact Us</title>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<head>
+  <title>About Us &mdash; Digit Games</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -89,77 +87,153 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Contact</strong></div>
+              class="text-black">About</strong></div>
         </div>
       </div>
     </div>
 
-    <div class="site-section">
+    <div class="site-section border-bottom" data-aos="fade">
       <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Get In Touch</h2>
+        <div class="row mb-5">
+          <div class="col-md-6">
+            <div class="block-16">
+              <figure>
+                <img src="images/blog_1.jpg" alt="Image placeholder" class="img-fluid rounded">
+                <a href="https://vimeo.com/channels/staffpicks/93951774" class="play-button popup-vimeo"><span
+                    class="ion-md-play"></span></a>
+
+              </figure>
+            </div>
           </div>
-          <div class="col-md-7">
+          <div class="col-md-1"></div>
+          <div class="col-md-5">
 
-            <form action="#" method="post">
 
-              <div class="p-3 p-lg-5 border">
-                <div class="form-group row">
-                  <div class="col-md-6">
-                    <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="c_fname" name="c_fname">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="c_lname" name="c_lname">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <label for="c_email" class="text-black">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="c_email" name="c_email" placeholder="">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <label for="c_subject" class="text-black">Subject </label>
-                    <input type="text" class="form-control" id="c_subject" name="c_subject">
-                  </div>
-                </div>
+            <div class="site-section-heading pt-3 mb-4">
+              <h2 class="text-black">How We Started</h2>
+            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius repellat, dicta at laboriosam, nemo
+              exercitationem itaque eveniet architecto cumque, deleniti commodi molestias repellendus quos sequi hic
+              fugiat asperiores illum. Atque, in, fuga excepturi corrupti error corporis aliquam unde nostrum quas.</p>
+            <p>Accusantium dolor ratione maiores est deleniti nihil? Dignissimos est, sunt nulla illum autem in,
+              quibusdam cumque recusandae, laudantium minima repellendus.</p>
 
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <label for="c_message" class="text-black">Message </label>
-                    <textarea name="c_message" id="c_message" cols="30" rows="7" class="form-control"></textarea>
-                  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section border-bottom" data-aos="fade">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 site-section-heading text-center pt-4">
+            <h2>The Team</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+
+            <div class="block-38 text-center">
+              <div class="block-38-img">
+                <div class="block-38-header">
+                  <img src="images/person_1.jpg" alt="Image placeholder" class="mb-4">
+                  <h3 class="block-38-heading h4">Elizabeth Graham</h3>
+                  <p class="block-38-subheading">CEO/Co-Founder</p>
                 </div>
-                <div class="form-group row">
-                  <div class="col-lg-12">
-                    <input type="submit" class="btn btn-primary btn-lg btn-block" value="Send Message">
-                  </div>
+                <div class="block-38-body">
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio
+                    recusandae doloribus ut fugit officia voluptate soluta. </p>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-          <div class="col-md-5 ml-auto">
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">New York</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-38 text-center">
+              <div class="block-38-img">
+                <div class="block-38-header">
+                  <img src="images/person_2.jpg" alt="Image placeholder" class="mb-4">
+                  <h3 class="block-38-heading h4">Jennifer Greive</h3>
+                  <p class="block-38-subheading">Co-Founder</p>
+                </div>
+                <div class="block-38-body">
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio
+                    recusandae doloribus ut fugit officia voluptate soluta. </p>
+                </div>
+              </div>
             </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">London</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-38 text-center">
+              <div class="block-38-img">
+                <div class="block-38-header">
+                  <img src="images/person_3.jpg" alt="Image placeholder" class="mb-4">
+                  <h3 class="block-38-heading h4">Patrick Marx</h3>
+                  <p class="block-38-subheading">Marketing</p>
+                </div>
+                <div class="block-38-body">
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio
+                    recusandae doloribus ut fugit officia voluptate soluta. </p>
+                </div>
+              </div>
             </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">Canada</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="block-38 text-center">
+              <div class="block-38-img">
+                <div class="block-38-header">
+                  <img src="images/person_4.jpg" alt="Image placeholder" class="mb-4">
+                  <h3 class="block-38-heading h4">Mike Coolbert</h3>
+                  <p class="block-38-subheading">Sales Manager</p>
+                </div>
+                <div class="block-38-body">
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae aut minima nihil sit distinctio
+                    recusandae doloribus ut fugit officia voluptate soluta. </p>
+                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
+
+
+    <div class="site-section site-section-sm site-blocks-1 border-0" data-aos="fade">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-truck"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Free Shipping</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-refresh2"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Free Returns</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-help"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Customer Support</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">
@@ -236,5 +310,4 @@
   <script src="js/main.js"></script>
 
 </body>
-
 </html>

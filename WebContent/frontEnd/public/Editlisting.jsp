@@ -1,63 +1,62 @@
-<%@page import="java.sql.*"%>
-<%@page import="java.text.DecimalFormat" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
+	String productID = request.getParameter("productID");
+	String AdminPage = "";
+	String name = "";
+	String c_price = "";
+	String r_price = "";
+	String stockQuantity = "";
+	String productCat = "";
+	String briefDesc = "";
+	String detailedDesc = "";
+	String image = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  	}}catch(Exception e){// if no id or role is detected
+                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+              } else if (role.equals("member")) {
+                  Header = "<div class='site-top-icons'>"
+                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+              		+ "<li id='logoutButton'></li></ul></div>";
+        	  }}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}
-        
-        
-        
-	// Connection conn = null; 
-	String Error = "";
-	DecimalFormat format = new DecimalFormat("#0.00"); 
-	String productID = request.getParameter("id");
-	String name = request.getParameter("name");
-	String c_price = "";
-	String r_price = "";
-	int stockQuantity = 0;
-	String productCat = request.getParameter("productCat");
-	String briefDesc = request.getParameter("briefDesc");
-	String detailedDesc = request.getParameter("detailedDesc");
-	
-	
-	try {
-
-		Class.forName("com.mysql.jdbc.Driver");
-		String connURL = "jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC";
-		Connection conn = DriverManager.getConnection(connURL);
-		Statement stmt = conn.createStatement();
-		
-		String sqlStr = "SELECT * FROM digitgames WHERE id = " + productID;
-		ResultSet rs = stmt.executeQuery(sqlStr);
-
-		rs.next();
-    	name = rs.getString("name");
-    	briefDesc = rs.getString("brief_description");
-    	detailedDesc = rs.getString("detailed_description");
-    	c_price = format.format(rs.getDouble("c_price"));
-    	r_price = format.format(rs.getDouble("r_price"));
-    	stockQuantity = rs.getInt("stock_quantity");
-    	productCat = rs.getString("product_cat");
-
-		// Step 7: Close connection
-		conn.close();
-
-	} catch (Exception e) {
-		out.println("Error :" + e);
-	}
-    	
-    	
-    	
-%>
+        Connection conn = null;
+        try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	}catch(Exception e){
+			    out.print(e);
+		  	}
+		  	if(conn == null){
+		  		out.print("Conn Error");
+		  		conn.close();
+		  	}else{
+		  		  String query = "SELECT * FROM products WHERE product_id ="+productID;
+		  		  Statement st = conn.createStatement();
+			      ResultSet rs = st.executeQuery(query);
+			      while(rs.next()){
+			    		name = rs.getString("name");
+			    		c_price = rs.getString("c_price");
+			    		r_price = rs.getString("r_price");
+			    		stockQuantity = rs.getString("stock_quantity");
+			    		productCat = rs.getString("product_cat");
+			    		briefDesc = rs.getString("brief_description");
+			    		detailedDesc = rs.getString("detailed_description");
+			    		image = rs.getString("image");
+			      }
+		  	}
+    	%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
   <meta charset="utf-8">
@@ -119,6 +118,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -128,7 +128,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Upload Product</strong></div>
+              class="text-black">Edit Product</strong></div>
         </div>
       </div>
     </div>
@@ -138,22 +138,22 @@
         <div class="row">
 
           <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Upload Product (Admin)</h2>
+            <h2 class="h3 mb-3 text-black">Edit Product (Admin)</h2>
           </div>
 
           <div class="col-md-12">
 
-            <form action="#" method="post">
+            <form action="EditProduct.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
                 <div class="col-md-10">
 
                   <div class="form-group row">
-
+					<input type="hidden" name="productID" value="<%=productID%>"></input>
                     <div class="col-md-6">
                       <label for="title" class="text-black">Title <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="title" name="title" placeholder="Title of Product">
+                      <input type="text" class="form-control" id="title" name="name" value="<%=name%>" placeholder="Title of Product">
                     </div>
 
                   </div>
@@ -163,7 +163,7 @@
 
                     <div class="col-md-6">
                       <label for="c_price" class="text-black">Current Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="c_price" name="c_price"
+                      <input type="number" class="form-control" id="c_price" value="<%=c_price %>" name="c_price"
                         placeholder="Current Price ($)">
                     </div>
 
@@ -173,7 +173,7 @@
 
                     <div class="col-md-6">
                       <label for="r_price" class="text-black">Retail Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="r_price" name="r_price"
+                      <input type="number" class="form-control" id="r_price" name="r_price" value="<%=r_price %>"
                         placeholder="Retail Price ($)">
                     </div>
 
@@ -183,7 +183,7 @@
 
                     <div class="col-md-6">
                       <label for="stockQty" class="text-black">Stock Quantity <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="stockQty" name="stockQty" placeholder="Quantity">
+                      <input type="number" class="form-control" id="stockQty" name="stockQuantity" placeholder="Quantity" value="<%=stockQuantity%>">
                     </div>
 
                   </div>
@@ -193,7 +193,11 @@
                     <div class="col-md-6">
                       <label for="productCat" class="text-black">Product Category <span
                           class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="productCat" name="productCat" placeholder="Category">
+                      <select class="form-control" id="productCat" name="productCat" placeholder="Category">
+                      	<option value="Games">Games</option>
+                      	<option value="Gaming Gear">Gaming Gear</option>
+                      	<option value="Apparel">Volvo</option>
+                      </select>
                     </div>
 
                   </div>
@@ -202,8 +206,7 @@
 
                     <div class="col-md-8">
                       <label for="briefDesc" class="text-black">Brief Description: </label>
-                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control"
-                        placeholder="Brief Description of Product"></textarea>
+                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control" value="" placeholder="Brief Description of Product"><%=briefDesc%></textarea>
                     </div>
 
                   </div>
@@ -212,8 +215,16 @@
 
                     <div class="col-md-8">
                       <label for="fullDesc" class="text-black">Full Description: </label>
-                      <textarea name="fullDesc" id="fullDesc" cols="30" rows="10" class="form-control"
-                        placeholder="Detailed Description of Product"></textarea>
+                      <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control" value="" placeholder="Detailed Description of Product"><%=detailedDesc%></textarea>
+                    </div>
+
+                  </div>
+                  
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Image Path</label>
+                      <input type="text" name="image" id="image" class="form-control" value="<%=image%>" placeholder="Image Path"></textarea>
                     </div>
 
                   </div>

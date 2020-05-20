@@ -1,26 +1,67 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="java.sql.*" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
+	String productID = "";
+	String Name = "";
+	String briefDescription = "";
+	String detailedDescription = "";
+	String cPrice = "";
+	String rPrice = "";
+	int stockQuantity = 0;
+	String productCat = "";
+	String image = "";
+	String rows = "";
+	int RowCount;
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}%>
+    	}
+        Connection conn = null;
+        try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	}catch(Exception e){
+			    out.print(e);
+		  	}
+		  	if(conn == null){
+		  		out.print("Conn Error");
+		  		conn.close();
+		  	}else{
+		  		  String query = "SELECT * FROM products";
+		  		  Statement st = conn.createStatement();
+			      ResultSet rs = st.executeQuery(query);
+		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        	    	productID = rs.getString("product_id");
+		        	    	Name = rs.getString("name");
+		        	    	briefDescription = rs.getString("brief_description");
+		        	    	detailedDescription = rs.getString("detailed_description");
+		        	    	cPrice =  format.format(rs.getDouble("c_price"));
+		        	    	rPrice  =  format.format(rs.getDouble("c_price"));
+		        	    	stockQuantity = rs.getInt("stock_quantity");
+		        	    	productCat = rs.getString("product_cat");
+		        	    	image = rs.getString("image");
+		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        }
+			}
+		  	
+
+%>
   <title>Digit Games &mdash; Categories</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,10 +83,24 @@
   <link rel="stylesheet" href="css/style.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var modal = document.getElementById("myModal");
+      var span = document.getElementById("close");
+
+      $('body').on('click', '.deleteProduct', function (event) {
+        console.log("pressed");
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+          document.getElementById("myModal").style.display = "none";
+        }
+      })
 
 
-
-
+    });
+  </script>
 </head>
 
 <body>
@@ -59,9 +114,9 @@
 
         <div class="col-md-5">
           <form>
-            <label for="offer" class="text-black">Make Offer: </label>
-            <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-            <button type="button" id="submitOffer">Offer</button>
+            <h3 mb-5 class="text-dark">Are you sure you want to delete "Logitech G331 (product)"?</h3>
+
+            <button class="btn btn-sm btn-danger" type="button" id="confirmDel">Delete Product</button>
           </form>
         </div>
 
@@ -83,7 +138,7 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -117,7 +172,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Categories</strong></div>
+              class="text-black">Adminstrator Page</strong></div>
         </div>
       </div>
     </div>
@@ -125,52 +180,32 @@
     <div class="site-section">
       <div class="container">
 
-        <div class="row">
-          <div class="col-md-12">
-            <div class="site-section site-blocks-2">
-              <div class="row justify-content-center text-center mb-5">
-                <div class="col-md-7 site-section-heading pt-4">
-                  <h2>Product Categories</h2>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Games&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/games/borderlands3.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Games</h3>
-                    </div>
-                  </a>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Gaming Gear&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/gear/logitech_headset.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Gaming Gear</h3>
-                    </div>
-                  </a>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Apparel&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/apparel/razer_clothing.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Apparel</h3>
-                    </div>
-                  </a>
-                </div>
-              </div>
+        <div class="col-md-12">
+          <h2 class="h3 mb-5 text-black">Admin Control Page (All Products) </h2>
+        </div>
 
-            </div>
+        <div class="col-md-12 mb-5 d-flex flex-row-reverse">
+          <div class="p-2">
+            <a href="addlisting.jsp?userid=<%=userid%>&role=<%=role%>" class="btn btn-sm btn-info">Create New Product</a>
           </div>
+        </div>
+
+        <div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Current Price</th>
+                <th scope="col">Retail Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%=rows%>
+            </tbody>
+          </table>
         </div>
 
       </div>

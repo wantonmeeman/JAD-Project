@@ -46,6 +46,7 @@ Connection conn = null;
 try{
 	Class.forName("com.mysql.jdbc.Driver");
 	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	if(conn == null){
 		out.print("Conn Error");
 		conn.close();
@@ -64,14 +65,13 @@ try{
 	    	  String username = rs.getString("username");
 	    	  int user_id = rs.getInt("user_id");
 	    	  String role = rs.getString("role");
-	    	  //out.println("<table><tr><th>Password:" + password + "</th><th>userName:" +username +"</th></table>");
-			if(input_username.equals(username) && input_password.equals(password)){
-				response.sendRedirect("index.jsp?userid="+user_id+"&role="+role);
-			}
+	    	  // out.println("<table><tr><th>Password:" + password + "</th><th>userName:" +username +"</th></table>");
+	    	  if(input_username.equals(username) && input_password.equals(password)){
+					response.sendRedirect("index.jsp?userid="+user_id+"&role="+role);
+				}
 	      }
-		
-	      response.sendRedirect("loginpage.jsp?Login=Err");
-	
+		response.sendRedirect("loginpage.jsp?Login=Err");
+	      
 	}
 	 conn.close();
 	}catch(Exception e){

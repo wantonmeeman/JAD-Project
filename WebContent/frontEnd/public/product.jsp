@@ -6,7 +6,7 @@
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+<%  DecimalFormat format = new DecimalFormat("#0"); 
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String productID = request.getParameter("productid");
@@ -19,22 +19,26 @@
 	String productCat = "";
 	String image = "";
 	String AdminPage = "";
-	Double discount = 0.00;
-	int discountInt, roundDiscount = 0;
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        
-	try{
+        try{
         	if(role.equals("admin")){ 
-        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  	}}catch(Exception e){// if no id or role is detected
+                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+              } else if (role.equals("member")) {
+                  Header = "<div class='site-top-icons'>"
+                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+              		+ "<li id='logoutButton'></li></ul></div>";
+        	  }}catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}
         Connection conn = null;
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+          	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+            // conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
             if(conn == null){
             	out.print("Conn Error");
             	conn.close();
@@ -51,23 +55,21 @@
           	    		detailedDescription = rs.getString("detailed_description");
           	    		cPrice = format.format(rs.getDouble("c_price"));
           	    		rPrice = format.format(rs.getDouble("r_price"));
-          	    		discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
-          	    		discountInt = (int)Math.round(discount);
-          	    		roundDiscount = (discountInt + 4) / 5 * 5;
           	    		stockQuantity = rs.getInt("stock_quantity");
           	    		productCat = rs.getString("product_cat");
           	    		image = rs.getString("image");
             		}
             }
-        } catch(Exception e) {
+        }catch(Exception e){
         	out.print(e);
         }
+        int discountInt, roundDiscount = 0;
     	
-    	
-    	
-    	
-    	
-    	
+        double discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
+        discountInt = (int)Math.round(discount);
+        roundDiscount = (discountInt + 4) / 5 * 5;
+        //String pcOff = format.format(5*(Math.round(((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice)*100))/5));
+        
     	%>
   <title>Digit Games &mdash; Product Details</title>
   <meta charset="utf-8">
@@ -150,12 +152,14 @@
           </div>
           <div class="col-md-6">
             <h2 class="text-black"><%=name %></h2>
-            <p class="mb-4"><%=detailedDescription %></p>
-            
-            <!--  <p class="mb-4">(Test Description Class)</p>-->
+            <p><%=detailedDescription %></p>
+            <!--  <p class="mb-4">Ex numquam veritatis debitis minima quo error quam eos dolorum quidem perferendis. Quos
+              repellat dignissimos minus, eveniet nam voluptatibus molestias omnis reiciendis perspiciatis illum hic
+              magni iste, velit aperiam quis.</p>-->
+
 
             <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"><s>$<%=rPrice %></s>
-                $<%=cPrice %> (<%=roundDiscount %>% Off)</strong></p>
+                $<%=cPrice %>   (<%=roundDiscount %>% Off)</p></strong>
 
 	
             <form action="cart.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">

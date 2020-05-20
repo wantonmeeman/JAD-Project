@@ -1,17 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="java.sql.*" %>
-<%@page import="java.text.DecimalFormat" %>
+    <%@ page import="java.sql.*" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+<%  DecimalFormat format = new DecimalFormat("#0"); 
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
-	String AdminPage = "";
-	String productID = "";
-	String Name = "";
+	String productID = request.getParameter("productid");
+	String name = "";
 	String briefDescription = "";
 	String detailedDescription = "";
 	String cPrice = "";
@@ -19,8 +18,8 @@
 	int stockQuantity = 0;
 	String productCat = "";
 	String image = "";
-	String rows = "";
-	int RowCount;
+	String AdminPage = "";
+	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
@@ -33,36 +32,42 @@
     	}
         Connection conn = null;
         try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM products";
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    	productID = rs.getString("product_id");
-		        	    	Name = rs.getString("name");
-		        	    	briefDescription = rs.getString("brief_description");
-		        	    	detailedDescription = rs.getString("detailed_description");
-		        	    	cPrice =  format.format(rs.getDouble("c_price"));
-		        	    	rPrice  =  format.format(rs.getDouble("c_price"));
-		        	    	stockQuantity = rs.getInt("stock_quantity");
-		        	    	productCat = rs.getString("product_cat");
-		        	    	image = rs.getString("image");
-		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        }
-			}
-		  	
-
-%>
-  <title>Digit Games &mdash; Categories</title>
+            Class.forName("com.mysql.jdbc.Driver");
+          //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+            if(conn == null){
+            	out.print("Conn Error");
+            	conn.close();
+            }else{
+            	    String query = "SELECT * FROM products WHERE product_id = "+productID;
+    				
+            	    Statement st = conn.createStatement();
+            	    
+            	    ResultSet rs = st.executeQuery(query);
+            	    
+            	    while(rs.next()){
+          	    		name = rs.getString("name");
+          	    		briefDescription = rs.getString("brief_description");
+          	    		detailedDescription = rs.getString("detailed_description");
+          	    		cPrice = format.format(rs.getDouble("c_price"));
+          	    		rPrice = format.format(rs.getDouble("r_price"));
+          	    		stockQuantity = rs.getInt("stock_quantity");
+          	    		productCat = rs.getString("product_cat");
+          	    		image = rs.getString("image");
+            		}
+            }
+        }catch(Exception e){
+        	out.print(e);
+        }
+        int discountInt, roundDiscount = 0;
+    	
+        double discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
+        discountInt = (int)Math.round(discount);
+        roundDiscount = (discountInt + 4) / 5 * 5;
+        //String pcOff = format.format(5*(Math.round(((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice)*100))/5));
+        
+    	%>
+  <title>Digit Games &mdash; Product Details</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -75,56 +80,14 @@
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
-  <link rel="stylesheet" href="css/myoverride.css">
-
 
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      var modal = document.getElementById("myModal");
-      var span = document.getElementById("close");
-
-      $('body').on('click', '.deleteProduct', function (event) {
-        console.log("pressed");
-        modal.style.display = "block";
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function () {
-          document.getElementById("myModal").style.display = "none";
-        }
-      })
-
-
-    });
-  </script>
 </head>
 
 <body>
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="close" class="close">&times;</span>
-      <div class="form-group row">
-
-        <div class="col-md-5">
-          <form>
-            <h3 mb-5 class="text-dark">Are you sure you want to delete "Logitech G331 (product)"?</h3>
-
-            <button class="btn btn-sm btn-danger" type="button" id="confirmDel">Delete Product</button>
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
 
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
@@ -171,43 +134,117 @@
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Adminstrator Page</strong></div>
+          <div class="col-md-12 mb-0"><a href="categories.jsp">Gaming Gear</a> <span class="mx-2 mb-0">/</span> 
+          <strong class="text-black">></strong></div>
         </div>
       </div>
     </div>
 
     <div class="site-section">
       <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <img src="<%=image %>" alt="Image" class="img-fluid">
+          </div>
+          <div class="col-md-6">
+            <h2 class="text-black"><%=name %></h2>
+            <p><%=detailedDescription %></p>
+            <!--  <p class="mb-4">Ex numquam veritatis debitis minima quo error quam eos dolorum quidem perferendis. Quos
+              repellat dignissimos minus, eveniet nam voluptatibus molestias omnis reiciendis perspiciatis illum hic
+              magni iste, velit aperiam quis.</p>-->
 
-        <div class="col-md-12">
-          <h2 class="h3 mb-5 text-black">Admin Control Page (All Products) </h2>
-        </div>
 
-        <div class="col-md-12 mb-5 d-flex flex-row-reverse">
-          <div class="p-2">
-            <a href="addlisting.jsp?userid=<%=userid%>&role=<%=role%>" class="btn btn-sm btn-info">Create New Product</a>
+            <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"><s>$<%=rPrice %></s>
+                $<%=cPrice %>   (<%=roundDiscount %>% Off)</p></strong>
+
+	
+            <form action="cart.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
+              <div class="mb-5 row">
+                <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
+                	
+                  <input type="number" placeholder=1 name="quantity" style="margin-top: 4px;margin-bottom: 50px;margin-right:30px;"></input>
+                  <input type="hidden" name="productid"></input>
+              </div>
+              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;">Add To Cart</a></p>
+            </form>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Product Name</th>
-                <th scope="col">Current Price</th>
-                <th scope="col">Retail Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <%=rows%>
-            </tbody>
-          </table>
+    <div class="site-section block-3 site-blocks-2 bg-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-7 site-section-heading text-center pt-4">
+            <h2>Similar Products</h2>
+          </div>
         </div>
-
+        <div class="row">
+          <div class="col-md-12">
+            <div class="nonloop-block-3 owl-carousel">
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#">sad dog 1</a></h3>
+                    <p class="mb-0">Finding perfect t-shirt</p>
+                    <p class="text-primary font-weight-bold">$50</p>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#">sad dog 2</a></h3>
+                    <p class="mb-0">Finding perfect products</p>
+                    <p class="text-primary font-weight-bold">$50</p>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#">sad dog 3</a></h3>
+                    <p class="mb-0">Finding perfect products</p>
+                    <p class="text-primary font-weight-bold">$50</p>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#">sad dog 4</a></h3>
+                    <p class="mb-0">Finding perfect products</p>
+                    <p class="text-primary font-weight-bold">$50</p>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3><a href="#">sad dog 5</a></h3>
+                    <p class="mb-0">Finding perfect products</p>
+                    <p class="text-primary font-weight-bold">$50</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

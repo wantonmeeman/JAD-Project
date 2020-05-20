@@ -6,13 +6,11 @@
 <html lang="en">
 
 <head>
-
 <%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String sort = request.getParameter("sort");
 	String userid = request.getParameter("userid");  //TODO, SORT USING MYSQL QUERIES, DONT USE JAVA
 	String role = request.getParameter("role");
-	String productCat = request.getParameter("cat");
-	String sort = request.getParameter("sort");
-	String search = request.getParameter("search");
+	String cat = request.getParameter("cat");
 	String productID = "";
 	String Name = "";
 	String briefDescription = "";
@@ -20,12 +18,10 @@
 	String cPrice = "";
 	String rPrice = "";
 	int stockQuantity = 0;
+	String productCat = "";
 	String image = "";
 	String cells = "";
 	String AdminPage = "";
-	String query = "";
-	String Searchquery = "";
-	String CatSearchquery = "";
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
@@ -33,11 +29,7 @@
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }
         }catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
@@ -45,48 +37,33 @@
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
-      	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-        // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+      //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();
         }else{
-        	if(!(search == null || search.equals("") || search.equals(" "))){
-           		Searchquery = "WHERE name LIKE '%"+search+"%'";
-           		CatSearchquery = "AND name LIKE '%"+search+"%'";
-           	}
-        	
-        if(productCat == null){
+        	//out.print("Database has been connected to!<br>");
+        	String query = "";
         	if(sort == null){
-        			query = "SELECT * FROM products "+Searchquery;
-        		}else if(sort.equals("AZ")){
-        			query = "SELECT * FROM products ORDER BY name"+Searchquery;
-        		}else if(sort.equals("ZA")){
-        			query = "SELECT * FROM products ORDER BY name DESC"+Searchquery;
-        		}else if(sort.equals("PLH")){
-        			query = "SELECT * FROM products ORDER BY c_price"+Searchquery;
-        		}else if(sort.equals("PHL")){
-        			query = "SELECT * FROM products ORDER BY c_price DESC"+Searchquery;
-        		}
-        }else{
-        	if(sort == null){
-        			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery;
-        		}else if(sort.equals("AZ")){
-        			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery+" ORDER BY name";
-        		}else if(sort.equals("ZA")){
-        			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery+" ORDER BY name DESC";
-        		}else if(sort.equals("PLH")){
-        			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery+" ORDER BY c_price";
-        		}else if(sort.equals("PHL")){
-        			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery+" ORDER BY c_price DESC";
-        		}
-        }	
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'";
+        	}else if(sort.equals("AZ")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name";
+        	}else if(sort.equals("ZA")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name DESC";
+        	}else if(sort.equals("PLH")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price";
+        	}else if(sort.equals("PHL")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price DESC";
+        	}
+        	    
 				
-    	    Statement st = conn.createStatement();
-    	    ResultSet rs = st.executeQuery(query);
-    	    
-        		while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-        			productID = rs.getString("product_id");
+        	    Statement st = conn.createStatement();
+        	    
+        	    ResultSet rs = st.executeQuery(query);
+
+        		while(rs.next()){				//rs.next() returns true if there is a row below the current one, and moves to it when called.
+        	    	productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
         	    	briefDescription = rs.getString("brief_description");
         	    	detailedDescription = rs.getString("detailed_description");
@@ -96,12 +73,12 @@
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p><p class='text-primary font-weight-bold'>$"+rPrice+"</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
-        		}
-			}
-        }catch(Exception e){
-				
+        }
+		}}catch(Exception e){
+			out.print(e);
      	};
-%>
+    
+    	%>
   <title>Digit Games &mdash; All Products</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -117,106 +94,15 @@
 
   <link rel="stylesheet" href="css/myoverride.css">
 
-
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-
-
-  <script>
-
-    // Search (Change to enter key or button)
-    function search() {
-      var tmpToken = localStorage.getItem('accessToken')
-      var userData = localStorage.getItem('userInfo');
-      var userJsonData = JSON.parse(userData);            // id, username, password, url, created_at
-      var userid = userJsonData[0].id;
-
-      var keyword = $('#keyword').val();
-
-      var data = "{\"id\":\"" + userid + "\", \"keyword\":\"" + keyword + "\"}";
-      console.log(data);
-
-      $.ajax({
-        headers: { 'authorization': 'Bearer ' + tmpToken },
-        url: 'http://localhost:8081/search',
-        type: 'POST',
-        data: data,
-        contentType: "application/json; charset=utf-8",
-        dataType: 'json',
-        success: function (data, textStatus, xhr) {
-          if (data != null && data.success) {
-
-            var allListData = JSON.parse(data.SearchData);
-
-            if (data.length == 0) {
-              document.getElementById("allListings").innerHTML = "<p>No Listings Found</p>"
-
-            } else {
-              $('#allListings').empty()
-
-              for (var i = 0; i < allListData.length; i++) {
-
-                console.log(allListData[i]);
-                console.log(allListData[i].listingid);
-
-                document.getElementById("searchHeader").innerHTML = "Search Results"
-
-                document.getElementById("allListings").innerHTML += (
-                  `
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                      <div class="block-4 text-center border">
-                        <figure class="block-4-image">
-                          <a href="#"><img src="images/saddog2.jpg" alt="Image placeholder"
-                              class="img-fluid"></a>
-                        </figure>
-                        <div class="block-4-text p-4">
-                          <h3><a href="#">${allListData[i].title}</a></h3>
-                          <p class="mb-0">${allListData[i].description}</p>
-                          <p class="text-primary font-weight-bold">$${allListData[i].price}</p>
-                          <button type="submit" id="${allListData[i].listingid}" class="makeOffer">Make Offer</button>
-                        </div>
-                      </div>
-                    </div>
-                    `)
-              }
-            }
-          }
-        },
-
-        error: function (xhr, textStatus, errorThrown) {
-          console.log('Error in Operation');
-        }
-      });
-    }
-
-  </script>
-
 </head>
 
 <body>
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="close" class="close">&times;</span>
-      <div class="form-group row">
-
-        <div class="col-md-5">
-          <form>
-            <label for="offer" class="text-black">Make Offer: </label>
-            <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-            <button type="button" id="submitOffer">Offer</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-  </div>
 
 
   <div class="site-wrap">
@@ -231,14 +117,13 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-              <div class="site-top-icons">
+             <div class="site-top-icons">
        
-	  		
                 <%=Header%>
 
               </div>
@@ -264,8 +149,8 @@
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Products</strong></div>
+          <div class="col-md-12 mb-0"><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Categories</a> <span class="mx-2 mb-0">/</span> <strong
+              class="text-black"><%=productCat %></strong></div>
         </div>
       </div>
     </div>
@@ -279,31 +164,30 @@
             <div class="row">
               <div class="col-md-12 mb-5">
                 <div class="float-md-left mb-4">
-                  <h2 id="searchHeader" class="text-black h5">All <%=productCat%></h2>
+                  <h2 id="searchHeader" class="text-black h5">All <%=productCat%><h2>
                 </div>
                 <div class="d-flex">
                   <div class="dropdown mr-1 ml-md-auto">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuOffset"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                       Categories
+                      Categories
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaming Gear">Gaming Gear</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">None</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaming Gear">Gaming Gear</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
                     </div>
                   </div>
                   <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Reference</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Relevance</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=AZ">Name, A to Z</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=ZA">Name, Z to A</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=Relevance">Relevance</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=AZ">Name, A to Z</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=ZA">Name, Z to A</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=PLH">Price, low to high</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=PHL">Price, high to low</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PLH">Price, low to high</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PHL">Price, high to low</a>
                     </div>
                   </div>
                 </div>
@@ -312,20 +196,18 @@
 
             <div class="row">
               <div class="col-md-6">
-                <form action="all-listings.jsp" class="">
+                <form action="" class="">
                   <span class="icon icon-search2"></span>
-                  <input type="hidden" name="userid" value="<%=userid%>">
-                  <input type="hidden" name="role" value="<%=role%>">
-                  <input type="hidden" name="cat" value="<%=productCat%>">
-                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">
-                  <button type="submit" onclick="" id="searchbutton">Search</button>
+                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search">
+                  <button type="button" onclick="search()" id="searchbutton">Search</button>
                 </form>
               </div>
             </div>
 
-            <div id="allListings" class="row mb-5">
-              <%=cells %>
-              </div>
+            <div id="allListings" class="  row mb-5">
+
+              <!-- 1 SAMPLE PRODUCT (CHANGE TO LOOP) -->
+              <%=cells%>
 
 
             </div>

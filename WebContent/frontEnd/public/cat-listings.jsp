@@ -7,6 +7,7 @@
 
 <head>
 <%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String sort = request.getParameter("sort");
 	String userid = request.getParameter("userid");  //TODO, SORT USING MYSQL QUERIES, DONT USE JAVA
 	String role = request.getParameter("role");
 	String cat = request.getParameter("cat");
@@ -25,28 +26,47 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-        		AdminPage = "<li><a href='admin-page.jsp?userid=" + userid + "&role=" + role + "'>Control Panel</a></li>";
-        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  		}
+                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+              } else if (role.equals("member")) {
+                  Header = "<div class='site-top-icons'>"
+                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+              		+ "<li id='logoutButton'></li></ul></div>";
+        	  }
         }catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}	
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+      	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+        // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();
         }else{
         	//out.print("Database has been connected to!<br>");
-        	    String query = "SELECT * FROM products WHERE product_cat = '"+cat+"'";
+        	String query = "";
+        	if(sort == null){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'";
+        	}else if(sort.equals("AZ")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name";
+        	}else if(sort.equals("ZA")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name DESC";
+        	}else if(sort.equals("PLH")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price";
+        	}else if(sort.equals("PHL")){
+        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price DESC";
+        	}
+        	    
 				
         	    Statement st = conn.createStatement();
         	    
         	    ResultSet rs = st.executeQuery(query);
 
-        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+        		while(rs.next()){				//rs.next() returns true if there is a row below the current one, and moves to it when called.
         	    	productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
         	    	briefDescription = rs.getString("brief_description");
@@ -58,7 +78,7 @@
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p><p class='text-primary font-weight-bold'>$"+rPrice+"</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         }
-}}catch(Exception e){
+		}}catch(Exception e){
 			out.print(e);
      	};
     
@@ -158,7 +178,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                       <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaminggear">Gaming Gear</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaming Gear">Gaming Gear</a>
                       <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
                     </div>
                   </div>
@@ -167,11 +187,11 @@
                       data-toggle="dropdown">Reference</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                       <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=Relevance">Relevance</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=NameAZ">Name, A to Z</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=NameZA">Name, Z to A</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=AZ">Name, A to Z</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=ZA">Name, Z to A</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PriceLH">Price, low to high</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PriceHL">Price, high to low</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PLH">Price, low to high</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=cat%>&sort=PHL">Price, high to low</a>
                     </div>
                   </div>
                 </div>
