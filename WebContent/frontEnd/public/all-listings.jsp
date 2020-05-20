@@ -1,11 +1,71 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
+
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String userid = request.getParameter("userid");  //TODO, SORT USING MYSQL QUERIES, DONT USE JAVA
+	String role = request.getParameter("role");
+	String productCat = request.getParameter("cat");
+	String productID = "";
+	String Name = "";
+	String briefDescription = "";
+	String detailedDescription = "";
+	String cPrice = "";
+	String rPrice = "";
+	int stockQuantity = 0;
+	String image = "";
+	String cells = "";
+	String AdminPage = "";
+	String query = "";
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  		}
+        }catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}	
+     Connection conn = null;
+     try{
+        Class.forName("com.mysql.jdbc.Driver");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+        if(conn == null){
+        	out.print("Conn Error");
+        	conn.close();
+        }else{
+        	//out.print("Database has been connected to!<br>");
+        	if(productCat == null){
+        	    query = "SELECT * FROM products";
+        	}else{
+        		query = "SELECT * FROM products WHERE product_cat = '" + productCat + "'";
+        	}
+        	
+    	    Statement st = conn.createStatement();
+    	    ResultSet rs = st.executeQuery(query);
+    	    
+        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+        	    	productID = rs.getString("product_id");
+        	    	Name = rs.getString("name");
+        	    	briefDescription = rs.getString("brief_description");
+        	    	detailedDescription = rs.getString("detailed_description");
+        	    	cPrice =  format.format(rs.getDouble("c_price"));
+        	    	rPrice  =  format.format(rs.getDouble("c_price"));
+        	    	stockQuantity = rs.getInt("stock_quantity");
+        	    	productCat = rs.getString("product_cat");
+        	    	image = rs.getString("image");
+        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p><p class='text-primary font-weight-bold'>$"+rPrice+"</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        }
+        		
+			}}catch(Exception e){
+				out.print(e);
+     		};
+%>
   <title>Digit Games &mdash; All Products</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -141,13 +201,10 @@
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Login</a></li>
+       
+	  		
+                <%=Header%>
 
-                  <li><a href="register.jsp">Register</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
               </div>
             </div>
 
@@ -162,6 +219,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -191,24 +249,24 @@
                   <div class="dropdown mr-1 ml-md-auto">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuOffset"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Categories
+                       Categories
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                      <a class="dropdown-item" href="#">Games</a>
-                      <a class="dropdown-item" href="#">Gaming Gear</a>
-                      <a class="dropdown-item" href="#">Apparel</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaminggear">Gaming Gear</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
                     </div>
                   </div>
                   <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Reference</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="#">Relevance</a>
-                      <a class="dropdown-item" href="#">Name, A to Z</a>
-                      <a class="dropdown-item" href="#">Name, Z to A</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=productCat%>&sort=Relevance">Relevance</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=productCat%>&sort=NameAZ">Name, A to Z</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=productCat%>&sort=NameZA">Name, Z to A</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Price, low to high</a>
-                      <a class="dropdown-item" href="#">Price, high to low</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=productCat%>&sort=PriceLH">Price, low to high</a>
+                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=<%=productCat%>&sort=PriceHL">Price, high to low</a>
                     </div>
                   </div>
                 </div>
@@ -225,21 +283,8 @@
               </div>
             </div>
 
-            <div id="allListings" class="  row mb-5">
-
-              <!-- 1 SAMPLE PRODUCT (CHANGE TO LOOP) -->
-              <div id="searchresults" class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div class="block-4 text-center border">
-                  <figure class="block-4-image">
-                    <a href="#"><img src="images/saddog2.jpg" alt="Image placeholder" class="img-fluid"></a>
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog</a></h3>
-                    <p class="mb-0">sad and depressed</p>
-                    <p class="text-primary font-weight-bold">$5000</p>
-                    <button type="submit" id="productDetail" class="makeOffer">Read more...</button>
-                  </div>
-                </div>
+            <div id="allListings" class="row mb-5">
+              <%=cells %>
               </div>
 
 

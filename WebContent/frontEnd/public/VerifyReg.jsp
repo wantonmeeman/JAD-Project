@@ -12,16 +12,16 @@
   String Error = "";
   String Username = request.getParameter("username"); 
   String Email = request.getParameter("email");
-  String pass1 = request.getParameter("pass"); 
-  String pass2 = request.getParameter("pass2");
+  String Pass1 = request.getParameter("pass"); 
+  String Pass2 = request.getParameter("pass2");
  
-  if(!pass1.equals(pass2)){
+  if(!Pass1.equals(Pass2)){
 	  Error += "PasswordNotEqual-";
   }else{
 	  if(4 > Username.length() && Username.length() > 20){
 		  Error += "UsernameSizeInvalid-";
 	  }
-	  if(4 > pass1.length() && pass1.length() > 20){
+	  if(4 > Pass1.length() && Pass1.length() > 20){
 		  Error += "PasswordSizeInvalid-";
 	  }
   }
@@ -32,7 +32,7 @@
 	  Connection conn = null; 
 	  try{
 	  	Class.forName("com.mysql.jdbc.Driver");
-	  	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+	  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
 	  	}catch(Exception e){
 		    out.print(e);
 	  	}
@@ -40,7 +40,7 @@
 	  		out.print("Conn Error");
 	  		conn.close();
 	  	}else{
-	  	      String query = "INSERT INTO users(username,password,email,role) VALUES('"+Username+"','"+pass1+"','"+Email+"','member')";
+	  	      String query = "INSERT INTO users(username,password,email,role) VALUES('"+Username+"','"+Pass1+"','"+Email+"','member')";
 	  	      Statement st = conn.createStatement();
 	  	      int rs = st.executeUpdate(query);
 	  	       if(rs != 1){

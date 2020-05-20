@@ -5,7 +5,16 @@
 
 <head>
 <%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
+	String role = request.getParameter("role");
+	String AdminPage = "";
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  	}}catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}%>
   <title>Digit Games &mdash; Categories</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -68,19 +77,16 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Login</a></li>
+       
+	  		
+                <%=Header%>
 
-                  <li><a href="register.jsp">Register</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
               </div>
             </div>
 
@@ -95,6 +101,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -122,7 +129,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-                  <a class="block-2-item" href="cat-listings.jsp">
+                  <a class="block-2-item" href="cat-listings.jsp?cat=Games&userid=<%=userid%>&role=<%=role%>">
                     <figure class="image">
                       <img src="images/games/borderlands3.jpg" alt="" class="img-fluid">
                     </figure>
@@ -133,7 +140,7 @@
                   </a>
                 </div>
                 <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
-                  <a class="block-2-item" href="cat-listings.jsp">
+                  <a class="block-2-item" href="cat-listings.jsp?cat=Gaminggear&userid=<%=userid%>&role=<%=role%>">
                     <figure class="image">
                       <img src="images/gear/logitech_headset.jpg" alt="" class="img-fluid">
                     </figure>
@@ -144,7 +151,7 @@
                   </a>
                 </div>
                 <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
-                  <a class="block-2-item" href="cat-listings.jsp">
+                  <a class="block-2-item" href="cat-listings.jsp?cat=Apparel&userid=<%=userid%>&role=<%=role%>">
                     <figure class="image">
                       <img src="images/apparel/razer_clothing.jpg" alt="" class="img-fluid">
                     </figure>

@@ -1,11 +1,64 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="java.sql.*" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String userid = request.getParameter("userid");  
+	String role = request.getParameter("role");
+	String AdminPage = "";
+	String productID = "";
+	String Name = "";
+	String briefDescription = "";
+	String detailedDescription = "";
+	String cPrice = "";
+	String rPrice = "";
+	int stockQuantity = 0;
+	String productCat = "";
+	String image = "";
+	String rows = "";
+	int RowCount;
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  	}}catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}
+        Connection conn = null;
+        try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	}catch(Exception e){
+			    out.print(e);
+		  	}
+		  	if(conn == null){
+		  		out.print("Conn Error");
+		  		conn.close();
+		  	}else{
+		  		  String query = "SELECT * FROM products";
+		  		  Statement st = conn.createStatement();
+			      ResultSet rs = st.executeQuery(query);
+		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        	    	productID = rs.getString("product_id");
+		        	    	Name = rs.getString("name");
+		        	    	briefDescription = rs.getString("brief_description");
+		        	    	detailedDescription = rs.getString("detailed_description");
+		        	    	cPrice =  format.format(rs.getDouble("c_price"));
+		        	    	rPrice  =  format.format(rs.getDouble("r_price"));
+		        	    	stockQuantity = rs.getInt("stock_quantity");
+		        	    	productCat = rs.getString("product_cat");
+		        	    	image = rs.getString("image");
+		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='#'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        }
+			}
+		  	
+
+%>
   <title>Digit Games &mdash; Categories</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -88,13 +141,10 @@
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Edit Profile</a></li>
+       
+	  		
+                <%=Header%>
 
-                  <li><a href="register.jsp" class="btn btn-sm btn-secondary">Logout</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
               </div>
             </div>
 
@@ -109,6 +159,7 @@
             <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
             <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <%=AdminPage %>
           </ul>
         </div>
       </nav>
@@ -132,7 +183,7 @@
 
         <div class="col-md-12 mb-5 d-flex flex-row-reverse">
           <div class="p-2">
-            <a href="addlisting.jsp" class="btn btn-sm btn-info">Create New Product</a>
+            <a href="addlisting.jsp?userid=<%=userid%>&role=<%=role%>" class="btn btn-sm btn-info">Create New Product</a>
           </div>
         </div>
 
@@ -149,57 +200,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Logitech G331</td>
-                <td>$80</td>
-                <td>$100</td>
-                <td>300</td>
-                <td>
-                  <div class="row">
-                    <div class="col-md-8">
-                      <a href="#"><span class="icon icon-pencil"></span></a>
-                    </div>
-                    <div class="col-md-2">
-                      <a href="#" class="deleteProduct"><span class="icon icon-trash"></span></a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Borderlands 3</td>
-                <td>$50</td>
-                <td>$80</td>
-                <td>1000</td>
-                <td>
-                  <div class="row">
-                    <div class="col-md-8">
-                      <a href="#"><span class="icon icon-pencil"></span></a>
-                    </div>
-                    <div class="col-md-2">
-                      <a href="#"><span class="icon icon-trash"></span></a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Razer T-Shirt</td>
-                <td>$50</td>
-                <td>$70</td>
-                <td>200</td>
-                <td>
-                  <div class="row">
-                    <div class="col-md-8">
-                      <a href="#"><span class="icon icon-pencil"></span></a>
-                    </div>
-                    <div class="col-md-2">
-                      <a href="#"><span class="icon icon-trash"></span></a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+              <%=rows%>
             </tbody>
           </table>
         </div>

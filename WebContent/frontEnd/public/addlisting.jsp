@@ -3,7 +3,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
+	String role = request.getParameter("role");
+	//Still todo: Edit page
+	//image path?
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
+        		Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+	  	}}catch(Exception e){// if no id or role is detected
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
   <meta charset="utf-8">
@@ -47,13 +56,10 @@
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-                <ul>
-                  <li><a href="loginpage.jsp">Login</a></li>
+       
+	  		
+                <%=Header%>
 
-                  <li><a href="register.jsp">Register</span></a></li>
-
-                  <li id="logoutButton"></li>
-                </ul>
               </div>
             </div>
 
@@ -92,7 +98,7 @@
 
           <div class="col-md-12">
 
-            <form action="#" method="post">
+            <form action="AddProduct.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
@@ -101,8 +107,8 @@
                   <div class="form-group row">
 
                     <div class="col-md-6">
-                      <label for="title" class="text-black">Title <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="title" name="title" placeholder="Title of Product">
+                      <label for="title" class="text-black">Name <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="title" name="name" placeholder="Title of Product">
                     </div>
 
                   </div>
@@ -132,7 +138,7 @@
 
                     <div class="col-md-6">
                       <label for="stockQty" class="text-black">Stock Quantity <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="stockQty" name="stockQty" placeholder="Quantity">
+                      <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" placeholder="Quantity">
                     </div>
 
                   </div>
@@ -161,7 +167,7 @@
 
                     <div class="col-md-8">
                       <label for="fullDesc" class="text-black">Full Description: </label>
-                      <textarea name="fullDesc" id="fullDesc" cols="30" rows="10" class="form-control"
+                      <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control"
                         placeholder="Detailed Description of Product"></textarea>
                     </div>
 
