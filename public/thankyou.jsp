@@ -15,9 +15,13 @@
               } else if (role.equals("member")) {
                   Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }}catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}%>
-  <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
+        		  Header = "<div class='site-top-icons'>" //This is to make it neater
+        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+        	                 + "<li id='logoutButton'></li></ul></div>";
+        	  }%>
+  <title>Digit Games&mdash;</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -36,9 +40,6 @@
   <link rel="stylesheet" href="css/style.css">
 
 </head>
-<form action="VerifyChange.jsp" method="post" class="test">
-<input type="text"></input>
-<input type=submit></input></form>
 
 <body>
 
@@ -49,22 +50,18 @@
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-              <form action="" class="site-block-top-search">
-                <span class="icon icon-search2"></span>
-                <input type="text" class="form-control border-0" placeholder="Search">
-              </form>
+              
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Snapsell</a>
+                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-       
-	  		
+
                 <%=Header%>
 
               </div>
@@ -102,7 +99,7 @@
           <div class="col-md-12 text-center">
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Thank you!</h2>
-            <p class="lead mb-5">You order was successfuly completed.</p>
+            <p class="lead mb-5">Your order has been successfully completed.</p>
             <p><a href="shop.jsp" class="btn btn-sm btn-primary">Back to shop</a></p>
           </div>
         </div>

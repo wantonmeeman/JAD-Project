@@ -65,7 +65,9 @@ String role = request.getParameter("role");
 String email = "";
 String username = "";
 String AdminPage = "";
-
+String phonenumber = "";
+String lastname = "";
+String firstname = "";
 String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 try{
 	if(role.equals("admin")){ 
@@ -74,8 +76,12 @@ try{
       } else if (role.equals("member")) {
           Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
 	  }}catch(Exception e){// if no id or role is detected
- Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-}
+		  Header = "<div class='site-top-icons'>" //This is to make it neater
+	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                 + "<li id='logoutButton'></li></ul></div>";
+	  }
 
 Connection conn = null; 
 try{
@@ -94,6 +100,9 @@ try{
 	    while (rs.next()) {
 	    	email = rs.getString("email");
 	    	username = rs.getString("username");
+	    	firstname = rs.getString("firstname");
+	    	lastname = rs.getString("lastname");
+	    	phonenumber = rs.getString("phonenumber");
 	    }
 	}
 
@@ -240,11 +249,11 @@ try{
                   <div class="form-group row">
                     <div class="col-md-6">
                       <label for="firstName" class="text-black">First Name <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="firstName" name="firstName" value="Alastair">
+                      <input type="text" class="form-control" id="firstName" name="firstname" value="<%=firstname%>">
                     </div>
                     <div class="col-md-6">
                       <label for="lastName" class="text-black">Last Name <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="lastName" name="lastName" value="Tan">
+                      <input type="text" class="form-control" id="lastName" name="lastname" value="<%=lastname%>">
                     </div>
                   </div>
 
@@ -257,7 +266,7 @@ try{
 
                     <div class="col-md-5">
                       <label for="email" class="text-black">Phone Number <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="email" name="email" placeholder="" value="91234567">
+                      <input type="text" class="form-control" id="email" name="phonenumber" placeholder="" value="<%=phonenumber%>">
                     </div>
                   </div>
 

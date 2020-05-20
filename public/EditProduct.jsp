@@ -22,13 +22,13 @@
   String productCat = request.getParameter("productCat");
   String briefDesc = request.getParameter("briefDesc");
   String detailedDesc = request.getParameter("detailedDesc");
-
+  String image = request.getParameter("image");
   //What else to add? try to add image path later maybe?
  if( name.equals("") || c_price.equals("") || r_price.equals("") || stockQuantity.equals("") || productCat.equals("")){
-	 response.sendRedirect("Editlisting.jsp?Err=NullError&userid="+userid+"&role="+role);
+	 response.sendRedirect("Editlisting.jsp?Err=NullError&userid="+userid+"&role="+role+"&productID="+productID);
  }else{
  	if( Double.parseDouble(c_price) < 0 || Double.parseDouble(r_price) < 0 || Double.parseDouble(stockQuantity) < 0){
-	 	response.sendRedirect("Editlisting.jsp?Err=NegativeError&userid="+userid+"&role="+role);
+	 	response.sendRedirect("Editlisting.jsp?Err=NegativeError&userid="+userid+"&role="+role+"&productID="+productID);
  	}else{
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
@@ -41,7 +41,7 @@
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "UPDATE products SET name= '"+name+"', brief_description='"+briefDesc+"', detailed_description='"+detailedDesc+"', c_price='"+c_price+"', r_price='"+r_price+"', stock_quantity='"+stockQuantity+"', product_cat='"+productCat+"' WHERE product_id= '"+productID+"'"; 
+		  		  String query = "UPDATE products SET name= '"+name+"', brief_description='"+briefDesc+"', detailed_description='"+detailedDesc+"', c_price='"+c_price+"', r_price='"+r_price+"', stock_quantity='"+stockQuantity+"', product_cat='"+productCat+"',image='"+image+"' WHERE product_id= '"+productID+"'"; 
 		  		  Statement st = conn.createStatement();
 			      int rs = st.executeUpdate(query);
 			      conn.close();

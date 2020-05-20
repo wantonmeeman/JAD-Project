@@ -21,6 +21,23 @@
 	String image = "";
 	String rows = "";
 	int RowCount;
+	String Error = request.getParameter("Err");
+	
+	try{
+	if(Error.equals("EditSuccess")){
+		out.print("<script>alert('Edit was Successful')</script>");
+	}
+	if(Error.equals("DelSuccess")){
+		out.print("<script>alert('Deleting was Successful')</script>");
+	}
+	if(Error.equals("AddSuccess")){
+		out.print("<script>alert('Addition was Successful')</script>");
+	}
+	}catch(Exception e){
+		
+	}
+	
+
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
@@ -29,8 +46,12 @@
               } else if (role.equals("member")) {
                   Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }}catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}
+        		  Header = "<div class='site-top-icons'>" //This is to make it neater
+        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+        	                 + "<li id='logoutButton'></li></ul></div>";    	
+        	  }
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
@@ -56,7 +77,7 @@
 		        	    	stockQuantity = rs.getInt("stock_quantity");
 		        	    	productCat = rs.getString("product_cat");
 		        	    	image = rs.getString("image");
-		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='DeleteListing.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-trash'></span></a></div></div></td></tr>";
 		        }
 			}
 		  	

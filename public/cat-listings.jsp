@@ -22,7 +22,8 @@
 	String image = "";
 	String cells = "";
 	String AdminPage = "";
-	
+	String CatSearchquery = "";
+	String search = request.getParameter("search");
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
@@ -32,8 +33,12 @@
                   Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }
         }catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}	
+        	 Header = "<div class='site-top-icons'>" //This is to make it neater
+                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+                     + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                     + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                     + "<li id='logoutButton'></li></ul></div>";    	
+        }	
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
@@ -43,25 +48,27 @@
         	out.print("Conn Error");
         	conn.close();
         }else{
-        	//out.print("Database has been connected to!<br>");
+        	if(!(search == null || search.equals("") || search.equals(" "))){
+           		CatSearchquery = "AND name LIKE '%"+search+"%'";
+           	}
         	String query = "";
         	if(sort == null){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'";
+        		query = "SELECT * FROM products WHERE product_cat = ?"+CatSearchquery;
         	}else if(sort.equals("AZ")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name"+CatSearchquery;
         	}else if(sort.equals("ZA")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name DESC";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name DESC"+CatSearchquery;
         	}else if(sort.equals("PLH")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price"+CatSearchquery;
         	}else if(sort.equals("PHL")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price DESC";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price DESC"+CatSearchquery;
         	}
-        	    
+        	   
 				
-        	    Statement st = conn.createStatement();
-        	    
-        	    ResultSet rs = st.executeQuery(query);
-
+        	    PreparedStatement st = conn.prepareStatement(query); 
+        	    st.setString(1,cat);
+				ResultSet rs =  st.executeQuery();
+				
         		while(rs.next()){				//rs.next() returns true if there is a row below the current one, and moves to it when called.
         	    	productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
@@ -196,10 +203,13 @@
 
             <div class="row">
               <div class="col-md-6">
-                <form action="" class="">
+                <form action="cat-listings.jsp" class="">
                   <span class="icon icon-search2"></span>
-                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search">
-                  <button type="button" onclick="search()" id="searchbutton">Search</button>
+                  <input type="hidden" name="userid" value="<%=userid%>">
+                  <input type="hidden" name="role" value="<%=role%>">
+                  <input type="hidden" name="cat" value="<%=productCat%>">
+                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">
+                  <button type="submit" onclick="" id="searchbutton">Search</button>
                 </form>
               </div>
             </div>

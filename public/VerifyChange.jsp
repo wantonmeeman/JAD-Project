@@ -14,6 +14,9 @@
   String Error = "";
   String Username = request.getParameter("username"); 
   String Email = request.getParameter("email");
+  String firstName = request.getParameter("firstname");
+  String lastName = request.getParameter("lastname");
+  String phoneNumber = request.getParameter("phonenumber");
   String role = request.getParameter("role");
   String oldPassword = request.getParameter("oldPw");
   String newPassword1 = request.getParameter("newPw");
@@ -38,15 +41,16 @@
 			  		out.print("Conn Error");
 			  		conn.close();
 			  	}else{
-			  		  String query = "UPDATE users SET Email = '"+Email+"'WHERE user_id ="+userid; //Check if old password is equal to new password.Do we need to change Username?
-			  		  Statement st = conn.createStatement();
+			  		  String query = "UPDATE users SET email = '"+Email+"',  firstname = '"+firstName+"', lastname = '"+lastName+"', phonenumber = '"+phoneNumber+"' WHERE user_id = "+userid; //Check if old password is equal to new password.Do we need to change Username?
+			  		  out.print(query);
+			  	      Statement st = conn.createStatement();
 				      int rs = st.executeUpdate(query);
-				      if(rs == 1){
+				     if(rs == 1){
 				      response.sendRedirect("profile.jsp?Err=ProfileSuccess&userid="+userid+"&role="+role);
 				      conn.close();
-				      }else{
-				    	  out.print("Conn Error");
-					  		conn.close();
+				     }else{
+				      out.print("Conn Error");
+			 		conn.close();
 				      }
 				}
 
