@@ -51,7 +51,6 @@ try{
 		out.print("Conn Error");
 		conn.close();
 	}else{
-		//out.print("Database has been connected to!<br>");
 
 	      String query = "SELECT * FROM users";
 
@@ -65,7 +64,6 @@ try{
 	    	  String username = rs.getString("username");
 	    	  int user_id = rs.getInt("user_id");
 	    	  String role = rs.getString("role");
-	    	  out.println("<table><tr><th>Password:" + password + "</th><th>userName:" +username +"</th></table>");
 	    	  if(input_username.equals(username) && input_password.equals(password)){
 					response.sendRedirect("index.jsp?userid="+user_id+"&role="+role);
 				}
