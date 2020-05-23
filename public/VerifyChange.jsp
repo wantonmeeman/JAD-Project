@@ -18,10 +18,10 @@
   String lastName = request.getParameter("lastname");
   String phoneNumber = request.getParameter("phonenumber");
   String role = request.getParameter("role");
+  String userid = request.getParameter("userid");
   String oldPassword = request.getParameter("oldPw");
   String newPassword1 = request.getParameter("newPw");
   String newPassword2 = request.getParameter("reenterPw");
-  String userid = request.getParameter("userid");
   
   if(oldPassword == null){//EDIT PROFILE
 	  if(4 > Username.length() || Username.length() > 20){

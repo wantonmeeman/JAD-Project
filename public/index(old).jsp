@@ -1,90 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ page import="java.sql.*" %>
- <%@page import="java.text.DecimalFormat" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-<%  
+<%  HttpSession Session = request.getSession();
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
-	String Err = request.getParameter("Err");
-	String name = "";
-	String r_price = "";
-	String image = "";
-	String rows = "";
-	DecimalFormat format = new DecimalFormat("#0.00"); 
-	HttpSession Session = request.getSession();
-	String quantity = request.getParameter("quantity");
-	String productID = (String)Session.getAttribute("productID");
-	double total = 0;
-	int[] productArr = {};
-	int[] quantityArr = {};
-	//Connecting to Database
-	Connection conn = null;
-   	if(quantity != null){
-			//Creating new cart or adding to cart 
-			if(Session.getAttribute("productArr") == null){	//Creating new cart
-				productArr = new int[10];
-				quantityArr = new int[10];
-				productArr[0] = Integer.parseInt(productID);
-				quantityArr[0] = Integer.parseInt(quantity);
-				Session.setAttribute("productArr", productArr);
-				Session.setAttribute("quantityArr",quantityArr);
-			}else{
-				for(int x = 0;((int[])Session.getAttribute("productArr")).length > x;x++){ //Adding to cart
-					productArr = (int[])Session.getAttribute("productArr");
-					quantityArr = (int[])Session.getAttribute("quantityArr");
-					if(((int[])Session.getAttribute("quantityArr"))[x] == 0){
-						productArr[x] = Integer.parseInt(productID);
-						quantityArr[x] = Integer.parseInt(quantity);
-						x = 50;//stops the for loop
-					}
-				}
-				Session.setAttribute("productArr", productArr);
-				Session.setAttribute("quantityArr",quantityArr);	
-			}
-   	}	
-	//Connecting to Database
-	conn = null;
-	quantityArr = ((int[])Session.getAttribute("quantityArr"));
-	productArr = ((int[])Session.getAttribute("productArr"));
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-    }catch(Exception e){
-
-  	}
-    
-    for(int x = 0;productArr.length > x;x++){//sorting to find duplicates
-    	for(int y = x+1;productArr.length > y;y++){
-    	    if(productArr[x] == productArr[y] && productArr[x] != 0){
-    	    		productArr[x] = 0; //"Deletes it"
-    	    		quantityArr[y] += quantityArr[x];//Adds it to the first instance
-    	    }
-        }
-    }
-    if(conn == null){
-  		out.print("Conn Error");
-  		conn.close();
-  	}else{
-		for(int x = 0;productArr.length>x;x++){
-			if(((int[])Session.getAttribute("productArr"))[x] != 0){
-			  	String query = "SELECT * FROM products WHERE product_id ="+productArr[x];
-			  	Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(query);
-					while(rs.next()){
-				    	name = rs.getString("name");
-				    	r_price = format.format(rs.getDouble("r_price"));
-				    	image = rs.getString("image");
-					}//This below makes tables
-				rows += "<tr><td class='product-thumbnail'><img src='"+image+"' alt='Image' class='img-fluid'></td><td class='product-name'><h2 class='h5 text-black'>"+name+"</h2></td><td>$"+r_price+"</td><td><div class='input-group mb-3' style='max-width: 120px;'><input readonly type='number' name='quantity' value="+quantityArr[x]+"></input></div></td><td>$"+format.format(((double)quantityArr[x])*Double.parseDouble(r_price))+"</td></tr>";
-				total += quantityArr[x] * Double.parseDouble(r_price);//For prices
-			}
-		}	
-		conn.close();
-	}
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
@@ -101,11 +21,14 @@
                             + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
                             + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
-             }}catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}
-    	%>
-  <title>Digit Games &mdash; Shopping Cart</title>
+        	  }}catch(Exception e){// if no id or role is detected
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";	
+        	                 
+        	  }
+      %>
+<head>
+
+  <title>Digit Games &mdash; Home</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -118,21 +41,21 @@
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
+  <link rel="stylesheet" href="css/myoverride.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 
   <link rel="stylesheet" href="css/aos.css">
-
   <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
-
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
       <div class="site-navbar-top">
         <div class="container">
           <div class="row align-items-center">
-
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
 
             </div>
@@ -157,6 +80,8 @@
       </div>
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
+
+          <!-- Navigation Bar -->
           <ul class="site-menu js-clone-nav d-none d-md-block">
             <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
             <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
@@ -165,88 +90,122 @@
             <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
             <%=AdminPage %>
           </ul>
+
         </div>
       </nav>
     </header>
 
-    <div class="bg-light py-3">
+    <div class="site-blocks-cover" style="background-image: url(images/razer_background3.jpg);" data-aos="fade">
       <div class="container">
-        <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Cart</strong></div>
+        <div class="row align-items-start align-items-md-center justify-content-end">
+          <div class="col-md-5 text-center text-md-left pt-5 pt-md-0">
+            <h1 class="mb-2 text-light">Up to 70% Off!</h1>
+            <div class="intro-text text-center text-md-left">
+              <p class="mb-4 text-secondary">Terms and Conditions apply. While stock lasts. </p>
+              <p>
+                <a href="categories.jsp" class="btn btn-sm btn-dark">Shop Now</a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="site-section">
+    <div class="site-section site-section-sm site-blocks-1">
       <div class="container">
-        <div class="row mb-5">
-          <form class="col-md-12" method="post">
-            <div class="site-blocks-table">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th class="product-thumbnail">Image</th>
-                    <th class="product-name">Product</th>
-                    <th class="product-price">Price</th>
-                    <th class="product-quantity">Quantity</th>
-                    <th class="product-total">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <%=rows %>
-                </tbody>
-              </table>
+        <div class="row">
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-truck"></span>
             </div>
-          </form>
+            <div class="text">
+              <h2 class="text-uppercase">Free Shipping</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-refresh2"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Free Returns</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon mr-4 align-self-start">
+              <span class="icon-help"></span>
+            </div>
+            <div class="text">
+              <h2 class="text-uppercase">Customer Support</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan
+                tincidunt fringilla.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="site-section block-3 site-blocks-2 bg-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-10 site-section-heading text-center pt-4">
+
+            <h2>Featured Products</h2>
+
+            <div id="showListings" class="row">
+
+              <!-- CAN BE LOOPED -->
+              <div class="item col-lg-4">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
+                    <p class="mb-0">Description: very sad</p>
+                    <p class="testp text-primary font-weight-bold">Price: $10</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item col-lg-4">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
+                    <p class="mb-0">Description: very sad</p>
+                    <p class="testp text-primary font-weight-bold">Price: $10</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="item col-lg-4">
+                <div class="block-4 text-center">
+                  <figure class="block-4-image">
+                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
+                  </figure>
+                  <div class="block-4-text p-4">
+                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
+                    <p class="mb-0">Description: very sad</p>
+                    <p class="testp text-primary font-weight-bold">Price: $10</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
         </div>
 
         <div class="row">
-          <div class="col-md-6">
-            <div class="row mb-5">
-              <div class="col-md-6 mb-3 mb-md-0">
-                <a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>'><button class="btn btn-primary btn-sm btn-block">Clear Cart</button></a>
-              </div>
-              <div class="col-md-6">
-                <a href='all-listings.jsp?userid=<%=userid%>&role=<%=role%>'><button class="btn btn-outline-primary btn-sm btn-block" >Continue Shopping</button></a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <label class="text-black h4" for="coupon">Coupon</label>
-                <p>Enter your coupon code if you have one.</p>
-              </div>
-              <div class="col-md-8 mb-3 mb-md-0">
-                <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
-              </div>
-              <div class="col-md-4">
-                <button class="btn btn-primary btn-sm">Apply Coupon</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 pl-5">
-            <div class="row justify-content-end">
-              <div class="col-md-7">
-                <div class="row">
-                  <div class="col-md-12 text-right border-bottom mb-5">
-                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                  </div>
-                </div>
-                <div class="row mb-5">
-                  <div class="col-md-6">
-                    <span class="text-black">Total</span>
-                  </div>
-                  <div class="col-md-6 text-right">
-                    <strong class="text-black">$<%=total %></strong>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <button class="btn btn-primary btn-lg py-3 btn-block" onclick="window.location='checkout.jsp?userid=<%=userid%>&role=<%=role%>'">Proceed To Checkout</button>
-                  </div>
-                </div>
-              </div>
+          <div class="col-md-12">
+            <div class="row" id="row">
             </div>
           </div>
         </div>
@@ -315,7 +274,9 @@
         </div>
       </div>
     </footer>
+
   </div>
+
 
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>

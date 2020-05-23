@@ -6,7 +6,10 @@
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0"); 
+<%  
+	HttpSession Session = request.getSession();
+	
+	DecimalFormat format = new DecimalFormat("#0"); 
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String productID = request.getParameter("productid");
@@ -19,20 +22,36 @@
 	String productCat = "";
 	String image = "";
 	String AdminPage = "";
-	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+    String disabled = ""; 
+    String Err = request.getParameter("Err");
+    
+    try{
+		if(Err.equals("OverStk")){
+			out.print("<script>alert('Amount Specified is more than stock quantity!')</script>");
+		}
+		if(Err.equals("Invalid")){
+			out.print("<script>alert('Amount Specified is Invalid!')</script>");
+		}
+    }catch(Exception e){
+    	
+    }
+	try{
+		if(role.equals("admin")){ 
+            AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+            Header = "<div class='site-top-icons'>"
+                    + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                      + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                      + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li id='logoutButton'></li></ul></div>";              
+         } else if (role.equals("member")) {
+        	  Header = "<div class='site-top-icons'>"
+                      + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                        + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                        + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<li id='logoutButton'></li></ul></div>";    
         	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<div class='site-top-icons'>" //This is to make it neater
-        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-        	                 + "<li id='logoutButton'></li></ul></div>";
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	   }
         Connection conn = null;
         try{
@@ -58,10 +77,14 @@
           	    		stockQuantity = rs.getInt("stock_quantity");
           	    		productCat = rs.getString("product_cat");
           	    		image = rs.getString("image");
+          	    		if(stockQuantity <= 0){
+          	    			disabled = "disabled";
+          	    		}
             		}
             }
+        Session.setAttribute("productID",productID);
         }catch(Exception e){
-        	out.print(e);
+        	
         }
         int discountInt, roundDiscount = 0;
     	
@@ -162,14 +185,14 @@
                 $<%=cPrice %>   (<%=roundDiscount %>% Off)</p></strong>
 
 	
-            <form action="cart.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
+            <form action="VerifyQty.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
               <div class="mb-5 row">
                 <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
                 	
                   <input type="number" placeholder=1 name="quantity" style="margin-top: 4px;margin-bottom: 50px;margin-right:30px;"></input>
                   <input type="hidden" name="productid"></input>
               </div>
-              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;">Add To Cart</a></p>
+              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;" <%=disabled %>>Add To Cart</a></p>
             </form>
           </div>
         </div>

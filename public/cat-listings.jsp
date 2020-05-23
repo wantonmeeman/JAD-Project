@@ -1,14 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.*" %>
- <%@page import="java.text.DecimalFormat" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 <%  DecimalFormat format = new DecimalFormat("#0.00"); 
 	String sort = request.getParameter("sort");
-	String userid = request.getParameter("userid");  //TODO, SORT USING MYSQL QUERIES, DONT USE JAVA
+	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String cat = request.getParameter("cat");
 	String productID = "";
@@ -28,16 +28,20 @@
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+                Header = "<div class='site-top-icons'>"
+                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li id='logoutButton'></li></ul></div>";              
+             } else if (role.equals("member")) {
+            	  Header = "<div class='site-top-icons'>"
+                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li id='logoutButton'></li></ul></div>";     
         	  }
         }catch(Exception e){// if no id or role is detected
-        	 Header = "<div class='site-top-icons'>" //This is to make it neater
-                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-                     + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                     + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                     + "<li id='logoutButton'></li></ul></div>";    	
+        	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         }	
      Connection conn = null;
      try{
@@ -75,12 +79,13 @@
         	    	briefDescription = rs.getString("brief_description");
         	    	detailedDescription = rs.getString("detailed_description");
         	    	cPrice =  format.format(rs.getDouble("c_price"));
-        	    	rPrice  =  format.format(rs.getDouble("c_price"));
+        	    	rPrice  =  format.format(rs.getDouble("r_price"));
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p><p class='text-primary font-weight-bold'>$"+rPrice+"</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         }
+        		conn.close();
 		}}catch(Exception e){
 			out.print(e);
      	};
