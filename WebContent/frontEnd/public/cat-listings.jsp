@@ -22,6 +22,14 @@
 	String image = "";
 	String cells = "";
 	String AdminPage = "";
+	String CatSearchquery = "";
+	String search = request.getParameter("search");
+	
+	int discountInt = 0; 
+	int roundDiscount = 0;
+	double discount = 0.00;
+	String discountMsg = "";
+	String priceMsg = "";
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
@@ -29,15 +37,15 @@
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }
         }catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}	
+        	 Header = "<div class='site-top-icons'>" //This is to make it neater
+                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+                     + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                     + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                     + "<li id='logoutButton'></li></ul></div>";    	
+        }	
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
@@ -47,36 +55,51 @@
         	out.print("Conn Error");
         	conn.close();
         }else{
-        	//out.print("Database has been connected to!<br>");
+        	if(!(search == null || search.equals("") || search.equals(" "))){
+           		CatSearchquery = "AND name LIKE '%"+search+"%'";
+           	}
         	String query = "";
         	if(sort == null){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'";
+        		query = "SELECT * FROM products WHERE product_cat = ?"+CatSearchquery;
         	}else if(sort.equals("AZ")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name"+CatSearchquery;
         	}else if(sort.equals("ZA")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY name DESC";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name DESC"+CatSearchquery;
         	}else if(sort.equals("PLH")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price"+CatSearchquery;
         	}else if(sort.equals("PHL")){
-        		query = "SELECT * FROM products WHERE product_cat = '"+cat+"'ORDER BY c_price DESC";
+        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price DESC"+CatSearchquery;
         	}
-        	    
+        	   
 				
-        	    Statement st = conn.createStatement();
-        	    
-        	    ResultSet rs = st.executeQuery(query);
-
+        	    PreparedStatement st = conn.prepareStatement(query); 
+        	    st.setString(1,cat);
+				ResultSet rs =  st.executeQuery();
+				
         		while(rs.next()){				//rs.next() returns true if there is a row below the current one, and moves to it when called.
         	    	productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
         	    	briefDescription = rs.getString("brief_description");
         	    	detailedDescription = rs.getString("detailed_description");
         	    	cPrice =  format.format(rs.getDouble("c_price"));
-        	    	rPrice  =  format.format(rs.getDouble("c_price"));
+        	    	rPrice  =  format.format(rs.getDouble("r_price"));
+      	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
+      	        	discountInt = (int)Math.round(discount);
+      	        	roundDiscount = (discountInt + 4) / 5 * 5;
+      	        	
+      	        	if (roundDiscount != 0) {
+      	        		priceMsg = "<s>$ " + rPrice + "</s> $" + cPrice;
+      	        		discountMsg = " (" + roundDiscount + "% Off)";
+      	        	} else if (roundDiscount == 0){
+      	        		priceMsg = "$" + rPrice;
+      	        		discountMsg = "";
+      	        	}
+      	        	
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
-        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p><p class='text-primary font-weight-bold'>$"+rPrice+"</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
+        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         }
 		}}catch(Exception e){
 			out.print(e);
@@ -200,10 +223,13 @@
 
             <div class="row">
               <div class="col-md-6">
-                <form action="" class="">
+                <form action="cat-listings.jsp" class="">
                   <span class="icon icon-search2"></span>
-                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search">
-                  <button type="button" onclick="search()" id="searchbutton">Search</button>
+                  <input type="hidden" name="userid" value="<%=userid%>">
+                  <input type="hidden" name="role" value="<%=role%>">
+                  <input type="hidden" name="cat" value="<%=productCat%>">
+                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">
+                  <button type="submit" onclick="" id="searchbutton">Search</button>
                 </form>
               </div>
             </div>

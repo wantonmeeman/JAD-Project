@@ -1,25 +1,136 @@
+<%@page import="java.util.*"%>
+<%@ page import="java.sql.*" %>
+<%@page import="java.text.DecimalFormat" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
-<%  String userid = request.getParameter("userid");
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
+	String productID = "";
+	String Name = "";
+	String briefDescription = "";
+	String detailedDescription = "";
+	String cPrice = "";
+	String rPrice = "";
+	int stockQuantity = 0;
+	int numberOfProd = 0;
+	String productCat = "";
+	String imageUrl = "";
+	String query = "";
+	String featuredProd = "";
+	
+	int rdmProdArr[] = new int [3];
+	int discountInt = 0; 
+	int roundDiscount = 0;
+	double discount = 0.00;
+	String discountMsg = "";
+	String priceMsg = "";
+	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
-              		
-        	  }}catch(Exception e){ // if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}
+        		  Header = "<div class='site-top-icons'>" //This is to make it neater
+     	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+     	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+     	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+     	                 + "<li id='logoutButton'></li></ul></div>";    	
+     	                 
+        	  }}catch(Exception e){// if no id or role is detected
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        	                 
+        	  }
+        Connection conn = null;
+        
+        try{
+           Class.forName("com.mysql.jdbc.Driver");
+         	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+           // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+           
+         	if(conn == null){
+		  		out.print("Conn Error");
+		  		conn.close();
+		  		
+		  	} else {
+		  		String query1 = "SELECT COUNT(*) FROM products";
+		  		Statement st1 = conn.createStatement();
+				ResultSet rs1 = st1.executeQuery(query1);
+				while(rs1.next()) {
+					numberOfProd = rs1.getInt("COUNT(*)");
+					// System.out.println("total number:" + numberOfProd);
+				} // while
+				
+				
+		        ArrayList<Integer> rdmNoArr = new ArrayList<Integer>();
+		        for (int i = 1; i <= numberOfProd; i++) {
+		        	rdmNoArr.add(new Integer(i));
+		        }
+		        
+		        Collections.shuffle(rdmNoArr);
+		        for (int i = 0; i < 3; i++) {
+		            rdmProdArr[i] = rdmNoArr.get(i);
+		            
+		        }
+					
+
+				
+				for (int i = 0; i < 3; i++) {			// Loop for 3 times (3 products)
+					
+
+					query = "SELECT * FROM products WHERE product_id = " + rdmProdArr[i];
+					Statement st = conn.createStatement();
+					ResultSet rs = st.executeQuery(query);
+					
+	        		while (rs.next()) {
+	        			productID = rs.getString("product_id");
+	        	    	Name = rs.getString("name");
+	        	    	briefDescription = rs.getString("brief_description");
+	        	    	detailedDescription = rs.getString("detailed_description");
+	        	    	cPrice =  format.format(rs.getDouble("c_price"));
+	        	    	rPrice  =  format.format(rs.getDouble("r_price"));
+          	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
+          	        	discountInt = (int)Math.round(discount);
+          	        	roundDiscount = (discountInt + 4) / 5 * 5;
+          	        	
+          	        	if (roundDiscount != 0) {
+          	        		priceMsg = "<s>$ " + rPrice + "</s> $" + cPrice;
+          	        		discountMsg = " (" + roundDiscount + "% Off)";
+          	        	} else if (roundDiscount == 0){
+          	        		priceMsg = "$" + rPrice;
+          	        		discountMsg = "";
+          	        	}
+          	        	
+	        	    	stockQuantity = rs.getInt("stock_quantity");
+	        	    	productCat = rs.getString("product_cat");
+	        	    	imageUrl = rs.getString("image");
+	        	    	
+	        	    	featuredProd += "<div class='item col-lg-4'>"
+								+ "<div class='block-4 text-center'>"
+								+ "<figure class='block-4-image'>"
+								+ "<a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src=\"" + imageUrl + "\" alt=\"Image placeholder\" class=\"img-fluid\"></a>"
+								+ "</figure>"
+								+ "<div class=\"block-4-text p-4\">"
+								+ "<h3 id=\"listingTitle\">"
+								+ "<a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>" + Name + "</a>"
+								+ "</h3>"
+								+ "<p class=\"mt-3 mb-0\">" + briefDescription + "</p>"
+								+ "<p class=\"text-primary font-weight-bold mt-4\">Price: </text>" + priceMsg + discountMsg + "</p>"
+								+ "</div>"
+								+ "</div>"
+								+ "</div>";
+		        	} // while
+				} // for
+			} // else
+        } catch (Exception e) {
+        	
+        }
+
+        
       %>
 <head>
 
@@ -152,46 +263,12 @@
             <h2>Featured Products</h2>
 
             <div id="showListings" class="row">
+            
+            <%=featuredProd %>
 
               <!-- CAN BE LOOPED -->
-              <div class="item col-lg-4">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
-                    <p class="mb-0">Description: very sad</p>
-                    <p class="testp text-primary font-weight-bold">Price: $10</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="item col-lg-4">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
-                    <p class="mb-0">Description: very sad</p>
-                    <p class="testp text-primary font-weight-bold">Price: $10</p>
-                  </div>
-                </div>
-              </div>
               
-              <div class="item col-lg-4">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <a href="product.jsp"><img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid"></a>
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3 id="listingTitle"><a href="product.jsp">Title: Sad Dog</a></h3>
-                    <p class="mb-0">Description: very sad</p>
-                    <p class="testp text-primary font-weight-bold">Price: $10</p>
-                  </div>
-                </div>
-              </div>
+
 
             </div>
 

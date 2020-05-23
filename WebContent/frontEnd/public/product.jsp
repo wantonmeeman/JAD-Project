@@ -20,20 +20,24 @@
 	String image = "";
 	String AdminPage = "";
 	
+	int discountInt = 0; 
+	int roundDiscount = 0;
+	double discount = 0.00;
+	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
                 Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
               } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'>"
-                	+ "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-              		+ "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                  	+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-              		+ "<li id='logoutButton'></li></ul></div>";
+                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
         	  }}catch(Exception e){// if no id or role is detected
-    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}
+        		  Header = "<div class='site-top-icons'>" //This is to make it neater
+        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+        	                 + "<li id='logoutButton'></li></ul></div>";
+        	   }
         Connection conn = null;
         try{
             Class.forName("com.mysql.jdbc.Driver");
@@ -43,7 +47,7 @@
             	out.print("Conn Error");
             	conn.close();
             }else{
-            	    String query = "SELECT * FROM products WHERE product_id = "+productID;
+            	    String query = "SELECT * FROM products WHERE product_id = " + productID;
     				
             	    Statement st = conn.createStatement();
             	    
@@ -55,6 +59,9 @@
           	    		detailedDescription = rs.getString("detailed_description");
           	    		cPrice = format.format(rs.getDouble("c_price"));
           	    		rPrice = format.format(rs.getDouble("r_price"));
+          	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
+          	        	discountInt = (int)Math.round(discount);
+          	        	roundDiscount = (discountInt + 4) / 5 * 5;
           	    		stockQuantity = rs.getInt("stock_quantity");
           	    		productCat = rs.getString("product_cat");
           	    		image = rs.getString("image");
@@ -63,13 +70,7 @@
         }catch(Exception e){
         	out.print(e);
         }
-        int discountInt, roundDiscount = 0;
     	
-        double discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
-        discountInt = (int)Math.round(discount);
-        roundDiscount = (discountInt + 4) / 5 * 5;
-        //String pcOff = format.format(5*(Math.round(((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice)*100))/5));
-        
     	%>
   <title>Digit Games &mdash; Product Details</title>
   <meta charset="utf-8">
