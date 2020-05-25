@@ -18,12 +18,12 @@
   String lastName = request.getParameter("lastname");
   String phoneNumber = request.getParameter("phonenumber");
   String role = request.getParameter("role");
+  String userid = request.getParameter("userid");
   String oldPassword = request.getParameter("oldPw");
   String newPassword1 = request.getParameter("newPw");
   String newPassword2 = request.getParameter("reenterPw");
-  String userid = request.getParameter("userid");
   
-  if(oldPassword == null){//EDIT PROFILE
+  if (oldPassword == null){//EDIT PROFILE
 	  if(4 > Username.length() || Username.length() > 20){
 		  Error += "UsernameSizeInvalid-";
 	  }
@@ -32,8 +32,8 @@
 		if(Error.length() == 0){
 			try{
 			  	Class.forName("com.mysql.jdbc.Driver");
-			  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
-			  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+			  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+			  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 			 }catch(Exception e){
 				    out.print(e);
 			 }
@@ -63,7 +63,8 @@
 	  
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
 		  	}

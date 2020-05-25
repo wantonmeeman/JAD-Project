@@ -6,7 +6,10 @@
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0"); 
+<%  
+	HttpSession Session = request.getSession();
+	
+	DecimalFormat format = new DecimalFormat("#0"); 
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String productID = request.getParameter("productid");
@@ -19,24 +22,44 @@
 	String productCat = "";
 	String image = "";
 	String AdminPage = "";
-	
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    String disabled = "";
+    
 	int discountInt = 0; 
 	int roundDiscount = 0;
 	double discount = 0.00;
+	String discountMsg = "";
+	String priceMsg = "";
 	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+    String Err = request.getParameter("Err");
+    
+    try{
+		if(Err.equals("OverStk")){
+			out.print("<script>alert('Amount Specified is more than stock quantity!')</script>");
+		}
+		if(Err.equals("Invalid")){
+			out.print("<script>alert('Amount Specified is Invalid!')</script>");
+		}
+    }catch(Exception e){
+    	
+    }
+    
+	try{
+		if(role.equals("admin")){ 
+            AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+            Header = "<div class='site-top-icons'>"
+                    + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                      + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                      + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li id='logoutButton'></li></ul></div>";              
+         } else if (role.equals("member")) {
+        	  Header = "<div class='site-top-icons'>"
+                      + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                        + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                        + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<li id='logoutButton'></li></ul></div>";    
         	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<div class='site-top-icons'>" //This is to make it neater
-        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-        	                 + "<li id='logoutButton'></li></ul></div>";
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	   }
         Connection conn = null;
         try{
@@ -47,7 +70,7 @@
             	out.print("Conn Error");
             	conn.close();
             }else{
-            	    String query = "SELECT * FROM products WHERE product_id = " + productID;
+            	    String query = "SELECT * FROM products WHERE product_id = "+productID;
     				
             	    Statement st = conn.createStatement();
             	    
@@ -59,18 +82,35 @@
           	    		detailedDescription = rs.getString("detailed_description");
           	    		cPrice = format.format(rs.getDouble("c_price"));
           	    		rPrice = format.format(rs.getDouble("r_price"));
+          	    		
           	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
           	        	discountInt = (int)Math.round(discount);
           	        	roundDiscount = (discountInt + 4) / 5 * 5;
+          	        	
+          	        	if (roundDiscount != 0) {
+          	        		priceMsg = "<s>$ " + rPrice + "</s> $" + cPrice;
+          	        		discountMsg = " (" + roundDiscount + "% Off)";
+          	        	} else if (roundDiscount == 0){
+          	        		priceMsg = "$" + rPrice;
+          	        		discountMsg = "";
+          	        	}
+          	        	
           	    		stockQuantity = rs.getInt("stock_quantity");
           	    		productCat = rs.getString("product_cat");
           	    		image = rs.getString("image");
+          	    		if(stockQuantity <= 0){
+          	    			disabled = "disabled";
+          	    		}
             		}
             }
+        Session.setAttribute("productID",productID);
+		conn.close();
+		
         }catch(Exception e){
-        	out.print(e);
+        	
         }
-    	
+
+        
     	%>
   <title>Digit Games &mdash; Product Details</title>
   <meta charset="utf-8">
@@ -154,23 +194,19 @@
           <div class="col-md-6">
             <h2 class="text-black"><%=name %></h2>
             <p><%=detailedDescription %></p>
-            <!--  <p class="mb-4">Ex numquam veritatis debitis minima quo error quam eos dolorum quidem perferendis. Quos
-              repellat dignissimos minus, eveniet nam voluptatibus molestias omnis reiciendis perspiciatis illum hic
-              magni iste, velit aperiam quis.</p>-->
 
-
-            <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"><s>$<%=rPrice %></s>
-                $<%=cPrice %>   (<%=roundDiscount %>% Off)</p></strong>
+            <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"> <%= priceMsg + discountMsg %></p></strong>
 
 	
-            <form action="cart.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
+            <form action="VerifyQty.jsp?userid=<%=userid%>&role=<%=role%>" method="POST">
               <div class="mb-5 row">
                 <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
-                	
-                  <input type="number" placeholder=1 name="quantity" style="margin-top: 4px;margin-bottom: 50px;margin-right:30px;"></input>
-                  <input type="hidden" name="productid"></input>
+                	<div class="ml-2">
+                  		<input type="number" placeholder="Qty" name="quantity" style="margin-top: 4px;margin-bottom: 50px;margin-right:30px;"></input>
+                  		<input type="hidden" name="productid"></input>
+                  	</div>
               </div>
-              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;">Add To Cart</a></p>
+              <p><button type=submit class="buy-now btn btn-sm btn-primary" style="padding:20px 10px 5px 10px !important;" <%=disabled %>>Add To Cart</a></p>
             </form>
           </div>
         </div>

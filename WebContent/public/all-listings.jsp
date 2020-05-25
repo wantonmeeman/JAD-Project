@@ -37,14 +37,18 @@
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>" //This is to make it neater
-                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
+                Header = "<div class='site-top-icons'>"
+                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
                           + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                          + "<li id='logoutButton'></li></ul></div>";
-              }
+                          + "<li id='logoutButton'></li></ul></div>";              
+             } else if (role.equals("member")) {
+            	  Header = "<div class='site-top-icons'>"
+                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li id='logoutButton'></li></ul></div>";     
+             }
         }catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}	
@@ -52,7 +56,7 @@
      try{
         Class.forName("com.mysql.jdbc.Driver");
       	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-        // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+        //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();
@@ -98,7 +102,8 @@
         	    	briefDescription = rs.getString("brief_description");
         	    	detailedDescription = rs.getString("detailed_description");
         	    	cPrice =  format.format(rs.getDouble("c_price"));
-        	    	rPrice  =  format.format(rs.getDouble("r_price"));   	
+        	    	rPrice  =  format.format(rs.getDouble("r_price"));
+        	    	
       	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
       	        	discountInt = (int)Math.round(discount);
       	        	roundDiscount = (discountInt + 4) / 5 * 5;
@@ -110,13 +115,13 @@
       	        		priceMsg = "$" + rPrice;
       	        		discountMsg = "";
       	        	}
-        	    	
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
-        	    			+ "<p class='text-primary font-weight-bold'>"+ priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        	    			+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         		}
+        		conn.close();
 			}
         }catch(Exception e){
 				
@@ -145,6 +150,75 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
+
+  <script>
+
+    // Search (Change to enter key or button)
+    function search() {
+      var tmpToken = localStorage.getItem('accessToken')
+      var userData = localStorage.getItem('userInfo');
+      var userJsonData = JSON.parse(userData);            // id, username, password, url, created_at
+      var userid = userJsonData[0].id;
+
+      var keyword = $('#keyword').val();
+
+      var data = "{\"id\":\"" + userid + "\", \"keyword\":\"" + keyword + "\"}";
+      console.log(data);
+
+      $.ajax({
+        headers: { 'authorization': 'Bearer ' + tmpToken },
+        url: 'http://localhost:8081/search',
+        type: 'POST',
+        data: data,
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        success: function (data, textStatus, xhr) {
+          if (data != null && data.success) {
+
+            var allListData = JSON.parse(data.SearchData);
+
+            if (data.length == 0) {
+              document.getElementById("allListings").innerHTML = "<p>No Listings Found</p>"
+
+            } else {
+              $('#allListings').empty()
+
+              for (var i = 0; i < allListData.length; i++) {
+
+                console.log(allListData[i]);
+                console.log(allListData[i].listingid);
+
+                document.getElementById("searchHeader").innerHTML = "Search Results"
+
+                document.getElementById("allListings").innerHTML += (
+                  `
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                      <div class="block-4 text-center border">
+                        <figure class="block-4-image">
+                          <a href="#"><img src="images/saddog2.jpg" alt="Image placeholder"
+                              class="img-fluid"></a>
+                        </figure>
+                        <div class="block-4-text p-4">
+                          <h3><a href="#">${allListData[i].title}</a></h3>
+                          <p class="mb-0">${allListData[i].description}</p>
+                          <p class="text-primary font-weight-bold">$${allListData[i].price}</p>
+                          <button type="submit" id="${allListData[i].listingid}" class="makeOffer">Make Offer</button>
+                        </div>
+                      </div>
+                    </div>
+                    `)
+              }
+            }
+          }
+        },
+
+        error: function (xhr, textStatus, errorThrown) {
+          console.log('Error in Operation');
+        }
+      });
+    }
+
+  </script>
 
 </head>
 

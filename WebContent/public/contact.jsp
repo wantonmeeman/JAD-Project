@@ -2,42 +2,30 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
-	String Error = request.getParameter("Err");
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+                Header = "<div class='site-top-icons'>"
+                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li id='logoutButton'></li></ul></div>";              
+             } else if (role.equals("member")) {
+            	  Header = "<div class='site-top-icons'>"
+                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li id='logoutButton'></li></ul></div>";     
         	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<div class='site-top-icons'>" //This is to make it neater
-        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-        	                 + "<li id='logoutButton'></li></ul></div>";    	
-        }
-    	
-    	try{
-    	if(Error.equals("NullError")){
-    		out.print("<script>alert('Please Fill in all required fields!')</script>");
-    	}
-		if(Error.equals("NegativeError")){
-			out.print("<script>alert('Do not enter negative numbers!')</script>");
-    	}
-		if(Error.equals("AddSuccess")){
-			out.print("<script>alert('Product Successfully Added!')</script>");
-    	}
-    	}catch(Exception e){
-    		
-    	}
-    	
-    	%>
-<head>
-  <title>Digit Games &mdash; Upload Product</title>
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        	   }%>
+  <title>Digit Games &mdash; Contact Us</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -49,8 +37,6 @@
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="css/aos.css">
@@ -107,7 +93,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Upload Product</strong></div>
+              class="text-black">Contact</strong></div>
         </div>
       </div>
     </div>
@@ -115,112 +101,52 @@
     <div class="site-section">
       <div class="container">
         <div class="row">
-
           <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Upload Product (Admin)</h2>
+            <h2 class="h3 mb-3 text-black">Get In Touch</h2>
           </div>
+          <div class="col-md-7">
 
-          <div class="col-md-12">
+            <form action="#" method="post">
 
-            <form action="AddProduct.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
-
-              <div class="p-3 p-lg-5 border row justify-content-center">
-
-                <div class="col-md-10">
-
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="title" class="text-black">Name <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="title" name="name" placeholder="Title of Product">
-                    </div>
-
+              <div class="p-3 p-lg-5 border">
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="c_fname" name="c_fname">
                   </div>
-
-
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="c_price" class="text-black">Current Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="c_price" name="c_price"
-                        placeholder="Current Price ($)">
-                    </div>
-
+                  <div class="col-md-6">
+                    <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="c_lname" name="c_lname">
                   </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="r_price" class="text-black">Retail Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="r_price" name="r_price"
-                        placeholder="Retail Price ($)">
-                    </div>
-
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <label for="c_email" class="text-black">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="c_email" name="c_email" placeholder="">
                   </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="stockQty" class="text-black">Stock Quantity <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" placeholder="Quantity">
-                    </div>
-
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <label for="c_subject" class="text-black">Subject </label>
+                    <input type="text" class="form-control" id="c_subject" name="c_subject">
                   </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="productCat" class="text-black">Product Category <span
-                          class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="productCat" name="productCat" placeholder="Category">
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-8">
-                      <label for="briefDesc" class="text-black">Brief Description: </label>
-                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control"
-                        placeholder="Brief Description of Product"></textarea>
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-8">
-                      <label for="fullDesc" class="text-black">Full Description: </label>
-                      <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control"
-                        placeholder="Detailed Description of Product"></textarea>
-                    </div>
-
-                  </div>
-                  <div class="form-group row">
-
-                    <div class="col-md-6">
-                      <label for="ImagePath" class="text-black">Image Path</label>
-                      <input type="text" name="image" id="image" class="form-control" placeholder="Image Path"></textarea>
-                    </div>
-
-                  </div>
-
                 </div>
 
-                <div class="form-group col-md-12 mb-5 d-flex flex-row-reverse">
-
-                  <div class="col-lg-3 p-3">
-                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"
-                      value="Upload Product">
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <label for="c_message" class="text-black">Message </label>
+                    <textarea name="c_message" id="c_message" cols="30" rows="7" class="form-control"></textarea>
                   </div>
-
+                </div>
+                <div class="form-group row">
+                  <div class="col-lg-12">
+                    <input type="submit" class="btn btn-primary btn-lg btn-block" value="Send Message">
+                  </div>
                 </div>
               </div>
-
             </form>
           </div>
-
-          <!-- <div class="col-md-5 ml-auto">
+          <div class="col-md-5 ml-auto">
             <div class="p-4 border mb-3">
               <span class="d-block text-primary h6 text-uppercase">New York</span>
               <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
@@ -234,7 +160,7 @@
               <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
             </div>
 
-          </div> -->
+          </div>
         </div>
       </div>
     </div>

@@ -29,85 +29,90 @@
 </head>
 <% 
 
-try{
-	
-	String Error = request.getParameter("Err");
-	String[] ErrorArray = Error.split("-",0);
-	for(int i = 0;ErrorArray.length>i;i++){
-		if(ErrorArray[i].equals("PasswordSizeInvalid")){
-			out.print("<script>alert('Password either too long or too short!')</script>");
+	try{
+		
+		String Error = request.getParameter("Err");
+		String[] ErrorArray = Error.split("-",0);
+		for(int i = 0;ErrorArray.length>i;i++){
+			if(ErrorArray[i].equals("PasswordSizeInvalid")){
+				out.print("<script>alert('Password either too long or too short!')</script>");
+			}
+			if(ErrorArray[i].equals("UsernameSizeInvalid")){
+				out.print("<script>alert('Username either too long or too short!')</script>");
+			}
+			if(ErrorArray[i].equals("Success")){
+				out.print("<script>alert('User Details were successfully changed!')</script>");
+			}
+			if(ErrorArray[i].equals("PasswordNotEqual")){
+				out.print("<script>alert('Passwords do not match!')</script>");
+			}
+			if(ErrorArray[i].equals("PasswordNotValid")){
+				out.print("<script>alert('Invalid Password!')</script>");
+			}
+			if(ErrorArray[i].equals("PasswordSuccess")){
+				out.print("<script>alert('Password was successfully changed!')</script>");
+			}
+			if(ErrorArray[i].equals("ProfileSuccess")){
+				out.print("<script>alert('Profile Details were successfully changed!')</script>");
+			}
 		}
-		if(ErrorArray[i].equals("UsernameSizeInvalid")){
-			out.print("<script>alert('Username either too long or too short!')</script>");
-		}
-		if(ErrorArray[i].equals("Success")){
-			out.print("<script>alert('User Details were successfully changed!')</script>");
-		}
-		if(ErrorArray[i].equals("PasswordNotEqual")){
-			out.print("<script>alert('Passwords do not match!')</script>");
-		}
-		if(ErrorArray[i].equals("PasswordNotValid")){
-			out.print("<script>alert('Invalid Password!')</script>");
-		}
-		if(ErrorArray[i].equals("PasswordSuccess")){
-			out.print("<script>alert('Password was successfully changed!')</script>");
-		}
-		if(ErrorArray[i].equals("ProfileSuccess")){
-			out.print("<script>alert('Profile Details were successfully changed!')</script>");
-		}
+	}catch(Exception e){
+		
 	}
-}catch(Exception e){
 	
-}
-
-String userid = request.getParameter("userid"); 
-String role = request.getParameter("role");
-String email = "";
-String username = "";
-String AdminPage = "";
-String phonenumber = "";
-String lastname = "";
-String firstname = "";
-String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-try{
-	if(role.equals("admin")){ 
-        AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-        Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-      } else if (role.equals("member")) {
-          Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-	  }}catch(Exception e){// if no id or role is detected
-		  Header = "<div class='site-top-icons'>" //This is to make it neater
-	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-	                 + "<li id='logoutButton'></li></ul></div>";
-	  }
-
-Connection conn = null; 
-try{
-	Class.forName("com.mysql.jdbc.Driver");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
-}catch(Exception e){
-    out.print(e);
-}
-	if(conn == null){
-		out.print("Conn Error");
-		conn.close();
-	}else{
-		String query = "SELECT * FROM users WHERE user_id = "+userid;
-	    Statement st = conn.createStatement();
-	    ResultSet rs = st.executeQuery(query);
-	    while (rs.next()) {
-	    	email = rs.getString("email");
-	    	username = rs.getString("username");
-	    	firstname = rs.getString("firstname");
-	    	lastname = rs.getString("lastname");
-	    	phonenumber = rs.getString("phonenumber");
-	    }
+	String userid = request.getParameter("userid"); 
+	String role = request.getParameter("role");
+	String email = "";
+	String username = "";
+	String AdminPage = "";
+	String phonenumber = "";
+	String lastname = "";
+	String firstname = "";
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	try{
+		if(role.equals("admin")){ 
+	        AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+	        Header = "<div class='site-top-icons'>"
+	                + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                  + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+	                  + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                  + "<li id='logoutButton'></li></ul></div>";              
+	     } else if (role.equals("member")) {
+	    	  Header = "<div class='site-top-icons'>"
+	                  + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                    + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+	                    + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                    + "<li id='logoutButton'></li></ul></div>";     
+		  }}catch(Exception e){// if no id or role is detected
+			  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+		  }
+	
+	Connection conn = null; 
+	try{
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		// conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+	}catch(Exception e){
+	    out.print(e);
 	}
-
-	 	conn.close();
+		if(conn == null){
+			out.print("Conn Error");
+			conn.close();
+		}else{
+			String query = "SELECT * FROM users WHERE user_id = "+userid;
+		    Statement st = conn.createStatement();
+		    ResultSet rs = st.executeQuery(query);
+		    while (rs.next()) {
+		    	email = rs.getString("email");
+		    	username = rs.getString("username");
+		    	firstname = rs.getString("firstname");
+		    	lastname = rs.getString("lastname");
+		    	phonenumber = rs.getString("phonenumber");
+		    }
+		}
 	
+		 	conn.close();
+		
 
 %>
 
@@ -195,14 +200,14 @@ try{
 
                   <div class="profilepic-text mt-2 ml-4">
                     <div><text class="text-dark font-weight-bold"><%=username %></text></div>
-                    <div><text class="text-dark font-weight-normal">Alastair Tan</text></div>
+                    <div><text class="text-dark font-weight-normal"><%=firstname + " " + lastname %></text></div>
                   </div>
                 </div>
 
                 <div class="profile-info ml-3 mt-3">
                   <div><text class="text-dark font-weight-normal">Email: <%=email%></text></div>
 
-                  <div><text class="text-dark font-weight-normal">Phone Number: 9123 4567</text></div>
+                  <div><text class="text-dark font-weight-normal">Phone Number: <%=phonenumber %></text></div>
 
                   <div><text class="text-dark font-weight-normal">Membership Status: </text><text class="text-dark font-weight-bold"><%=role %></text></div>
 

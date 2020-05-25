@@ -1,27 +1,75 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="java.sql.*" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
+<%  
+	String products = "";
+	HttpSession Session = request.getSession();
+	DecimalFormat format = new DecimalFormat("#0.00"); 
+	String name = "";
+	String r_price = "";
+	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
+	double total = 0.00;
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-        	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<div class='site-top-icons'>" //This is to make it neater
-        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-        	                 + "<li id='logoutButton'></li></ul></div>";
-        	  }%>
-  <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
+    try{
+       if(role.equals("admin")){ 
+         AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+         Header = "<div class='site-top-icons'>"
+                  + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                  + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                  + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                  + "<li id='logoutButton'></li></ul></div>";              
+             } else if (role.equals("member")) {
+            	 Header = "<div class='site-top-icons'>"
+                   			+ "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li id='logoutButton'></li></ul></div>";     
+        }}catch(Exception e){// if no id or role is detected
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        }
+    Connection conn = null;
+    try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+    }catch(Exception e){
+    	
+	    out.print(e);
+	    
+  	}
+    if(conn == null){
+  		out.print("Conn Error");
+  		conn.close();
+  	}else{
+  		try{
+			for(int x = 0;((int[])Session.getAttribute("productArr")).length>x;x++){
+			  	String query = "SELECT * FROM products WHERE product_id ="+((int[])Session.getAttribute("productArr"))[x];
+			  	Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(query);
+			
+				while(rs.next()){
+				    name = rs.getString("name");
+				    r_price = format.format(rs.getDouble("r_price"));
+				    total += Double.parseDouble(r_price)*(((int[])Session.getAttribute("quantityArr"))[x]);
+				    products += "<tr><td>"+name+" <strong class='mx-2'>x</strong>"+((int[])Session.getAttribute("quantityArr"))[x]+"</td><td>$"+Double.parseDouble(r_price)*(((int[])Session.getAttribute("quantityArr"))[x])+"</td></tr>";
+				}
+			}
+  		}catch(Exception e){
+  			
+  		}
+		conn.close();
+	}
+        
+        	  
+        	  %>
+  <title>Digit Games &mdash;Checkout</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -322,21 +370,10 @@
                       <th>Total</th>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-                        <td>$250.00</td>
-                      </tr>
-                      <tr>
-                        <td>Polo Shirt <strong class="mx-2">x</strong> 1</td>
-                        <td>$100.00</td>
-                      </tr>
-                      <tr>
-                        <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-                        <td class="text-black">$350.00</td>
-                      </tr>
+                      <%=products %>
                       <tr>
                         <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-                        <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
+                        <td class="text-black font-weight-bold"><strong><%=total %></strong></td>
                       </tr>
                     </tbody>
                   </table>
@@ -381,8 +418,7 @@
                   </div>
 
                   <div class="form-group">
-                    <button class="btn btn-primary btn-lg py-3 btn-block"
-                      onclick="window.location='thankyou.jsp'">Place Order</button>
+                    <a href="thankyou.jsp?userid=<%=userid %>&role=<%=role%>"><button class="btn btn-primary btn-lg py-3 btn-block">Place Order</button></a>
                   </div>
 
                 </div>

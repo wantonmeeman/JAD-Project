@@ -33,8 +33,10 @@
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-	  }catch(Exception e){
-			    out.print(e);
+	  
+	  }catch(Exception e){    
+		  out.print(e);
+		  
       }
 		  	if(conn == null){
 		  		out.print("Conn Error");
@@ -45,13 +47,11 @@
 			      int rs = st.executeUpdate(query);
 			      conn.close();
 			      if(rs != 1){
-			      out.print("Database Error"); 
-			      }else{
-			    	  response.sendRedirect("admin-page.jsp?Err=AddSuccess&userid="+userid+"&role="+role);
+			      	out.print("Database Error"); 
+			      } else {
+			    	 response.sendRedirect("admin-page.jsp?Err=AddSuccess&userid="+userid+"&role="+role);
 			      }
-			      
-			      
-		  	    
+			      conn.close();
 		  	}
  	}
  }

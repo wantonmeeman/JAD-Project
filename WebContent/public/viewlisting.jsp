@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
@@ -11,17 +7,25 @@
         try{
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
-              } else if (role.equals("member")) {
-                  Header = "<div class='site-top-icons'><ul><li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li><li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li><li id='logoutButton'></li></ul></div>";
+                Header = "<div class='site-top-icons'>"
+                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li id='logoutButton'></li></ul></div>";              
+             } else if (role.equals("member")) {
+            	  Header = "<div class='site-top-icons'>"
+                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li id='logoutButton'></li></ul></div>";     
         	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<div class='site-top-icons'>" //This is to make it neater
-        	                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span><span class='count'>2</span></a></li>"
-        	                 + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-        	                 + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-        	                 + "<li id='logoutButton'></li></ul></div>";
+        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	  }%>
-  <title>Digit Games&mdash;</title>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -34,10 +38,13 @@
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
+
 
 </head>
 
@@ -50,18 +57,22 @@
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-              
+              <form action="" class="site-block-top-search">
+                <span class="icon icon-search2"></span>
+                <input type="text" class="form-control border-0" placeholder="Search">
+              </form>
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp" class="js-logo-clone">Snapsell</a>
               </div>
             </div>
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-
+       
+	  		
                 <%=Header%>
 
               </div>
@@ -88,7 +99,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Contact</strong></div>
+              class="text-black">Product</strong></div>
         </div>
       </div>
     </div>
@@ -96,12 +107,87 @@
     <div class="site-section">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 text-center">
-            <span class="icon-check_circle display-3 text-success"></span>
-            <h2 class="display-3 text-black">Thank you!</h2>
-            <p class="lead mb-5">Your order has been successfully completed.</p>
-            <p><a href="shop.jsp" class="btn btn-sm btn-primary">Back to shop</a></p>
+          <div class="col-md-12">
+            <h2 class="h3 mb-3 text-black">Product Detail</h2>
           </div>
+          <div class="col-md-12">
+
+            <form action="#" method="post">
+
+              <div id="shownListing" class="p-3 p-lg-5 border row">
+
+                <div class="col-md-6">
+                  <img class="img-fluid" src="images/upload_pic.PNG" width="400" height="10" alt="Upload Picture"
+                    title="Upload Picture">
+                </div>
+
+
+                <div class="col-md-6">
+                  <div class="form-group row">
+
+                    <div class="col-md-12">
+                      <div id="title" class="text-black font-weight-bold">iPhone 8 Plus </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-12">
+                      <div for="description" class="text-black">Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the
+                        1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+                        book. It has survived not only five centuries, but also the leap into electronic typesetting,
+                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
+                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
+                        Aldus PageMaker including versions of Lorem Ipsum. </div>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-12">
+                      <label for="offer" class="text-black">Make Offer: </label>
+                      <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+                <div class="form-group row">
+
+                  <div class="col-lg-12">
+                    <form>
+                      <input id="makeOffer" type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
+                    </form>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- <div class="col-md-5 ml-auto">
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">New York</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">London</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">Canada</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+
+          </div> -->
         </div>
       </div>
     </div>
