@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.*" %>
@@ -34,7 +41,9 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -103,8 +112,9 @@
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
-        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
-        	    			+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"
+        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
+        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         }
         		conn.close();
 		}}catch(Exception e){

@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page import="java.sql.*" %>
 <%@page import="java.text.DecimalFormat" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -17,8 +24,10 @@
 	String rPrice = "";
 	int stockQuantity = 0;
 	int numberOfProd = 0;
+	
 	String productCat = "";
-	String imageUrl = "";
+	String catImageURL = "";
+	
 	String categoryBox = "";
 	String AdminPage = "";
 	String categoryArr[] = new String[10];
@@ -26,7 +35,9 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -58,30 +69,19 @@
 
 					
 
-					String query = "SELECT DISTINCT product_cat FROM products";
+					String query = "SELECT * FROM categories";
 					Statement st = conn.createStatement();
 					ResultSet rs = st.executeQuery(query);
 					
 	        		while (rs.next()) {
-	        	    	productCat = rs.getString("product_cat");
+	        	    	productCat = rs.getString("category_name");
+	        	    	catImageURL = rs.getString("image");
 
-	        	    	if (productCat.equals("gaming gear")) {
-	        	    		productCat = "Gaming Gear";
-	        	    		imageUrl = "images/gear/logitech_headset.jpg";
-	        	    		
-	        	    	} else if (productCat.equals("games")) {
-	        	    		productCat = "Games";
-	        	    		imageUrl = "images/games/borderlands3.jpg";
-	        	    		
-	        	    	} else if (productCat.equals("apparel")) {
-	        	    		productCat = "Apparel";
-	        	    		imageUrl = "images/apparel/razer_clothing.jpg";
-	        	    	}
 	        	    	
 	        	    	categoryBox += "<div class='col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0' data-aos='fade' data-aos-delay=''>"
 	                    		+ "<a class='block-2-item' href='cat-listings.jsp?cat=" + productCat +"&userid=" + userid + "&role=" + role + "'>"
 	                    		+ "<figure class='image'>"
-	                      		+ "<img src='" + imageUrl + "' alt='' class='img-fluid'>"
+	                      		+ "<img src='" + catImageURL + "' alt='' class='img-fluid'>"
 	                    		+ "</figure>"
 	                    		+ "<div class='text'>"
 	                      		+ "<span class='text-uppercase'>Collections</span>"

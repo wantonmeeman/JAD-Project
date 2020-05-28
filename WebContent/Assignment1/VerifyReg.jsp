@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page import="java.sql.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>

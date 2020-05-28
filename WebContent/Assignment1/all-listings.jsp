@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.*" %>
@@ -36,7 +43,9 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -118,8 +127,9 @@
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
-        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src="+image+" alt='Image placeholder'class='img-fluid'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
-        	    			+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"
+        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
+        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         		}
         		conn.close();
 			}
@@ -149,76 +159,6 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-
-
-  <script>
-
-    // Search (Change to enter key or button)
-    function search() {
-      var tmpToken = localStorage.getItem('accessToken')
-      var userData = localStorage.getItem('userInfo');
-      var userJsonData = JSON.parse(userData);            // id, username, password, url, created_at
-      var userid = userJsonData[0].id;
-
-      var keyword = $('#keyword').val();
-
-      var data = "{\"id\":\"" + userid + "\", \"keyword\":\"" + keyword + "\"}";
-      console.log(data);
-
-      $.ajax({
-        headers: { 'authorization': 'Bearer ' + tmpToken },
-        url: 'http://localhost:8081/search',
-        type: 'POST',
-        data: data,
-        contentType: "application/json; charset=utf-8",
-        dataType: 'json',
-        success: function (data, textStatus, xhr) {
-          if (data != null && data.success) {
-
-            var allListData = JSON.parse(data.SearchData);
-
-            if (data.length == 0) {
-              document.getElementById("allListings").innerHTML = "<p>No Listings Found</p>"
-
-            } else {
-              $('#allListings').empty()
-
-              for (var i = 0; i < allListData.length; i++) {
-
-                console.log(allListData[i]);
-                console.log(allListData[i].listingid);
-
-                document.getElementById("searchHeader").innerHTML = "Search Results"
-
-                document.getElementById("allListings").innerHTML += (
-                  `
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                      <div class="block-4 text-center border">
-                        <figure class="block-4-image">
-                          <a href="#"><img src="images/saddog2.jpg" alt="Image placeholder"
-                              class="img-fluid"></a>
-                        </figure>
-                        <div class="block-4-text p-4">
-                          <h3><a href="#">${allListData[i].title}</a></h3>
-                          <p class="mb-0">${allListData[i].description}</p>
-                          <p class="text-primary font-weight-bold">$${allListData[i].price}</p>
-                          <button type="submit" id="${allListData[i].listingid}" class="makeOffer">Make Offer</button>
-                        </div>
-                      </div>
-                    </div>
-                    `)
-              }
-            }
-          }
-        },
-
-        error: function (xhr, textStatus, errorThrown) {
-          console.log('Error in Operation');
-        }
-      });
-    }
-
-  </script>
 
 </head>
 
@@ -256,7 +196,7 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 

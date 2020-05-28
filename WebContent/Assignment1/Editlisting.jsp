@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="java.sql.*" %>
@@ -20,17 +27,26 @@
 	String Error = request.getParameter("Err");
 	try{
     	if(Error.equals("NullError")){
-    		out.print("<script>alert('Please Fill in all required fields!')</script>");
+    		out.print("<script>alert('Please fill in all required fields!')</script>");
+    	}
+    	if(Error.equals("NumberFormatError")){
+			out.print("<script>alert('Prices are not in numbers format!')</script>");
     	}
 		if(Error.equals("NegativeError")){
 			out.print("<script>alert('Do not enter negative numbers!')</script>");
     	}
+		if(Error.equals("AddSuccess")){
+			out.print("<script>alert('Changes saved.')</script>");
+    	}
+		
     }catch(Exception e){
     		
     }    
 	try{
 		if(role.equals("admin")){ 
-            AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+            AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+            		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+            		
             Header = "<div class='site-top-icons'>"
                     + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                       + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -110,7 +126,7 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -179,7 +195,7 @@
 
                     <div class="col-md-6">
                       <label for="c_price" class="text-black">Current Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="c_price" value="<%=c_price %>" name="c_price"
+                      <input type="text" class="form-control" id="c_price" value="<%=c_price %>" name="c_price"
                         placeholder="Current Price ($)">
                     </div>
 
@@ -189,7 +205,7 @@
 
                     <div class="col-md-6">
                       <label for="r_price" class="text-black">Retail Price <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="r_price" name="r_price" value="<%=r_price %>"
+                      <input type="text" class="form-control" id="r_price" name="r_price" value="<%=r_price %>"
                         placeholder="Retail Price ($)">
                     </div>
 
@@ -212,7 +228,7 @@
                       <select class="form-control" id="productCat" name="productCat" placeholder="Category">
                       	<option value="Games">Games</option>
                       	<option value="Gaming Gear">Gaming Gear</option>
-                      	<option value="Apparel">Volvo</option>
+                      	<option value="Apparel">Apparel</option>
                       </select>
                     </div>
 
@@ -260,21 +276,6 @@
             </form>
           </div>
 
-          <!-- <div class="col-md-5 ml-auto">
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">New York</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">London</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">Canada</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-
-          </div> -->
         </div>
       </div>
     </div>

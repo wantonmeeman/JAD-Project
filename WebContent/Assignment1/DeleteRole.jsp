@@ -19,7 +19,7 @@ Description: ST0510 / JAD Assignment 1
 <%
   String userid = request.getParameter("userid");  
   String role = request.getParameter("role");
-  int productID = Integer.parseInt(request.getParameter("productID"));
+  int roleID = Integer.parseInt(request.getParameter("roleID"));
   Connection conn = null;
 
   //What else to add? try to add image path later maybe?
@@ -34,14 +34,14 @@ Description: ST0510 / JAD Assignment 1
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "DELETE FROM products WHERE product_id = "+productID;
+		  		  String query = "DELETE FROM roles WHERE role_id = " + roleID;
 		  		  Statement st = conn.createStatement();
 			      int rs = st.executeUpdate(query);
 			      conn.close();
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
+			    	  response.sendRedirect("all-users.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    

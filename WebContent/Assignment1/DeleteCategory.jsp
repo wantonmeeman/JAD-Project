@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page import="java.sql.*" %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -12,14 +19,14 @@
 <%
   String userid = request.getParameter("userid");  
   String role = request.getParameter("role");
-  int productID = Integer.parseInt(request.getParameter("productID"));
+  int categoryID = Integer.parseInt(request.getParameter("categoryID"));
   Connection conn = null;
 
   //What else to add? try to add image path later maybe?
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  //conn = DriverManager.getConnection(jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC);
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	  }catch(Exception e){
 			    out.print(e);
       }
@@ -27,7 +34,7 @@
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "DELETE FROM products WHERE product_id = "+productID;
+		  		  String query = "DELETE FROM categories WHERE category_id = " + categoryID;
 		  		  Statement st = conn.createStatement();
 			      int rs = st.executeUpdate(query);
 			      conn.close();
@@ -36,8 +43,7 @@
 			      	}else{
 			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
 			      	}
-			      
-			      
+			    	
 		  	    
 		  	}
 

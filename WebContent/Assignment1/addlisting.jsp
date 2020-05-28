@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -9,7 +16,9 @@
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -29,6 +38,10 @@
     	if(Error.equals("NullError")){
     		out.print("<script>alert('Please Fill in all required fields!')</script>");
     	}
+    	if(Error.equals("NumberFormatError")){
+			out.print("<script>alert('Prices are not in numbers format!')</script>");
+    	}
+    	
 		if(Error.equals("NegativeError")){
 			out.print("<script>alert('Do not enter negative numbers!')</script>");
     	}
@@ -77,7 +90,7 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 

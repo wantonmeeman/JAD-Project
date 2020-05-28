@@ -20,37 +20,41 @@ Description: ST0510 / JAD Assignment 1
 	String role = request.getParameter("role");
 	String AdminPage = "";
 	
-	String productID = "";
-	String Name = "";
-	String briefDescription = "";
-	String detailedDescription = "";
-	String cPrice = "";
-	String rPrice = "";
-	int stockQuantity = 0;
-	String productCat = "";
-	String image = "";
+	String dbUserID = "";
+	String username = "";
+	String password = "";
+	String email = "";
+	String dbRole = "";
+	String firstname = "";
+	String lastname = "";
+	String phonenumber = "";
 	
-	String categoryID = "";
-	String categoryName = "";
-	String categoryURL = "";
-	
+	String dbRoleID = "";
+	String roleName = "";
 	
 	String rows = "";
-	String categoryTable = "";
+	String roleTable = "";
 	int RowCount;
 	String Error = request.getParameter("Err");
 	
 	try{
-	if(Error.equals("EditSuccess")){
-		out.print("<script>alert('Changes saved.')</script>");
-	}
-	if(Error.equals("DelSuccess")){
-		out.print("<script>alert('Successfully deleted.')</script>");
-	}
-	if(Error.equals("AddSuccess")){
-		out.print("<script>alert('Successfully added.')</script>");
-	}
-	}catch(Exception e){
+	   	if(Error.equals("NullError")){
+	   		out.print("<script>alert('Please fill in all required fields!')</script>");
+	   	}
+	   	
+		if(Error.equals("DelSuccess")){
+			out.print("<script>alert('Successfully deleted.')</script>");
+		}
+		
+		if(Error.equals("AddSuccess")){
+			out.print("<script>alert('Successfully added.')</script>");
+		}
+		
+		if(Error.equals("EditSuccess")){
+			out.print("<script>alert('Changes saved.')</script>");
+		}
+		
+	} catch(Exception e) {
 		
 	}
 	
@@ -75,6 +79,8 @@ Description: ST0510 / JAD Assignment 1
             }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	}
+
+    	
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
@@ -87,39 +93,48 @@ Description: ST0510 / JAD Assignment 1
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "SELECT * FROM products";
+		  		  String query = "SELECT * FROM users";
 		  		  Statement st = conn.createStatement();
 			      ResultSet rs = st.executeQuery(query);
 		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    	productID = rs.getString("product_id");
-		        	    	Name = rs.getString("name");
-		        	    	briefDescription = rs.getString("brief_description");
-		        	    	detailedDescription = rs.getString("detailed_description");
-		        	    	cPrice =  format.format(rs.getDouble("c_price"));
-		        	    	rPrice  =  format.format(rs.getDouble("r_price"));
-		        	    	stockQuantity = rs.getInt("stock_quantity");
-		        	    	productCat = rs.getString("product_cat");
-		        	    	image = rs.getString("image");
-		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?userid="+userid+"&role="+role+"&productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        }
+		        	    	dbUserID = rs.getString("user_id");
+		        	    	username = rs.getString("username");
+		        	    	password = rs.getString("password");
+		        	    	email = rs.getString("email");
+		        	    	dbRole = rs.getString("role");
+		        	    	firstname = rs.getString("firstname");
+		        	    	lastname = rs.getString("lastname");
+		        	    	phonenumber = rs.getString("phonenumber");
+		        	    	
+		        	    	// image = rs.getString("image");
+		        	    	rows += "<tr>"
+		        	    		+ "<th scope='row'>" + dbUserID + "</th>"
+		        	    		+ "<td>" + username + "</td>"
+		        	    		+ "<td>" + firstname + "</td>"
+		        	    		+ "<td>" + lastname + "</td>"
+		        	    		+ "<td>" + email + "</td>"
+		        	    		+ "<td>" + dbRole + "</td>"
+		        	    		+ "<td><div class='row'><div class='col-md-8'>"
+		        	    		+ "<div class='ml-4 col-md-2'>"
+		        	    		+ "<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        	}
 		        		
-				String query2 = "SELECT * FROM categories";
-				Statement st2 = conn.createStatement();
-				ResultSet rs2 = st2.executeQuery(query2);
-				
-        		while (rs2.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-        	    	categoryID = rs2.getString("category_id");
-        	    	categoryName = rs2.getString("category_name");
-           	    	categoryURL = rs2.getString("image");
-        	    	
-        	    	categoryTable += "<tr>"
-	        	    		+ "<th scope='row'>" + categoryID + "</th>"
-	        	    		+ "<td>" + categoryName + "</td>"
-	        	    		+ "<td>" + categoryURL + "</td>"
-	        	    		+ "<td><div class='row'><div class='col-md-4'><a href='edit-category.jsp?userid="+userid+"&role="+role+"&categoryID="+categoryID+"'><span class='icon icon-pencil'></span></a></div>"
-	        	    		+ "<div class='col-md-8'>"
-	        	    		+ "<a href='#' class='deleteCat'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-        	}
+						String query2 = "SELECT * FROM roles";
+						Statement st2 = conn.createStatement();
+						ResultSet rs2 = st2.executeQuery(query2);
+						
+		        		while (rs2.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        			dbRoleID = rs2.getString("role_id");
+		        	    	roleName = rs2.getString("role_name");
+		        	    	
+		        	    	roleTable += "<tr>"
+			        	    		+ "<th scope='row'>" + dbRoleID + "</th>"
+			        	    		+ "<td>" + roleName + "</td>"
+			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?userid="+userid+"&role="+role+"&dbRoleID="+dbRoleID+"'><span class='icon icon-pencil'></span></a></div>"
+			        	    		+ "<div class='col-md-2'>"
+			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        	}
+				        		
 		        conn.close();
 			}
 		  	
@@ -148,13 +163,11 @@ Description: ST0510 / JAD Assignment 1
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   
   <script>
-  
-  	// Delete Product
     $(document).ready(function () {
       var modal = document.getElementById("myModal");
       var span = document.getElementById("close");
 
-      $('body').on('click', '.deleteProduct', function (event) {
+      $('body').on('click', '.deleteUser', function (event) {
         console.log("pressed");
         modal.style.display = "block";
 
@@ -167,18 +180,17 @@ Description: ST0510 / JAD Assignment 1
 
     });
     
-    // Add Category
     $(document).ready(function () {
-        var modal = document.getElementById("addCatModal");
+        var modal = document.getElementById("addRoleModal");
         var span = document.getElementById("close2");
 
-        $('body').on('click', '.addCat', function (event) {
+        $('body').on('click', '.addRole', function (event) {
           console.log("pressed");
           modal.style.display = "block";
 
           // When the user clicks on <span> (x), close the modal
           span.onclick = function () {
-            document.getElementById("addCatModal").style.display = "none";
+            document.getElementById("addRoleModal").style.display = "none";
           }
         })
 
@@ -186,26 +198,28 @@ Description: ST0510 / JAD Assignment 1
       });
     
     $(document).ready(function () {
-        var modal = document.getElementById("delCatModal");
+        var modal = document.getElementById("delRoleModal");
         var span = document.getElementById("close3");
 
-        $('body').on('click', '.deleteCat', function (event) {
+        $('body').on('click', '.deleteRole', function (event) {
           console.log("pressed");
           modal.style.display = "block";
 
           // When the user clicks on <span> (x), close the modal
           span.onclick = function () {
-            document.getElementById("delCatModal").style.display = "none";
+            document.getElementById("delRoleModal").style.display = "none";
           }
         })
 
 
       });
+    
   </script>
 </head>
 
 <body>
-<!-- The Modal (Delete Product) -->
+
+<!-- The Modal (Delete User) -->
   <div id="myModal" class="modal">
 
     <!-- Modal content -->
@@ -215,9 +229,9 @@ Description: ST0510 / JAD Assignment 1
 
         <div class="col-md-5">
           <form>
-            <h3 mb-5 class="text-dark">Are you sure you want to delete this product?</h3>
+            <h3 mb-5 class="text-dark">Are you sure you want to delete this user?</h3>
             
-           	<a href="DeleteListing.jsp?userid=<%=userid %>&role=<%=role %>&productID=<%=productID %>" class="btn btn-sm btn-danger">Delete Product</a>
+           	<a href="DeleteUser.jsp?userid=<%=userid %>&role=<%=role %>&dbUserID=<%=dbUserID %>" class="btn btn-sm btn-danger">Delete User</a>
           </form>
         </div>
 
@@ -227,8 +241,8 @@ Description: ST0510 / JAD Assignment 1
   </div>
   
   
-  <!-- The Modal (Add Category) -->
-  <div id="addCatModal" class="modal">
+ <!-- The Modal (Add Role) -->
+  <div id="addRoleModal" class="modal">
 
     <!-- Modal content -->
     <div class="modal-content">
@@ -236,21 +250,16 @@ Description: ST0510 / JAD Assignment 1
       <div class="form-group row">
 
         <div class="col-md-5">
-          <form action="AddCategory.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
-			<h3 mb-5 class="text-dark">Add New Category</h3>
+          <form action="AddRole.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
+			<h3 mb-5 class="text-dark">Add Role</h3>
 			
 			<div class="col-md-12 mt-4">
-				<label for="catName" class="text-black">New Category Name: </label>
-				<input type="text" class="form-control" id="catName" name="catName" placeholder="Category Name">
-			</div>
-			
-			<div class="col-md-12 mt-4">
-				<label for="catImageURL" class="text-black">Category Image Path: </label>
-				<input type="text" class="form-control" id="catImageURL" name="catImageURL" placeholder="Image URL">
+				<label for="dbRole" class="text-black">New Role Name:</label>
+				<input type="text" class="form-control" id="dbRole" name="dbRole" placeholder="Role Name">
 			</div>
 			
             <div class="col-lg-3 p-3 mt-4">
-              <input id="uploadProd" type="submit" class="btn btn-sm btn-info" value="Add Category">
+              <input id="uploadProd" type="submit" class="btn btn-sm btn-info" value="Add Role">
             </div>
 
           </form>
@@ -262,8 +271,9 @@ Description: ST0510 / JAD Assignment 1
   </div>
   
   
-  <!-- The Modal (Delete Category) -->
-  <div id="delCatModal" class="modal">
+  
+   <!-- The Modal (Delete Role) -->
+  <div id="delRoleModal" class="modal">
 
     <!-- Modal content -->
     <div class="modal-content">
@@ -272,9 +282,9 @@ Description: ST0510 / JAD Assignment 1
 
         <div class="col-md-5">
           <form>
-            <h3 mb-5 class="text-dark">Are you sure you want to delete this category?</h3>
+            <h3 mb-5 class="text-dark">Are you sure you want to delete this role?</h3>
             
-           	<a href="DeleteCategory.jsp?userid=<%=userid %>&role=<%=role %>&categoryID=<%=categoryID %>" class="btn btn-sm btn-danger">Delete Category</a>
+           	<a href="DeleteRole.jsp?userid=<%=userid %>&role=<%=role %>&dbRoleID=<%=dbRoleID %>" class="btn btn-sm btn-danger">Delete Role</a>
           </form>
         </div>
 
@@ -331,7 +341,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Administrator Page (Products)</strong></div>
+              class="text-black">Administrator Page (Users)</strong></div>
         </div>
       </div>
     </div>
@@ -340,39 +350,35 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
 
         <div class="col-md-12">
-          <h2 class="h3 mb-5 text-black">Admin Control Page (All Products) </h2>
+          <h2 class="h3 mb-5 text-black">Admin Control Page (All Users) </h2>
         </div>
 
         <div class="col-md-12 mb-5 d-flex flex-row-reverse">          	
           	<div class="p-2">
-            	<a href="addlisting.jsp?userid=<%=userid%>&role=<%=role%>" class="btn btn-sm btn-info">Create New Product</a>
+            	<a href="#" class="addRole btn btn-sm btn-dark">Add New Role</a>
          	 </div>
-          	
-          	<div class="p-2">
-            	<a href="#" class="addCat btn btn-sm btn-dark">Add New Category</a>
-          	</div>
-         	 
-        </div>
 
+        </div>
 
 		<!-- TABS -->
 		<div class="users-tab">
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allProductsTab')" id="defaultOpen">All Products</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allCatTab')">Categories</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
 		</div>
 		
-		<div id="allProductsTab" class="users-tabcontent">
+		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4">
-			  <h3><text class="text-dark font-weight-bold">Products List</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
 			  <div class="mt-4">
 		          <table class="table table-hover">
 		            <thead>
 		              <tr>
 		                <th scope="col">#</th>
-		                <th scope="col">Product Name</th>
-		                <th scope="col">Cost Price</th>
-		                <th scope="col">Retail Price</th>
-		                <th scope="col">Quantity</th>
+		                <th scope="col">Username</th>
+		                <th scope="col">First Name</th>
+		                <th scope="col">Last Name</th>
+		                <th scope="col">Email</th>
+		                <th scope="col">Role</th>
 		                <th scope="col">Actions</th>
 		              </tr>
 		            </thead>
@@ -384,28 +390,25 @@ Description: ST0510 / JAD Assignment 1
 		  	</div>
 		</div>
 		
-		<div id="allCatTab" class="users-tabcontent">
+		<div id="allRolesTab" class="users-tabcontent">
 		  <div class="mt-4 ml-4">
-			  <h3><text class="text-dark font-weight-bold">Category List</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Roles List</text></h3>
 			  <div class="mt-4">
 		          <table class="table table-hover">
 		            <thead>
 		              <tr>
 		                <th scope="col">#</th>
-		                <th scope="col">Category Names</th>
-		                <th scope="col">Image URL</th>
+		                <th scope="col">Role Names</th>
 		                <th scope="col">Actions</th>
 		              </tr>
 		            </thead>
 		            <tbody>
-		              <%=categoryTable %>
+		              <%=roleTable %>
 		            </tbody>
 		          </table>
         		</div>
 		  	</div>
 		</div>
-	
-
 
       </div>
     </div>

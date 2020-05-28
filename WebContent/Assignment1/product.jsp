@@ -1,3 +1,10 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="java.sql.*" %>
@@ -46,7 +53,9 @@
     
 	try{
 		if(role.equals("admin")){ 
-            AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
+            AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+            		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+            		
             Header = "<div class='site-top-icons'>"
                     + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                       + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
@@ -146,7 +155,7 @@
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -229,7 +238,7 @@
                     <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
                   </figure>
                   <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog 1</a></h3>
+                    <h3><a href="#">Product 1</a></h3>
                     <p class="mb-0">Finding perfect t-shirt</p>
                     <p class="text-primary font-weight-bold">$50</p>
                   </div>
@@ -241,7 +250,7 @@
                     <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
                   </figure>
                   <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog 2</a></h3>
+                    <h3><a href="#">Product 2</a></h3>
                     <p class="mb-0">Finding perfect products</p>
                     <p class="text-primary font-weight-bold">$50</p>
                   </div>
@@ -253,7 +262,7 @@
                     <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
                   </figure>
                   <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog 3</a></h3>
+                    <h3><a href="#">Product 3</a></h3>
                     <p class="mb-0">Finding perfect products</p>
                     <p class="text-primary font-weight-bold">$50</p>
                   </div>
@@ -265,7 +274,7 @@
                     <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
                   </figure>
                   <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog 4</a></h3>
+                    <h3><a href="#">Product 4</a></h3>
                     <p class="mb-0">Finding perfect products</p>
                     <p class="text-primary font-weight-bold">$50</p>
                   </div>
@@ -277,7 +286,7 @@
                     <img src="images/saddog.jpg" alt="Image placeholder" class="img-fluid">
                   </figure>
                   <div class="block-4-text p-4">
-                    <h3><a href="#">sad dog 5</a></h3>
+                    <h3><a href="#">Product 5</a></h3>
                     <p class="mb-0">Finding perfect products</p>
                     <p class="text-primary font-weight-bold">$50</p>
                   </div>

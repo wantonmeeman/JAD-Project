@@ -1,31 +1,82 @@
+<%-- 
+==========================================
+Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
+Class: DIT/2A/02
+Description: ST0510 / JAD Assignment 1
+===========================================
+--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
+	
+	String categoryID = request.getParameter("categoryID");
 	String AdminPage = "";
+	
+	String catName = "";
+	String catImageURL = "";
+
+	
+	String image = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Control Panel</a></li>";
-                Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                          + "<li id='logoutButton'></li></ul></div>";              
-             } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                            + "<li id='logoutButton'></li></ul></div>";     
-        	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        	   }%>
-  <title>Digit Games &mdash; Categories</title>
+	String Error = request.getParameter("Err");
+	try{
+    	if(Error.equals("NullError")){
+    		out.print("<script>alert('Please Fill in all required fields!')</script>");
+    	}
+		if(Error.equals("NegativeError")){
+			out.print("<script>alert('Do not enter negative numbers!')</script>");
+    	}
+    }catch(Exception e){
+    		
+    }    
+	try{
+		if(role.equals("admin")){ 
+            AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
+            		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+            		
+            Header = "<div class='site-top-icons'>"
+                    + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                      + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                      + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li id='logoutButton'></li></ul></div>";              
+         } else if (role.equals("member")) {
+        	  Header = "<div class='site-top-icons'>"
+                      + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                        + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                        + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<li id='logoutButton'></li></ul></div>";     
+    }}catch(Exception e){// if no id or role is detected
+    	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    }
+    Connection conn = null;
+    try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	}catch(Exception e){
+			    out.print(e);
+		  	}
+		  	if(conn == null){
+		  		out.print("Conn Error");
+		  		conn.close();
+		  	}else{
+		  		  String query = "SELECT * FROM categories WHERE category_id ="+categoryID;
+		  		  Statement st = conn.createStatement();
+			      ResultSet rs = st.executeQuery(query);
+			      while(rs.next()){
+			    		catName = rs.getString("category_name");
+			    		catImageURL = rs.getString("image");
+			      }
+			      conn.close();
+		  	}
+    	%>
+<head>
+  <title>Digit Games &mdash; Upload Product</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -38,42 +89,16 @@
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
-  <link rel="stylesheet" href="css/myoverride.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-
-
-
 </head>
 
 <body>
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="close" class="close">&times;</span>
-      <div class="form-group row">
-
-        <div class="col-md-5">
-          <form>
-            <label for="offer" class="text-black">Make Offer: </label>
-            <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-            <button type="button" id="submitOffer">Offer</button>
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
 
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
@@ -121,62 +146,75 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Categories</strong></div>
+              class="text-black">Edit Product</strong></div>
         </div>
       </div>
     </div>
 
     <div class="site-section">
       <div class="container">
-
         <div class="row">
+
           <div class="col-md-12">
-            <div class="site-section site-blocks-2">
-              <div class="row justify-content-center text-center mb-5">
-                <div class="col-md-7 site-section-heading pt-4">
-                  <h2>Product Categories</h2>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Games&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/games/borderlands3.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Games</h3>
-                    </div>
-                  </a>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Gaming Gear&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/gear/logitech_headset.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Gaming Gear</h3>
-                    </div>
-                  </a>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
-                  <a class="block-2-item" href="cat-listings.jsp?cat=Apparel&userid=<%=userid%>&role=<%=role%>">
-                    <figure class="image">
-                      <img src="images/apparel/razer_clothing.jpg" alt="" class="img-fluid">
-                    </figure>
-                    <div class="text">
-                      <span class="text-uppercase">Collections</span>
-                      <h3>Apparel</h3>
-                    </div>
-                  </a>
-                </div>
-              </div>
-
-            </div>
+            <h2 class="h3 mb-3 text-black">Edit Category (Admin)</h2>
           </div>
-        </div>
 
+          <div class="col-md-12">
+
+            <form action="EditCategory.jsp?userid=<%=userid%>&role=<%=role%>" method="post">
+
+              <div class="p-3 p-lg-5 border row justify-content-center">
+
+                <div class="col-md-10">
+
+                  <div class="form-group row">
+					<input type="hidden" name="categoryID" value="<%=categoryID%>"></input>
+                    <div class="col-md-6">
+                      <label for="catName" class="text-black">Category Name<span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="catName" name="catName" value="<%=catName %>" placeholder="Category Name">
+                    </div>
+
+                  </div>
+                  
+                  <div class="form-group row">
+                    <div class="col-md-6">
+                      <label for="catImageURL" class="text-black">Image URL <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="catImageURL" name="catImageURL" value="<%=catImageURL %>" placeholder="Image Path">
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="form-group col-md-12 mb-5 d-flex flex-row-reverse">
+
+                  <div class="col-lg-3 p-3">
+                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"
+                      value="Save Changes">
+                  </div>
+
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- <div class="col-md-5 ml-auto">
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">New York</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">London</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+            <div class="p-4 border mb-3">
+              <span class="d-block text-primary h6 text-uppercase">Canada</span>
+              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
+            </div>
+
+          </div> -->
+        </div>
       </div>
     </div>
 

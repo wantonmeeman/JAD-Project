@@ -19,10 +19,18 @@ Description: ST0510 / JAD Assignment 1
 <%
   String userid = request.getParameter("userid");  
   String role = request.getParameter("role");
-  int productID = Integer.parseInt(request.getParameter("productID"));
-  Connection conn = null;
-
+  Connection conn = null; 
+  String Error = "";
+  
+  String categoryID = request.getParameter("categoryID");
+  String catName = request.getParameter("catName");
+  String catImageURL = request.getParameter("catImageURL");
+  
   //What else to add? try to add image path later maybe?
+ if( catName.equals("") || catImageURL.equals("")){
+	 response.sendRedirect("edit-category.jsp?Err=NullError&userid="+userid+"&role="+role+"&categoryID="+categoryID);
+ }else{
+
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -34,18 +42,21 @@ Description: ST0510 / JAD Assignment 1
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "DELETE FROM products WHERE product_id = "+productID;
+		  		  String query = "UPDATE categories SET category_name= '"+catName+"', image='"+catImageURL+"' WHERE category_id = '"+categoryID+"'"; 
 		  		  Statement st = conn.createStatement();
 			      int rs = st.executeUpdate(query);
 			      conn.close();
-			    	if(rs != 1){
-						out.print("Database Error"); 
-			      	}else{
-			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
-			      	}
-			    	
+			      if(rs != 1){
+			      out.print("Database Error");
+			      }else{
+			    	  response.sendRedirect("admin-page.jsp?Err=EditSuccess&userid="+userid+"&role="+role); //Add EditSuccess at admin-page
+			      }
+			      
+			      
 		  	    
 		  	}
+ 	
+ }
 
 %>
 </body>
