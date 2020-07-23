@@ -99,8 +99,8 @@ Description: ST0510 / JAD Assignment 1
 	Connection conn = null; 
 	try{
 		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		// conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+		//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
 	}catch(Exception e){
 	    out.print(e);
 	}
@@ -126,7 +126,13 @@ Description: ST0510 / JAD Assignment 1
 %>
 
 <body>
-
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
       <div class="site-navbar-top">
@@ -280,7 +286,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-5">
                       <label for="email" class="text-black">Phone Number <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="email" name="phonenumber" placeholder="" value="<%=phonenumber%>">
+                      <input type="number" class="form-control" id="email" name="phonenumber" placeholder="" value="<%=phonenumber%>">
                     </div>
                   </div>
 

@@ -61,9 +61,8 @@ quantityArr = ((int[]) Session.getAttribute("quantityArr"));
 productArr = ((int[]) Session.getAttribute("productArr"));
 try {
 	Class.forName("com.mysql.jdbc.Driver");
-	conn = DriverManager
-	.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 } catch (Exception e) {
 
 }
@@ -132,6 +131,7 @@ try {
 } catch (Exception e) {// if no id or role is detected
 	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 }
+String strTotal = format.format(total);
 %>
 <title>Digit Games &mdash; Shopping Cart</title>
 <meta charset="utf-8">
@@ -240,7 +240,7 @@ try {
 					<div class="col-md-6">
 						<div class="row mb-5">
 							<div class="col-md-6 mb-3 mb-md-0">
-								<a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>'><button
+								<a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>&rd=cart'><button
 										class="btn btn-primary btn-sm btn-block">Clear Cart</button></a>
 							</div>
 							<div class="col-md-6">
@@ -276,7 +276,7 @@ try {
 										<span class="text-black">Total</span>
 									</div>
 									<div class="col-md-6 text-right">
-										<strong class="text-black">$<%=total%></strong>
+										<strong class="text-black">$<%=strTotal%></strong>
 									</div>
 								</div>
 

@@ -6,7 +6,6 @@ Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ page import="java.sql.*" %>
  <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,9 +14,14 @@ Description: ST0510 / JAD Assignment 1
 <%  
 String role = request.getParameter("role");
 String userid = request.getParameter("userid");
+String redirect = request.getParameter("rd");
 HttpSession Session = request.getSession();
 Session.invalidate();
-response.sendRedirect("index.jsp?userid="+userid+"&role="+role);
+if(redirect.equals("index")){
+	response.sendRedirect("index.jsp?userid="+userid+"&role="+role);
+}else if(redirect.equals("cart")){
+	response.sendRedirect("cart.jsp?userid="+userid+"&role="+role);
+}
 %>
 
 </body>

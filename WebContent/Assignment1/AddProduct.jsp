@@ -38,7 +38,6 @@ Description: ST0510 / JAD Assignment 1
   try {
 	 	cPriceFloat = Double.parseDouble(c_price);
 	 	rPriceFloat = Double.parseDouble(r_price);
-	  
   } catch (NumberFormatException e) {
 	  Error = "NumberFormatError";
 	  response.sendRedirect("Editlisting.jsp?Err=NumberFormatError&userid="+userid+"&role="+role);
@@ -55,8 +54,8 @@ Description: ST0510 / JAD Assignment 1
 	 	}else{
 		  try{
 			  	Class.forName("com.mysql.jdbc.Driver");
-			  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-			  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+			  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+			  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  
 			  	if(conn == null){
 			  		out.print("Conn Error");

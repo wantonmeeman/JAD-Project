@@ -13,11 +13,13 @@ Description: ST0510 / JAD Assignment 1
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+<%  DecimalFormat format = new DecimalFormat("#0.00");
+	
 	String sort = request.getParameter("sort");
 	String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String cat = request.getParameter("cat");
+	String categories = "";
 	String productID = "";
 	String Name = "";
 	String briefDescription = "";
@@ -62,8 +64,8 @@ Description: ST0510 / JAD Assignment 1
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
-      	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-        // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+      	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();
@@ -111,11 +113,24 @@ Description: ST0510 / JAD Assignment 1
       	        	
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	productCat = rs.getString("product_cat");
+
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"
-        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
+        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
         	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         }
+        		query = "SELECT category_name FROM categories";
+        		st = conn.prepareStatement(query);
+    		    rs = st.executeQuery(query);
+    		    
+        		while(rs.next()){
+        			categories += "<a class='dropdown-item' href='cat-listings.jsp?userid="+userid+"&role="+role+"&cat="+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</a>";
+        		}
+        		
+        		if(productCat.equals("")){
+        			productCat = cat;
+        		}
+        		
         		conn.close();
 		}}catch(Exception e){
 			out.print(e);
@@ -192,8 +207,10 @@ Description: ST0510 / JAD Assignment 1
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Categories</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black"><%=productCat %></strong></div>
+          <div class="col-md-12 mb-0">
+          <a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Categories</a> 
+          <span class="mx-2 mb-0">/</span> 
+          <strong class="text-black"><%=productCat %></strong></div>
         </div>
       </div>
     </div>
@@ -216,9 +233,7 @@ Description: ST0510 / JAD Assignment 1
                       Categories
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaming Gear">Gaming Gear</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
+                      <%=categories%>
                     </div>
                   </div>
                   <div class="btn-group">

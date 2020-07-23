@@ -33,6 +33,7 @@ Description: ST0510 / JAD Assignment 1
 	String query = "";
 	String Searchquery = "";
 	String CatSearchquery = "";
+	String categories = "";
 	
 	int discountInt = 0; 
 	int roundDiscount = 0;
@@ -64,8 +65,8 @@ Description: ST0510 / JAD Assignment 1
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
-      	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-        //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+      	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();
@@ -74,7 +75,7 @@ Description: ST0510 / JAD Assignment 1
            		Searchquery = "WHERE name LIKE '%"+search+"%'";
            		CatSearchquery = "AND name LIKE '%"+search+"%'";
            	}
-        	
+
         if(productCat == null){
         	if(sort == null){
         			query = "SELECT * FROM products "+Searchquery;
@@ -100,11 +101,9 @@ Description: ST0510 / JAD Assignment 1
         			query = "SELECT * FROM products WHERE product_cat = '"+productCat+"'"+CatSearchquery+" ORDER BY c_price DESC";
         		}
         }	
-				
-        
     	    Statement st = conn.createStatement();
     	    ResultSet rs = st.executeQuery(query);
-    	    
+
         		while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
         			productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
@@ -112,7 +111,6 @@ Description: ST0510 / JAD Assignment 1
         	    	detailedDescription = rs.getString("detailed_description");
         	    	cPrice =  format.format(rs.getDouble("c_price"));
         	    	rPrice  =  format.format(rs.getDouble("r_price"));
-        	    	
       	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
       	        	discountInt = (int)Math.round(discount);
       	        	roundDiscount = (discountInt + 4) / 5 * 5;
@@ -125,15 +123,27 @@ Description: ST0510 / JAD Assignment 1
       	        		discountMsg = "";
       	        	}
         	    	stockQuantity = rs.getInt("stock_quantity");
-        	    	productCat = rs.getString("product_cat");
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"
-        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0'>"+briefDescription+"</p>"
+        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
         	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         		}
+        		query = "SELECT category_name FROM categories";
+        		st = conn.prepareStatement(query);
+    		    rs = st.executeQuery(query);
+    		    
+        		while(rs.next()){
+        			categories += "<a class='dropdown-item' href='cat-listings.jsp?userid="+userid+"&role="+role+"&cat="+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</a>";
+        		}
+
+        		if(productCat == null){
+        			productCat = "Products";
+        		}
+        		
         		conn.close();
 			}
         }catch(Exception e){
+        	out.print(e);
 				
      	};
 %>
@@ -253,9 +263,7 @@ Description: ST0510 / JAD Assignment 1
                        Categories
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Games">Games</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Gaming Gear">Gaming Gear</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&cat=Apparel">Apparel</a>
+                      <%=categories %>
                       <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">None</a>
                     </div>
                   </div>

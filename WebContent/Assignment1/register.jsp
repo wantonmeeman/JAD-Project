@@ -69,7 +69,7 @@ Description: ST0510 / JAD Assignment 1
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate="Enter email">
-						<input id="email" class="input100" type="text" name="email" placeholder="Email">
+						<input id="email" class="input100" type="email" name="email" placeholder="Email">
 						<span class="focus-input100" data-placeholder="&#xf207;"></span>
 					</div>
 

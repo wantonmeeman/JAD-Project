@@ -25,22 +25,21 @@ Description: ST0510 / JAD Assignment 1
   if(!Pass1.equals(Pass2)){
 	  Error += "PasswordNotEqual-";
   }else{
-	  if(4 > Username.length() && Username.length() > 20){
+	  if(4 > Username.length() || Username.length() > 20){
 		  Error += "UsernameSizeInvalid-";
 	  }
-	  if(4 > Pass1.length() && Pass1.length() > 20){
+	  if(4 > Pass1.length() || Pass1.length() > 20){
 		  Error += "PasswordSizeInvalid-";
 	  }
   }
-  
   if(Error.length() > 0){
 	  response.sendRedirect("register.jsp?Err="+Error);
   }else{
 	  Connection conn = null; 
 	  try{
 	  	Class.forName("com.mysql.jdbc.Driver");
-	  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-	  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+	  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+	  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	  	}catch(Exception e){
 		    out.print(e);
 	  	}

@@ -17,6 +17,8 @@ Description: ST0510 / JAD Assignment 1
 	String AdminPage = "";
 	String name = "";
 	String c_price = "";
+	String categories = "";
+	String selected = "";
 	String r_price = "";
 	String stockQuantity = "";
 	String productCat = "";
@@ -64,8 +66,8 @@ Description: ST0510 / JAD Assignment 1
     Connection conn = null;
     try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
 		  	}
@@ -86,6 +88,17 @@ Description: ST0510 / JAD Assignment 1
 			    		detailedDesc = rs.getString("detailed_description");
 			    		image = rs.getString("image");
 			      }
+			        query = "SELECT category_name FROM categories";
+					st = conn.prepareStatement(query);
+				    rs = st.executeQuery(query);
+				   	while(rs.next()){
+				   		if(productCat.equals(rs.getString("category_name"))){
+				   			selected = "selected";
+				   		}else{
+				   			selected = "";
+				   		}
+				   		categories += "<option value='"+rs.getString("category_name")+"'"+selected+">"+rs.getString("category_name")+"</option>";
+				   }
 			      conn.close();
 		  	}
     	%>
@@ -225,11 +238,10 @@ Description: ST0510 / JAD Assignment 1
                     <div class="col-md-6">
                       <label for="productCat" class="text-black">Product Category <span
                           class="text-danger">*</span></label>
-                      <select class="form-control" id="productCat" name="productCat" placeholder="Category">
-                      	<option value="Games">Games</option>
-                      	<option value="Gaming Gear">Gaming Gear</option>
-                      	<option value="Apparel">Apparel</option>
-                      </select>
+                       <br>
+                      <select name="productCat">
+                      		<%=categories %>
+                      	</select>
                     </div>
 
                   </div>

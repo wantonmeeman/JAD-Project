@@ -7,11 +7,13 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <%  String userid = request.getParameter("userid");  
 	String role = request.getParameter("role");
 	String AdminPage = "";
+	String categories = "";
 	String Error = request.getParameter("Err");
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
@@ -33,21 +35,36 @@ Description: ST0510 / JAD Assignment 1
              }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         }
-    	
+        
+        Connection conn = null;
+        try{
+		  	Class.forName("com.mysql.jdbc.Driver");
+		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		}catch(Exception e){
+			out.print(e);
+		}
+        
+        String query = "SELECT category_name FROM categories";
+		Statement st = conn.prepareStatement(query);
+	    ResultSet rs = st.executeQuery(query);
+	   	while(rs.next()){
+	   		categories += "<option value='"+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</option>";
+	   	}
     	try{
-    	if(Error.equals("NullError")){
-    		out.print("<script>alert('Please Fill in all required fields!')</script>");
-    	}
-    	if(Error.equals("NumberFormatError")){
-			out.print("<script>alert('Prices are not in numbers format!')</script>");
-    	}
-    	
-		if(Error.equals("NegativeError")){
-			out.print("<script>alert('Do not enter negative numbers!')</script>");
-    	}
-		if(Error.equals("AddSuccess")){
-			out.print("<script>alert('Product Successfully Added!')</script>");
-    	}
+		   	if(Error.equals("NullError")){
+		   		out.print("<script>alert('Please Fill in all required fields!')</script>");
+		   	}
+		   	if(Error.equals("NumberFormatError")){
+				out.print("<script>alert('Prices are not in numbers format!')</script>");
+		   	}
+		   	
+			if(Error.equals("NegativeError")){
+				out.print("<script>alert('Do not enter negative numbers!')</script>");
+		   	}
+			if(Error.equals("AddSuccess")){
+				out.print("<script>alert('Product Successfully Added!')</script>");
+		   	}
     	}catch(Exception e){
     		
     	}
@@ -188,8 +205,11 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="productCat" class="text-black">Product Category <span
-                          class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="productCat" name="productCat" placeholder="Category">
+                          class="text-danger">*</span></label><br>
+                      	<select name="productCat">
+                      		<%=categories %>
+                      
+                      	</select>
                     </div>
 
                   </div>

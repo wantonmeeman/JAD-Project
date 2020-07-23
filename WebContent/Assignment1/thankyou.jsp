@@ -45,8 +45,8 @@ Description: ST0510 / JAD Assignment 1
     Connection conn = null;
     try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
     }catch(Exception e){
 	    out.print(e); 
   	}
@@ -141,7 +141,7 @@ Description: ST0510 / JAD Assignment 1
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Thank you!</h2>
             <p class="lead mb-5">Your order has been successfully completed.</p>
-            <p><a href="shop.jsp" class="btn btn-sm btn-primary">Back to shop</a></p>
+            <p><a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>&rd=index' class="btn btn-sm btn-primary">Back to Homepage</a></p>
           </div>
         </div>
       </div>
