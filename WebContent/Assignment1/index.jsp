@@ -13,8 +13,7 @@ Description: ST0510 / JAD Assignment 1
 <!DOCTYPE html>
 <html lang="en">
 <%  DecimalFormat format = new DecimalFormat("#0.00"); 
-	String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");
+	HttpSession Session = request.getSession();
 	String AdminPage = "";
 	String productID = "";
 	String Name = "";
@@ -35,26 +34,35 @@ Description: ST0510 / JAD Assignment 1
 	double discount = 0.00;
 	String discountMsg = "";
 	String priceMsg = "";
+	int userid = 0;  
+	String role = "";
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
-                		
-                Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                        + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+	try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		
+	} 
+	try{
+    	if(role.equals("admin")){ 
+            AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+            		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
+            		
+            Header = "<div class='site-top-icons'>"
+                    + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                      + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+                      + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li id='logoutButton'></li></ul></div>";              
+         } else if (role.equals("member")) {
+        	  Header = "<div class='site-top-icons'>"
+                      + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                        + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                         + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                        + "<li id='logoutButton'></li></ul></div>"; 
-              } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                            + "<li id='logoutButton'></li></ul></div>";     	
-     	                 
-        	  }}catch(Exception e){// if no id or role is detected
+                        + "<li id='logoutButton'></li></ul></div>";     
+              AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
+         }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	                 
         	  }
@@ -125,11 +133,11 @@ Description: ST0510 / JAD Assignment 1
 	        	    	featuredProd += "<div class='item col-lg-4'>"
 								+ "<div class='block-4 text-center'>"
 								+ "<figure class='block-4-image'>"
-								+ "<a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'><img src=\"" + imageUrl + "\" alt=\"Image placeholder\" class=\"img-fluid\"></a>"
+								+ "<a href='product.jsp?productid="+productID+"'><img src=\"" + imageUrl + "\" alt=\"Image placeholder\" class=\"img-fluid\"></a>"
 								+ "</figure>"
 								+ "<div class=\"block-4-text p-4\">"
 								+ "<h3 id=\"listingTitle\">"
-								+ "<a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>" + Name + "</a>"
+								+ "<a href='product.jsp?productid="+productID+"'>" + Name + "</a>"
 								+ "</h3>"
 								+ "<p class=\"mt-3 mb-0\">" + briefDescription + "</p>"
 								+ "<p class=\"text-primary font-weight-bold mt-4\">Price: </text>" + priceMsg + discountMsg + "</p>"
@@ -154,7 +162,6 @@ Description: ST0510 / JAD Assignment 1
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
   <link rel="stylesheet" href="fonts/icomoon/style.css">
-
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/magnific-popup.css">
   <link rel="stylesheet" href="css/jquery-ui.css">
@@ -182,7 +189,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href='index.jsp? ' class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -203,11 +210,11 @@ Description: ST0510 / JAD Assignment 1
 
           <!-- Navigation Bar -->
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
 

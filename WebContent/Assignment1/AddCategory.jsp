@@ -17,8 +17,15 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
+HttpSession Session = request.getSession();
+int userid = 0;
+String role = "";
+try{
+	userid = (int)Session.getAttribute("userid");  
+   	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
   Connection conn = null; 
   String Error = "";
   
@@ -28,7 +35,7 @@ Description: ST0510 / JAD Assignment 1
   	
   //What else to add? try to add image path later maybe?
  if( catName.equals("") || catImageURL.equals("")){
-	 response.sendRedirect("all-users.jsp?Err=NullError&userid="+userid+"&role="+role);
+	 response.sendRedirect("all-users.jsp?Err=NullError");
 	 
  } else {
 
@@ -54,7 +61,7 @@ Description: ST0510 / JAD Assignment 1
 			      	out.print("Database Error"); 
 			      	
 			      } else {
-			    	 response.sendRedirect("admin-page.jsp?Err=AddSuccess&userid="+userid+"&role="+role);
+			    	 response.sendRedirect("admin-page.jsp?Err=AddSuccess");
 			    	 
 			      }
 			      conn.close();

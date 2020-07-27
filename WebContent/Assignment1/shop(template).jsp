@@ -11,25 +11,26 @@ Description: ST0510 / JAD Assignment 1
 <html lang="en">
 
 <head>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");
+<%  HttpSession Session = request.getSession();
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
+        	int userid = (int)Session.getAttribute("userid");  
+        	String role = (String)Session.getAttribute("role");
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
         	  }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
@@ -71,7 +72,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp? " class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -90,11 +91,11 @@ Description: ST0510 / JAD Assignment 1
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
          <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
         </div>

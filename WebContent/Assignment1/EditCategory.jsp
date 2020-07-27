@@ -17,20 +17,28 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
-  Connection conn = null; 
-  String Error = "";
+HttpSession Session = request.getSession();
+int userid = 0;  
+String role = "";
+Connection conn = null; 
+String Error = "";
   
-  String categoryID = request.getParameter("categoryID");
-  String catName = request.getParameter("catName");
-  String catImageURL = request.getParameter("catImageURL");
+String categoryID = request.getParameter("categoryID");
+String catName = request.getParameter("catName");
+String catImageURL = request.getParameter("catImageURL");
   
   //What else to add? try to add image path later maybe?
- if( catName.equals("") || catImageURL.equals("")){
-	 response.sendRedirect("edit-category.jsp?Err=NullError&userid="+userid+"&role="+role+"&categoryID="+categoryID);
- }else{
+		  
 
+if( catImageURL == null || catName == null || catImageURL.equals("") || catName.equals("")){
+	response.sendRedirect("edit-category.jsp?Err=NullError&categoryID="+categoryID);
+}else{
+	try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		response.sendRedirect("404.jsp");
+	} 
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -49,7 +57,7 @@ Description: ST0510 / JAD Assignment 1
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect("admin-page.jsp?Err=EditSuccess&userid="+userid+"&role="+role); //Add EditSuccess at admin-page
+			    	  response.sendRedirect("admin-page.jsp?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      

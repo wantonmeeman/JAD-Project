@@ -13,12 +13,18 @@ Description: ST0510 / JAD Assignment 1
 <head>
 <%
 HttpSession Session = request.getSession();
+int userid = 0;  
+String role = "";
 String quantity = request.getParameter("quantity");
-String userid = request.getParameter("userid");  
-String role = request.getParameter("role");
 String productID = (String)Session.getAttribute("productID");
 Connection conn = null;
 int dbquantity = 0;
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
 try{
 	Class.forName("com.mysql.jdbc.Driver");
 	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -36,15 +42,13 @@ if(conn == null){
 	while(rs.next()){
 		dbquantity = rs.getInt("stock_quantity");
 	} 
+	conn.close();
 		if( quantity.equals("") || Integer.parseInt(quantity) <= 0){
-				response.sendRedirect("product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"&Err=Invalid");
-				conn.close();
+				response.sendRedirect("product.jsp?productid="+productID+"&Err=Invalid");
 		}else if(dbquantity < Integer.parseInt(quantity)){
-				response.sendRedirect("product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"&Err=OverStk");
-				conn.close();
+				response.sendRedirect("product.jsp?productid="+productID+"&Err=OverStk");
 		}else{
-			response.sendRedirect("cart.jsp?userid="+userid+"&role="+role+"&quantity="+quantity);
-			conn.close();
+			response.sendRedirect("cart.jsp?quantity="+quantity);
 		}
 }
 %>

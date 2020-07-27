@@ -8,19 +8,17 @@ Description: ST0510 / JAD Assignment 1
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.*" %>
-<%@page import="java.text.DecimalFormat" %>
+ <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0.00");
-	
-	String sort = request.getParameter("sort");
+
+<%  DecimalFormat format = new DecimalFormat("#0.00"); 
 	HttpSession Session = request.getSession();
-	int userid =  0;
-	String role = "";
-	String cat = request.getParameter("cat");
-	String categories = "";
+	String productCat = request.getParameter("cat");
+	String sort = request.getParameter("sort");
+	String search = request.getParameter("search");
 	String productID = "";
 	String Name = "";
 	String briefDescription = "";
@@ -28,27 +26,45 @@ Description: ST0510 / JAD Assignment 1
 	String cPrice = "";
 	String rPrice = "";
 	int stockQuantity = 0;
-	String productCat = "";
 	String image = "";
 	String cells = "";
 	String AdminPage = "";
+	String query = "";
+	String Searchquery = "";
 	String CatSearchquery = "";
-	String search = request.getParameter("search");
+	String categories = "";
 	
 	int discountInt = 0; 
 	int roundDiscount = 0;
 	double discount = 0.00;
 	String discountMsg = "";
 	String priceMsg = "";
+	int userid = 0;  
+	String role = "";
 	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	String orders = "";
+	String orderAddress = "";
+	String orderCountry = "";
+	String orderProduct = "";
+	int orderProductID = 0;
+	String orderCompany = "";
+	String orderQuantity = "";
+	double orderTotal = 0;
+	String orderNotes = "";
+	String orderZipcode = "";
+	String orderCardNumber = "";
+	String orderImage = "";
+	String orderDate = "";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
-		role = (String)Session.getAttribute("role");
+	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
+		response.sendRedirect("404.jsp");
 	}
-		try{
-			if(role.equals("admin")){ 
+	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+        try{
+        	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
@@ -67,8 +83,8 @@ Description: ST0510 / JAD Assignment 1
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
              }
         }catch(Exception e){// if no id or role is detected
-        	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        }	
+    	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}	
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
@@ -78,73 +94,50 @@ Description: ST0510 / JAD Assignment 1
         	out.print("Conn Error");
         	conn.close();
         }else{
-        	if(!(search == null || search.equals("") || search.equals(" "))){
-           		CatSearchquery = "AND name LIKE '%"+search+"%'";
-           	}
-        	String query = "";
-        	if(sort == null || sort.equals("Relevance")){
-        		query = "SELECT * FROM products WHERE product_cat = ?"+CatSearchquery;
-        	}else if(sort.equals("AZ")){
-        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name"+CatSearchquery;
-        	}else if(sort.equals("ZA")){
-        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY name DESC"+CatSearchquery;
-        	}else if(sort.equals("PLH")){
-        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price"+CatSearchquery;
-        	}else if(sort.equals("PHL")){
-        		query = "SELECT * FROM products WHERE product_cat = ? ORDER BY c_price DESC"+CatSearchquery;
-        	}
-        	   
-				
-        	    PreparedStatement st = conn.prepareStatement(query); 
-        	    st.setString(1,cat);
-				ResultSet rs =  st.executeQuery();
-				
-        		while(rs.next()){				//rs.next() returns true if there is a row below the current one, and moves to it when called.
-        	    	productID = rs.getString("product_id");
-        	    	Name = rs.getString("name");
-        	    	briefDescription = rs.getString("brief_description");
-        	    	detailedDescription = rs.getString("detailed_description");
-        	    	cPrice =  format.format(rs.getDouble("c_price"));
-        	    	rPrice  =  format.format(rs.getDouble("r_price"));
-        	    	
-      	          	discount = ((Double.parseDouble(rPrice) - Double.parseDouble(cPrice)) / Double.parseDouble(rPrice))*100;
-      	        	discountInt = (int)Math.round(discount);
-      	        	roundDiscount = (discountInt + 4) / 5 * 5;
-      	        	
-      	        	if (roundDiscount != 0) {
-      	        		priceMsg = "<s>$ " + rPrice + "</s> $" + cPrice;
-      	        		discountMsg = " (" + roundDiscount + "% Off)";
-      	        	} else if (roundDiscount == 0){
-      	        		priceMsg = "$" + rPrice;
-      	        		discountMsg = "";
-      	        	}
-      	        	
-        	    	stockQuantity = rs.getInt("stock_quantity");
-        	    	productCat = rs.getString("product_cat");
+        	query = "SELECT * FROM orders WHERE fk_userid = "+userid;
+		    Statement st = conn.createStatement();
+		    ResultSet rs = st.executeQuery(query);
+		    while (rs.next()) {
+		    	//orderDate = rs.getString("date");
+		    	orderProductID = rs.getInt("fk_productid");
+		    	orderDate = rs.getString("date");//rs.getString("cardnumber");
+		    	orderCardNumber = rs.getString("cardnumber");
+		    	orderAddress = rs.getString("address");
+		    	orderZipcode = rs.getString("zipcode");
+		    	orderCompany = rs.getString("company");
+		    	orderTotal = rs.getDouble("total");
+		    	orderNotes = rs.getString("notes");
+		    	orderQuantity = rs.getString("quantity");
+		    	
+		    	query = "SELECT * FROM products WHERE product_id = "+orderProductID;
+			    st = conn.createStatement();
+			    ResultSet rs1 = st.executeQuery(query);
 
-        	    	image = rs.getString("image");
-        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?productid="+productID+"'>"
-        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
-        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+				while(rs1.next()){
+					orderImage = rs1.getString("image");
+				    orderProduct = rs1.getString("name");
+				}
+			    
+		    	orders += "<tr>"
+		    			+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>"
+        	    		+ "<td class='col-md-12'>" + orderProduct + "</td>"
+        	    		+ "<td>" + orderDate + "</td>"
+        	    		+ "<td>" + orderCardNumber.replaceFirst(".{7}", "*******") + "</td>"
+        	    		+ "<td>" + orderAddress + "</td>"
+        	    		+ "<td>" + orderZipcode+ "</td>"
+        	    		+ "<td>" + orderCompany + "</td>"
+                	    + "<td>" + orderQuantity+ "</td>"
+                	    + "<td>$" + format.format(orderTotal)+ "</td>"
+                	    + "<td class='col-md-12' span='1'>" + orderNotes + "</td>"
+        	    		+ "<div class='ml-4 col-md-2'>"
+        	    		+ "</div></div></td></tr>";
         }
-        		query = "SELECT category_name FROM categories";
-        		st = conn.prepareStatement(query);
-    		    rs = st.executeQuery(query);
-    		    
-        		while(rs.next()){
-        			categories += "<a class='dropdown-item' href='cat-listings.jsp?cat="+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</a>";
-        		}
-        		
-        		if(productCat.equals("")){
-        			productCat = cat;
-        		}
-        		
-        		conn.close();
-		}}catch(Exception e){
-			out.print(e);
-     	};
-    
-    	%>
+        }
+     }catch(Exception e){
+    	 out.print(e);
+     }
+        
+%>
   <title>Digit Games &mdash; All Products</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -160,15 +153,36 @@ Description: ST0510 / JAD Assignment 1
 
   <link rel="stylesheet" href="css/myoverride.css">
 
+
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+
 </head>
 
 <body>
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span id="close" class="close">&times;</span>
+      <div class="form-group row">
+
+        <div class="col-md-5">
+          <form>
+            <label for="offer" class="text-black">Make Offer: </label>
+            <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
+            <button type="button" id="submitOffer">Offer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
 
   <div class="site-wrap">
@@ -188,8 +202,9 @@ Description: ST0510 / JAD Assignment 1
             </div>
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-             <div class="site-top-icons">
+              <div class="site-top-icons">
        
+	  		
                 <%=Header%>
 
               </div>
@@ -211,90 +226,29 @@ Description: ST0510 / JAD Assignment 1
         </div>
       </nav>
     </header>
-
-    <div class="bg-light py-3">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 mb-0">
-          <a href="categories.jsp? ">Categories</a> 
-          <span class="mx-2 mb-0">/</span> 
-          <strong class="text-black"><%=productCat %></strong></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="site-section">
-      <div class="container">
-
-        <div class="row mb-5">
-          <div class="col-md-12 order-2">
-
-            <div class="row">
-              <div class="col-md-12 mb-5">
-                <div class="float-md-left mb-4">
-                  <h2 id="searchHeader" class="text-black h5">All <%=productCat%><h2>
-                </div>
-                <div class="d-flex">
-                  <div class="dropdown mr-1 ml-md-auto">
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuOffset"
-                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Categories
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                      <%=categories%>
-                    </div>
-                  </div>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
-                      data-toggle="dropdown">Reference</button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="cat-listings.jsp?cat=<%=cat%>&sort=Relevance">Relevance</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?cat=<%=cat%>&sort=AZ">Name, A to Z</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?cat=<%=cat%>&sort=ZA">Name, Z to A</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="cat-listings.jsp?cat=<%=cat%>&sort=PLH">Price, low to high</a>
-                      <a class="dropdown-item" href="cat-listings.jsp?cat=<%=cat%>&sort=PHL">Price, high to low</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6">
-                <form action="cat-listings.jsp" class="">
-                  <span class="icon icon-search2"></span>
-                  <input type="hidden" name="cat" value="<%=productCat%>">
-                  <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">
-                  <button type="submit" onclick="" id="searchbutton">Search</button>
-                </form>
-              </div>
-            </div>
-
-            <div id="allListings" class="  row mb-5">
-
-              <!-- 1 SAMPLE PRODUCT (CHANGE TO LOOP) -->
-              <%=cells%>
-
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="site-section site-blocks-2">
-
-
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    <div class="container">
+    <div class="mt-12">
+    	<table class="table table-hover">
+		            <thead>
+		              <tr>
+		                <th scope="col">Product</th>
+		                <th scope="col">Title</th>
+		                <th scope="col">Date</th>
+		                <th scope="col">Card Number</th>
+		                <th scope="col">Address</th>
+		                <th scope="col">Zipcode</th>
+		                <th scope="col">Company</th>
+		                <th scope="col">Quantity</th>
+		                <th scope="col">Total</th>
+		                <th scope="col">Notes</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		              <%=orders%>
+		            </tbody>
+		          </table>	
+		        </div>
+		        </div>
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">

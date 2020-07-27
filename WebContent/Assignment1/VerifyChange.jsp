@@ -19,17 +19,23 @@ Description: ST0510 / JAD Assignment 1
 <%
   Connection conn = null; 
   String Error = "";
+  HttpSession Session = request.getSession();
+  int userid = 0 ; 
+  String role = "";
   String Username = request.getParameter("username"); 
   String Email = request.getParameter("email");
   String firstName = request.getParameter("firstname");
   String lastName = request.getParameter("lastname");
   String phoneNumber = request.getParameter("phonenumber");
-  String role = request.getParameter("role");
-  String userid = request.getParameter("userid");
   String oldPassword = request.getParameter("oldPw");
   String newPassword1 = request.getParameter("newPw");
   String newPassword2 = request.getParameter("reenterPw");
-  
+  try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		response.sendRedirect("404.jsp");
+	}
   if (oldPassword == null){//EDIT PROFILE
 	  if(4 > Username.length() || Username.length() > 20){
 		  Error += "UsernameSizeInvalid-";
@@ -51,7 +57,7 @@ Description: ST0510 / JAD Assignment 1
 			  	      Statement st = conn.createStatement();
 				      int rs = st.executeUpdate(query);
 				     if(rs == 1){
-				      response.sendRedirect("profile.jsp?Err=ProfileSuccess&userid="+userid+"&role="+role);
+				      response.sendRedirect("profile.jsp?Err=ProfileSuccess");
 				      conn.close();
 				     }else{
 				      out.print("Conn Error");

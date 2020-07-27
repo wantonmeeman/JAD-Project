@@ -17,18 +17,24 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
-  Connection conn = null; 
-  String Error = "";
+HttpSession Session = request.getSession();
+int userid = (int)Session.getAttribute("userid");  
+String role = (String)Session.getAttribute("role");
+Connection conn = null; 
+String Error = "";
   
-  String dbRoleID = request.getParameter("dbRoleID");
-  String roleName = request.getParameter("roleName");
-  
+String dbRoleID = request.getParameter("dbRoleID");
+String roleName = request.getParameter("roleName");
   
   //What else to add? try to add image path later maybe?
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+} 
  if( roleName.equals("")){
-	 response.sendRedirect("edit-role.jsp?Err=NullError&userid="+userid+"&role="+role+"&dbRoleID="+dbRoleID);
+	 response.sendRedirect("edit-role.jsp?Err=NullError&dbRoleID="+dbRoleID);
  }else{
 
 	  try{
@@ -50,7 +56,7 @@ Description: ST0510 / JAD Assignment 1
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect("all-users.jsp?Err=EditSuccess&userid="+userid+"&role="+role); //Add EditSuccess at admin-page
+			    	  response.sendRedirect("all-users.jsp?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      

@@ -35,7 +35,7 @@ Description: ST0510 / JAD Assignment 1
 
 </head>
 <% 
-
+	
 	try{
 		
 		String Error = request.getParameter("Err");
@@ -49,6 +49,9 @@ Description: ST0510 / JAD Assignment 1
 			}
 			if(ErrorArray[i].equals("Success")){
 				out.print("<script>alert('User Details were successfully changed!')</script>");
+			}
+			if(ErrorArray[i].equals("DatabaseError")){
+				out.print("<script>alert('There is a Database Error!')</script>");
 			}
 			if(ErrorArray[i].equals("PasswordNotEqual")){
 				out.print("<script>alert('Passwords do not match!')</script>");
@@ -67,30 +70,56 @@ Description: ST0510 / JAD Assignment 1
 		
 	}
 	
-	String userid = request.getParameter("userid"); 
-	String role = request.getParameter("role");
+	HttpSession Session = request.getSession();
 	String email = "";
 	String username = "";
 	String AdminPage = "";
 	String phonenumber = "";
 	String lastname = "";
 	String firstname = "";
+	int userid = 0;
+	String role = "";
+	String address = "";
+	String country = "";
+	String zipcode = "";
+	String company = "";
+	String CCV = "";
+	String cardnumber = "";
+	String expirydate = "";
+	String orders = "";
+	String orderAddress = "";
+	String orderCountry = "";
+	String orderProduct = "";
+	int orderProductID = 0;
+	String orderCompany = "";
+	String orderQuantity = "";
+	String orderTotal = "";
+	String orderNotes = "";
+	String orderZipcode = "";
+	String orderCardNumber = "";
+	String orderImage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 	try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		response.sendRedirect("404.jsp");
+	}
+	try{
 		if(role.equals("admin")){ 
-	        AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-            		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+	        AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
             		
 	        Header = "<div class='site-top-icons'>"
-	                + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-	                  + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-	                  + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                  + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+	                  + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
 	                  + "<li id='logoutButton'></li></ul></div>";              
 	     } else if (role.equals("member")) {
 	    	  Header = "<div class='site-top-icons'>"
-	                  + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-	                    + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-	                    + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                  + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                    + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+	                    + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
 	                    + "<li id='logoutButton'></li></ul></div>";     
 		  }}catch(Exception e){// if no id or role is detected
 			  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
@@ -104,6 +133,7 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 	    out.print(e);
 	}
+	
 		if(conn == null){
 			out.print("Conn Error");
 			conn.close();
@@ -112,14 +142,21 @@ Description: ST0510 / JAD Assignment 1
 		    Statement st = conn.createStatement();
 		    ResultSet rs = st.executeQuery(query);
 		    while (rs.next()) {
+		    	address = rs.getString("address");
+		    	country = rs.getString("country");
+		    	zipcode = rs.getString("zipcode");
+		    	company = rs.getString("company");
 		    	email = rs.getString("email");
 		    	username = rs.getString("username");
 		    	firstname = rs.getString("firstname");
 		    	lastname = rs.getString("lastname");
 		    	phonenumber = rs.getString("phonenumber");
+		        cardnumber = rs.getString("cardnumber");
+		    	CCV = rs.getString("CCV");
+		    	expirydate = rs.getString("expirydate");
 		    }
 		}
-	
+		    
 		 	conn.close();
 		
 
@@ -136,7 +173,7 @@ input::-webkit-inner-spin-button {
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
       <div class="site-navbar-top">
-        <div class="container">
+        <div class="container" >
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
@@ -145,7 +182,7 @@ input::-webkit-inner-spin-button {
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp? " class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -162,13 +199,13 @@ input::-webkit-inner-spin-button {
         </div>
       </div>
       <nav class="site-navigation text-right text-md-center" role="navigation">
-        <div class="container">
+        <div class="container" >
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
         </div>
@@ -195,7 +232,7 @@ input::-webkit-inner-spin-button {
           <div class="tab">
             <button class="tablinks" onclick="openCity(event, 'myProfileTab')" id="defaultOpen">My Profile</button>
             <button class="tablinks" onclick="openCity(event, 'editProfileTab')">Edit Profile</button>
-            <button class="tablinks" onclick="openCity(event, 'addressTab')">My Billing Address</button>
+            <button class="tablinks" onclick="openCity(event, 'addressTab')">My Delivery Details</button>
             <button class="tablinks" onclick="openCity(event, 'chgPwTab')">Change Password</button>
           </div>
 
@@ -245,7 +282,7 @@ input::-webkit-inner-spin-button {
           <div id="editProfileTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="VerifyChange.jsp?userid=<%=userid %>&role=<%=role %>" method="post" class="test">
+              <form action="VerifyChange.jsp" method="post" class="test">
 
                 <div class="p-3 p-lg-5 border">
 
@@ -304,38 +341,49 @@ input::-webkit-inner-spin-button {
           <div id="addressTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="#" method="post">
+              <form action="http://localhost:12978/ST0510-JAD/editDeliveryDetails" method="post">
 
                 <div class="p-3 p-lg-5 border">
 
                   <div class="form-group row">
                     <div class="col-md-12">
                       <label for="address" class="text-black">Address </label>
-                      <input type="text" class="form-control" id="address" name="address">
+                      <input type="text" class="form-control" id="address" name="address" value="<%=address%>">
                     </div>
                   </div>
 
                   <div class="form-group row">
-                    <div class="col-md-6">
-                      <label for="city" class="text-black">City </label>
-                      <input type="text" class="form-control" id="city" name="city">
-                    </div>
-                    <div class="col-md-6">
-                      <label for="region" class="text-black">Region </label>
-                      <input type="text" class="form-control" id="region" name="region">
+                    <div class="col-md-8">
+                      <label for="city" class="text-black">Company</label>
+                      <input type="text" class="form-control" id="city" name="company" value="<%=company%>">
                     </div>
                   </div>
 
                   <div class="form-group row mb-5">
                     <div class="col-md-6">
                       <label for="country" class="text-black">Country </label>
-                      <input type="text" class="form-control" id="country" name="country">
+                      <input type="text" class="form-control" id="country" name="country" value="<%=country%>">
                     </div>
                     <div class="col-md-6">
-                      <label for="postal" class="text-black">Postal </label>
-                      <input type="text" class="form-control" id="postal" name="postal">
+                      <label for="postal" class="text-black">Zipcode </label>
+                      <input type="text" class="form-control" id="zipcode" name="zipcode" value="<%=zipcode%>"> 
                     </div>
                   </div>
+                  <div class="form-group row mb-5">
+                    <div class="col-md-6">
+                      <label for="country" class="text-black">Card number </label>
+                      <input type="text" class="form-control" id="country" name="cardnumber" value="<%=cardnumber%>">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="postal" class="text-black">CCV </label>
+                      <input type="text" class="form-control" id="zipcode" name="CCV" value="<%=CCV%>"> 
+                    </div>
+                    <div class="col-md-3">
+                      <label for="postal" class="text-black">Expiry Date</label>
+                      <input type="text" class="form-control" id="zipcode" name="expirydate" value="<%=expirydate%>"> 
+                    </div>
+                  </div>
+                  
 
                   <div class="form-group row">
                     <div class="col-lg-12">
@@ -352,7 +400,7 @@ input::-webkit-inner-spin-button {
           <div id="chgPwTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="VerifyChange.jsp?userid=<%=userid %>&role=<%=role%>" method="post">
+              <form action="VerifyChange.jsp" method="post">
 
                 <div class="p-5 p-lg-10 border">
 
@@ -398,6 +446,13 @@ input::-webkit-inner-spin-button {
             </div>
 
           </div>
+          
+          
+              
+            </div>
+
+          </div>
+          
 
         </div>
       </div>
@@ -405,7 +460,7 @@ input::-webkit-inner-spin-button {
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">
-      <div class="container">
+      <div class="container" >
         <div class="row">
 
           <div class="col-lg-4 mb-5 mb-lg-0">

@@ -65,7 +65,10 @@ try{
 	      	if(user_id == -1){
 				response.sendRedirect("loginpage.jsp?Login=Err");
 	      	}
-	      response.sendRedirect("index.jsp?userid="+user_id+"&role="+role);
+	      HttpSession Session = request.getSession();
+	      Session.setAttribute("userid",user_id);
+	      Session.setAttribute("role",role);
+	      response.sendRedirect("index.jsp");
 	   }
 	}catch(Exception e){
 		out.print(e);

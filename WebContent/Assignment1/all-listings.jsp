@@ -15,8 +15,7 @@ Description: ST0510 / JAD Assignment 1
 <head>
 
 <%  DecimalFormat format = new DecimalFormat("#0.00"); 
-	String userid = request.getParameter("userid");  //TODO, SORT USING MYSQL QUERIES, DONT USE JAVA
-	String role = request.getParameter("role");
+	HttpSession Session = request.getSession();
 	String productCat = request.getParameter("cat");
 	String sort = request.getParameter("sort");
 	String search = request.getParameter("search");
@@ -40,24 +39,34 @@ Description: ST0510 / JAD Assignment 1
 	double discount = 0.00;
 	String discountMsg = "";
 	String priceMsg = "";
+	int userid = 0;  
+	String role = "";
 	
+	try{
+		userid = (int)Session.getAttribute("userid");  
+	    role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+	
+	}
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+                		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                           + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                             + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
+                  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
              }
         }catch(Exception e){// if no id or role is detected
     	 Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
@@ -124,16 +133,16 @@ Description: ST0510 / JAD Assignment 1
       	        	}
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	image = rs.getString("image");
-        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"
-        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
-        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?userid="+userid+"&role="+role+"&productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
+        	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?productid="+productID+"'>"
+        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
+        	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         		}
         		query = "SELECT category_name FROM categories";
         		st = conn.prepareStatement(query);
     		    rs = st.executeQuery(query);
     		    
         		while(rs.next()){
-        			categories += "<a class='dropdown-item' href='cat-listings.jsp?userid="+userid+"&role="+role+"&cat="+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</a>";
+        			categories += "<a class='dropdown-item' href='cat-listings.jsp?cat="+rs.getString("category_name")+"'>"+rs.getString("category_name")+"</a>";
         		}
 
         		if(productCat == null){
@@ -206,7 +215,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp? " class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -225,11 +234,11 @@ Description: ST0510 / JAD Assignment 1
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
         </div>
@@ -239,7 +248,7 @@ Description: ST0510 / JAD Assignment 1
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a> <span class="mx-2 mb-0">/</span> <strong
+          <div class="col-md-12 mb-0"><a href="index.jsp? ">Home</a> <span class="mx-2 mb-0">/</span> <strong
               class="text-black">Products</strong></div>
         </div>
       </div>
@@ -264,19 +273,19 @@ Description: ST0510 / JAD Assignment 1
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                       <%=categories %>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">None</a>
+                      <a class="dropdown-item" href="all-listings.jsp? ">None</a>
                     </div>
                   </div>
                   <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Reference</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Relevance</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=AZ">Name, A to Z</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=ZA">Name, Z to A</a>
+                      <a class="dropdown-item" href="all-listings.jsp? ">Relevance</a>
+                      <a class="dropdown-item" href="all-listings.jsp?sort=AZ">Name, A to Z</a>
+                      <a class="dropdown-item" href="all-listings.jsp?sort=ZA">Name, Z to A</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=PLH">Price, low to high</a>
-                      <a class="dropdown-item" href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>&sort=PHL">Price, high to low</a>
+                      <a class="dropdown-item" href="all-listings.jsp?sort=PLH">Price, low to high</a>
+                      <a class="dropdown-item" href="all-listings.jsp?sort=PHL">Price, high to low</a>
                     </div>
                   </div>
                 </div>
@@ -287,9 +296,6 @@ Description: ST0510 / JAD Assignment 1
               <div class="col-md-6">
                 <form action="all-listings.jsp" class="">
                   <span class="icon icon-search2"></span>
-                  <input type="hidden" name="userid" value="<%=userid%>">
-                  <input type="hidden" name="role" value="<%=role%>">
-                  <input type="hidden" name="cat" value="<%=productCat%>">
                   <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">
                   <button type="submit" onclick="" id="searchbutton">Search</button>
                 </form>

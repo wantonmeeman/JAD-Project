@@ -14,46 +14,74 @@ Description: ST0510 / JAD Assignment 1
 
 <head>
 <%
-	String userid = request.getParameter("userid");
-String role = request.getParameter("role");
+
+HttpSession Session = request.getSession();
 String Err = request.getParameter("Err");
 String name = "";
 String r_price = "";
 String image = "";
 String rows = "";
+String disabled = "";
 DecimalFormat format = new DecimalFormat("#0.00");
-HttpSession Session = request.getSession();
 String quantity = request.getParameter("quantity");
-String productID = (String) Session.getAttribute("productID");
+String productID = String.valueOf(Session.getAttribute("productID"));
 double total = 0;
+int userid = 0;  
+String role = "";
 int[] productArr = {};
 int[] quantityArr = {};
-
 //Connecting to Database
 Connection conn = null;
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
+try{
+	switch(Err) {
+		case "Invalid":
+			out.print("<script>alert('Invalid Input')</script>");
+		break;
+		case "OverStk":
+			out.print("<script>alert('Amount specified is more than stock value')</script>");
+		break;
+	}
+}catch(Exception e){
+	
+}
+try{
 if (quantity != null) {
 	//Creating new cart or adding to cart 
-	if (Session.getAttribute("productArr") == null) { //Creating new cart
-		productArr = new int[10];
-		quantityArr = new int[10];
+	
+	if (Session.getAttribute("productArr") == null || ((int[])Session.getAttribute("productArr"))[0] == 0) { //Creating new cart
+		productArr = new int[50];
+		quantityArr = new int[50];
 		productArr[0] = Integer.parseInt(productID);
 		quantityArr[0] = Integer.parseInt(quantity);
 		Session.setAttribute("productArr", productArr);
 		Session.setAttribute("quantityArr", quantityArr);
-	} else {
-
-		for (int x = 0; ((int[]) Session.getAttribute("productArr")).length > x; x++) { //Adding to cart
-	productArr = (int[]) Session.getAttribute("productArr");
-	quantityArr = (int[]) Session.getAttribute("quantityArr");
-	if (((int[]) Session.getAttribute("quantityArr"))[x] == 0) {
-		productArr[x] = Integer.parseInt(productID);
-		quantityArr[x] = Integer.parseInt(quantity);
-		x = 50;//stops the for loop
-	}
+	} else {//Adding to cart
+		productArr = (int[]) Session.getAttribute("productArr");
+		quantityArr = (int[]) Session.getAttribute("quantityArr");
+		for (int x = 0; ((int[]) Session.getAttribute("productArr")).length > x; x++) {
+			//out.print("product: "+productArr[x]+",");
+			//out.print("quantity: "+quantityArr[x]);
+			if (((int[]) Session.getAttribute("productArr"))[x] == Integer.parseInt(productID)) {
+					quantityArr[x] += Integer.parseInt(quantity);//Adds it to the first instance
+					x = 51;
+			}else if (((int[]) Session.getAttribute("productArr"))[x] == 0) {
+					productArr[x] = Integer.parseInt(productID);
+					quantityArr[x] = Integer.parseInt(quantity);
+					x = 51;//stops the for loop
+			}
 		}
 		Session.setAttribute("productArr", productArr);
 		Session.setAttribute("quantityArr", quantityArr);
 	}
+}
+}catch(Exception e){
+	
 }
 //Connecting to Database
 conn = null;
@@ -68,14 +96,6 @@ try {
 }
 
 try {
-	for (int x = 0; productArr.length > x; x++) {//sorting to find duplicates
-		for (int y = x + 1; productArr.length > y; y++) {
-	if (productArr[x] == productArr[y] && productArr[x] != 0) {
-		productArr[x] = 0; //"Deletes it"
-		quantityArr[y] += quantityArr[x];//Adds it to the first instance
-	}
-		}
-	}
 	if (conn == null) {
 		out.print("Conn Error");
 		conn.close();
@@ -93,9 +113,10 @@ try {
 		rows += "<tr><td class='product-thumbnail'><img src='" + image
 				+ "' alt='Image' class='img-fluid'></td><td class='product-name'><h2 class='h5 text-black'>"
 				+ name + "</h2></td><td>$" + r_price
-				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><input readonly type='number' name='quantity' value="
+				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='http://localhost:12978/ST0510-JAD/changeQuantity?productID="+productArr[x]+"' method='POST'><input type='number' name='quantity' value="
 				+ quantityArr[x] + "></input></div></td><td>$"
-				+ format.format(((double) quantityArr[x]) * Double.parseDouble(r_price)) + "</td></tr>";
+				+ format.format(((double) quantityArr[x]) * Double.parseDouble(r_price)) + "</td>"
+				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?product="+productArr[x]+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
 		total += quantityArr[x] * Double.parseDouble(r_price);//For prices
 	}
 		}
@@ -104,34 +125,43 @@ try {
 } catch (Exception e) {
 
 }
-
-
-
 String AdminPage = "";
 String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+try{
+	userid = (int)Session.getAttribute("userid");  
+    role = (String)Session.getAttribute("role");
+}catch(Exception e){
+
+}
+
 try {
-	if (role.equals("admin")) {
-		AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-        		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+	if(role.equals("admin")){ 
+        AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+        		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+        		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
         		
-		Header = "<div class='site-top-icons'>" + "<ul><li><a href='cart.jsp?userid=" + userid + "&role=" + role
-		+ "' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-		+ "<li><a href='profile.jsp?userid=" + userid + "&role=" + role + "'>Edit Profile</a></li>"
-		+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>"
-		+ "<li id='logoutButton'></li></ul></div>";
-		
-	} else if (role.equals("member")) {
-		Header = "<div class='site-top-icons'>" + "<ul><li><a href='cart.jsp?userid=" + userid + "&role=" + role
-		+ "' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-		+ "<li><a href='profile.jsp?userid=" + userid + "&role=" + role + "'>Edit Profile</a></li>"
-		+ "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>"
-		+ "<li id='logoutButton'></li></ul></div>";
-		
-	}
+        Header = "<div class='site-top-icons'>"
+                + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                  + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+                  + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                  + "<li id='logoutButton'></li></ul></div>";              
+     } else if (role.equals("member")) {
+    	  Header = "<div class='site-top-icons'>"
+                  + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                    + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+                    + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                    + "<li id='logoutButton'></li></ul></div>";     
+          AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
+     }
 } catch (Exception e) {// if no id or role is detected
 	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 }
+if(productArr == null || total == 0 ){
+	disabled = "disabled";
+}
 String strTotal = format.format(total);
+String strTotalGST = format.format(total*1.07);
+Session.removeAttribute("productID");
 %>
 <title>Digit Games &mdash; Shopping Cart</title>
 <meta charset="utf-8">
@@ -171,7 +201,7 @@ String strTotal = format.format(total);
 						<div
 							class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
 							<div class="site-logo">
-								<a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+								<a href="index.jsp? " class="js-logo-clone">Digit Games</a>
 							</div>
 						</div>
 
@@ -191,17 +221,16 @@ String strTotal = format.format(total);
 				role="navigation">
 				<div class="container">
 					<ul class="site-menu js-clone-nav d-none d-md-block">
-						<li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-						<li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-						<li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-						<li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-						<li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+						<li><a href="index.jsp? ">Home</a></li>
+						<li><a href="about.jsp? ">About</a></li>
+						<li><a href="categories.jsp? ">Shop</a></li>
+						<li><a href="all-listings.jsp? ">Catalogue</a></li>
+						<li><a href="contact.jsp? ">Contact</a></li>
 						<%=AdminPage%>
 					</ul>
 				</div>
 			</nav>
 		</header>
-
 		<div class="bg-light py-3">
 			<div class="container">
 				<div class="row">
@@ -212,12 +241,11 @@ String strTotal = format.format(total);
 				</div>
 			</div>
 		</div>
-
 		<div class="site-section">
 			<div class="container">
 				<div class="row mb-5">
-					<form class="col-md-12" method="post">
-						<div class="site-blocks-table">
+					<!--  <form class="col-md-12" action='index.jsp' method="post">-->
+						<div class="site-blocks-table col-md-12">
 							<table class="table table-bordered">
 								<thead>
 									<tr>
@@ -226,6 +254,7 @@ String strTotal = format.format(total);
 										<th class="product-price">Price</th>
 										<th class="product-quantity">Quantity</th>
 										<th class="product-total">Total</th>
+										<th class="product-total">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -233,18 +262,18 @@ String strTotal = format.format(total);
 								</tbody>
 							</table>
 						</div>
-					</form>
+					<!--</form>-->
 				</div>
 
 				<div class="row">
 					<div class="col-md-6">
 						<div class="row mb-5">
 							<div class="col-md-6 mb-3 mb-md-0">
-								<a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>&rd=cart'><button
+								<a href='http://localhost:12978/ST0510-JAD/invalidate?rd=cart'><button
 										class="btn btn-primary btn-sm btn-block">Clear Cart</button></a>
 							</div>
 							<div class="col-md-6">
-								<a href='all-listings.jsp?userid=<%=userid%>&role=<%=role%>'><button
+								<a href='all-listings.jsp? '><button
 										class="btn btn-outline-primary btn-sm btn-block">Continue
 										Shopping</button></a>
 							</div>
@@ -271,7 +300,7 @@ String strTotal = format.format(total);
 										<h3 class="text-black h4 text-uppercase">Cart Totals</h3>
 									</div>
 								</div>
-								<div class="row mb-5">
+								<div class="row mb-3">
 									<div class="col-md-6">
 										<span class="text-black">Total</span>
 									</div>
@@ -279,11 +308,18 @@ String strTotal = format.format(total);
 										<strong class="text-black">$<%=strTotal%></strong>
 									</div>
 								</div>
-
+								<div class="row mb-2">
+									<div class="col-md-6">
+										<span class="text-black">Total(With GST)</span>
+									</div>
+									<div class="col-md-6 text-right">
+										<strong class="text-black">$<%=strTotalGST%></strong>
+									</div>
+								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<button class="btn btn-primary btn-lg py-3 btn-block"
-											onclick="window.location='checkout.jsp?userid=<%=userid%>&role=<%=role%>'">Proceed
+											onclick="window.location='checkout.jsp? '" <%=disabled%>>Proceed
 											To Checkout</button>
 									</div>
 								</div>

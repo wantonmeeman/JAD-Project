@@ -17,8 +17,9 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
+  HttpSession Session = request.getSession();
+  int userid = 0;  
+  String role = "";
   Connection conn = null; 
   String Error = "";
   String name = request.getParameter("name");
@@ -33,24 +34,29 @@ Description: ST0510 / JAD Assignment 1
   double cPriceFloat = 0;
   double rPriceFloat = 0;
   
-  System.out.println(name);
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
   
   try {
 	 	cPriceFloat = Double.parseDouble(c_price);
 	 	rPriceFloat = Double.parseDouble(r_price);
   } catch (NumberFormatException e) {
 	  Error = "NumberFormatError";
-	  response.sendRedirect("Editlisting.jsp?Err=NumberFormatError&userid="+userid+"&role="+role);
+	  response.sendRedirect("Editlisting.jsp?Err=NumberFormatError");
   }
   
   
   //What else to add? try to add image path later maybe?
  if( name.equals("") || c_price.equals("") || r_price.equals("") || stockQuantity.equals("") || productCat.equals("")){
-	 response.sendRedirect("addlisting.jsp?Err=NullError&userid="+userid+"&role="+role);
+	 response.sendRedirect("addlisting.jsp?Err=NullError");
  }else{
 	if (Error.equals("")) {
 	 	if( Double.parseDouble(c_price) < 0 || Double.parseDouble(r_price) < 0 || Double.parseDouble(stockQuantity) < 0){
-		 	response.sendRedirect("addlisting.jsp?Err=NegativeError&userid="+userid+"&role="+role);
+		 	response.sendRedirect("addlisting.jsp?Err=NegativeError");
 	 	}else{
 		  try{
 			  	Class.forName("com.mysql.jdbc.Driver");
@@ -82,7 +88,7 @@ Description: ST0510 / JAD Assignment 1
 					if(rs != 1){
 						out.print("Database Error"); 
 					} else {
-					response.sendRedirect("admin-page.jsp?Err=AddSuccess&userid="+userid+"&role="+role);
+					response.sendRedirect("admin-page.jsp?Err=AddSuccess");
 					}
 			  	}
 		 	} catch(Exception e){    

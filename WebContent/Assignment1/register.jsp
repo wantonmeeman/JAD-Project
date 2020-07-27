@@ -26,14 +26,10 @@ Description: ST0510 / JAD Assignment 1
 	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-
 	<!-- From Chapter 9 -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");%>
-
 </head>
 <% try{
 	String Error = request.getParameter("Err");

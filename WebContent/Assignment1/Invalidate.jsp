@@ -12,15 +12,17 @@ Description: ST0510 / JAD Assignment 1
 
 <head>
 <%  
-String role = request.getParameter("role");
-String userid = request.getParameter("userid");
-String redirect = request.getParameter("rd");
 HttpSession Session = request.getSession();
+int userid = (int)Session.getAttribute("userid");  
+String role = (String)Session.getAttribute("role");
+String redirect = request.getParameter("rd");
 Session.invalidate();
+
+
 if(redirect.equals("index")){
-	response.sendRedirect("index.jsp?userid="+userid+"&role="+role);
+	response.sendRedirect("index.jsp");
 }else if(redirect.equals("cart")){
-	response.sendRedirect("cart.jsp?userid="+userid+"&role="+role);
+	response.sendRedirect("cart.jsp");
 }
 %>
 

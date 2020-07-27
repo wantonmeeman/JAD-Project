@@ -17,12 +17,20 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
-  int categoryID = Integer.parseInt(request.getParameter("categoryID"));
-  Connection conn = null;
+HttpSession Session = request.getSession();
+int userid = 0;  
+String role = "";
+int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+Connection conn = null;
 
   //What else to add? try to add image path later maybe?
+		  
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -41,7 +49,7 @@ Description: ST0510 / JAD Assignment 1
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
+			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess");//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    

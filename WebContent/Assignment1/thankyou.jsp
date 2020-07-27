@@ -13,33 +13,54 @@ Description: ST0510 / JAD Assignment 1
 <html lang="en">
 
 <head>
-<%  
+<%  java.util.Date dt = new java.util.Date();
+	java.text.SimpleDateFormat sdf = 
+    new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	String currentTime = sdf.format(dt);
 	String products = "";
 	HttpSession Session = request.getSession();
-	String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");
 	String name = "";
 	String r_price = "";
 	String AdminPage = "";
 	double total = 0.00;
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
-                		
-                Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                          + "<li id='logoutButton'></li></ul></div>";              
-             } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
-                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                            + "<li id='logoutButton'></li></ul></div>";     
-        	  }}catch(Exception e){// if no id or role is detected
+	String role = "";
+	int userid = 0;
+	String company = request.getParameter("company");
+	String address = request.getParameter("address");
+	String country = request.getParameter("country");
+	String zipcode = request.getParameter("zipcode");
+	String cardnumber = request.getParameter("cardnumber");
+	String CCV = request.getParameter("CCV");
+	String expirydate = request.getParameter("expirydate");
+	String notes = request.getParameter("notes");
+	double ptotal = 0;
+	
+	try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		response.sendRedirect("404.jsp");
+	}   
+			try{
+	        	if(role.equals("admin")){ 
+	                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+	                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+	                		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
+	                		
+	                Header = "<div class='site-top-icons'>"
+	                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+	                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                          + "<li id='logoutButton'></li></ul></div>";              
+	             } else if (role.equals("member")) {
+	            	  Header = "<div class='site-top-icons'>"
+	                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+	                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
+	                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+	                            + "<li id='logoutButton'></li></ul></div>";     
+	                  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
+	             }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	  }
     Connection conn = null;
@@ -54,10 +75,35 @@ Description: ST0510 / JAD Assignment 1
   		out.print("Conn Error");
   		conn.close();
   	}else{
+  		String query = "";
   		for(int x = 0;((int[])Session.getAttribute("productArr")).length>x;x++){
-		  	String query = "UPDATE products SET stock_quantity = (products.stock_quantity-"+((int[])Session.getAttribute("quantityArr"))[x]+") WHERE product_id ="+((int[])Session.getAttribute("productArr"))[x];
-		  	Statement st = conn.createStatement();
-			int rs = st.executeUpdate(query);
+  			query = "SELECT r_price FROM products WHERE product_id ="+((int[])Session.getAttribute("productArr"))[x];
+  			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while(rs.next()){
+			    ptotal = rs.getDouble("r_price");
+			}
+  			if(((int[])Session.getAttribute("productArr"))[x] != 0){
+		  		query = "UPDATE products SET stock_quantity = (products.stock_quantity-"+((int[])Session.getAttribute("quantityArr"))[x]+") WHERE product_id ="+((int[])Session.getAttribute("productArr"))[x];
+		  		st = conn.createStatement();
+				int rsint = st.executeUpdate(query);
+				query = "INSERT INTO orders(address,country,zipcode,company,fk_userid,total,fk_productid,quantity,notes,cardnumber,CCV,expirydate,date) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				PreparedStatement ppst = conn.prepareStatement(query);
+				ppst.setString(1,address);
+				ppst.setString(2,country);
+				ppst.setString(3,zipcode);
+				ppst.setString(4,company);
+				ppst.setInt(5,userid);
+				ppst.setDouble(6, ptotal * ((int[])Session.getAttribute("quantityArr"))[x]);
+				ppst.setInt(7,((int[])Session.getAttribute("productArr"))[x]);
+				ppst.setInt(8,((int[])Session.getAttribute("quantityArr"))[x]);
+				ppst.setString(9,notes);
+				ppst.setString(10,cardnumber);
+				ppst.setString(11,CCV);
+				ppst.setString(12,expirydate);
+				ppst.setString(13,currentTime);
+	  		  	rsint = ppst.executeUpdate();
+			}
 		}
   		conn.close();
   	}
@@ -96,7 +142,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp? " class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -114,11 +160,11 @@ Description: ST0510 / JAD Assignment 1
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
         </div>
@@ -141,7 +187,7 @@ Description: ST0510 / JAD Assignment 1
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Thank you!</h2>
             <p class="lead mb-5">Your order has been successfully completed.</p>
-            <p><a href='Invalidate.jsp?userid=<%=userid%>&role=<%=role%>&rd=index' class="btn btn-sm btn-primary">Back to Homepage</a></p>
+            <p><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=cart' class="btn btn-sm btn-primary">Back to Cart</a></p>
           </div>
         </div>
       </div>

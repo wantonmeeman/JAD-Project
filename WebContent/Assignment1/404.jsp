@@ -7,34 +7,40 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%  String userid = request.getParameter("userid");  
-	String role = request.getParameter("role");
+<!DOCTYPE html>
+<html>
+<%  
+	HttpSession Session = request.getSession();
+	int userid = 0;
+	String role = "";
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp?userid="+userid+"&role="+role+"'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp?userid="+userid+"&role="+role+"'>Product Control</a></li>";
+		try{
+			if(role.equals("admin")){ 
+                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+                		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                           + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp?userid="+userid+"&role="+role+"' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp?userid="+userid+"&role="+role+"'>Edit Profile</a></li>" 
+                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
+                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                             + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
-        	  }}catch(Exception e){// if no id or role is detected
-        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        	  }%>
-<!DOCTYPE html>
-<html lang="en">
-
+                  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
+             }
+            }catch(Exception e){// if no id or role is detected
+            	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+    	}%>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
 <head>
-  <title>Snapsell &mdash; Colorlib e-Commerce Template</title>
+  <title>404</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -47,13 +53,10 @@ Description: ST0510 / JAD Assignment 1
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
 
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
-
 
 </head>
 
@@ -66,15 +69,12 @@ Description: ST0510 / JAD Assignment 1
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-              <form action="" class="site-block-top-search">
-                <span class="icon icon-search2"></span>
-                <input type="text" class="form-control border-0" placeholder="Search">
-              </form>
+
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
               <div class="site-logo">
-                <a href="index.jsp?userid=<%=userid%>&role=<%=role%>" class="js-logo-clone">Digit Games</a>
+                <a href="index.jsp? " class="js-logo-clone">Digit Games</a>
               </div>
             </div>
 
@@ -93,11 +93,11 @@ Description: ST0510 / JAD Assignment 1
       <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp?userid=<%=userid%>&role=<%=role%>">Home</a></li>
-            <li><a href="about.jsp?userid=<%=userid%>&role=<%=role%>">About</a></li>
-            <li><a href="categories.jsp?userid=<%=userid%>&role=<%=role%>">Shop</a></li>
-            <li><a href="all-listings.jsp?userid=<%=userid%>&role=<%=role%>">Catalogue</a></li>
-            <li><a href="contact.jsp?userid=<%=userid%>&role=<%=role%>">Contact</a></li>
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
             <%=AdminPage %>
           </ul>
         </div>
@@ -108,98 +108,13 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Product</strong></div>
+              class="text-black">About</strong></div>
         </div>
       </div>
     </div>
 
-    <div class="site-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Product Detail</h2>
-          </div>
-          <div class="col-md-12">
+   404 page not found!
 
-            <form action="#" method="post">
-
-              <div id="shownListing" class="p-3 p-lg-5 border row">
-
-                <div class="col-md-6">
-                  <img class="img-fluid" src="images/upload_pic.PNG" width="400" height="10" alt="Upload Picture"
-                    title="Upload Picture">
-                </div>
-
-
-                <div class="col-md-6">
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <div id="title" class="text-black font-weight-bold">iPhone 8 Plus </div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <div for="description" class="text-black">Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
-                        book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-                        Aldus PageMaker including versions of Lorem Ipsum. </div>
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-
-                    <div class="col-md-12">
-                      <label for="offer" class="text-black">Make Offer: </label>
-                      <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-                    </div>
-
-                  </div>
-
-
-                </div>
-
-                <div class="form-group row">
-
-                  <div class="col-lg-12">
-                    <form>
-                      <input id="makeOffer" type="submit" class="btn btn-primary btn-lg btn-block" value="Save">
-                    </form>
-
-                  </div>
-
-                </div>
-              </div>
-
-            </form>
-          </div>
-
-          <!-- <div class="col-md-5 ml-auto">
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">New York</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">London</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">Canada</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-
-          </div> -->
-        </div>
-      </div>
-    </div>
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">
@@ -276,5 +191,4 @@ Description: ST0510 / JAD Assignment 1
   <script src="js/main.js"></script>
 
 </body>
-
 </html>

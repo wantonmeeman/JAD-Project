@@ -17,11 +17,17 @@ Description: ST0510 / JAD Assignment 1
 </head>
 <body>
 <%
-  String userid = request.getParameter("userid");  
-  String role = request.getParameter("role");
-  int roleID = Integer.parseInt(request.getParameter("roleID"));
-  Connection conn = null;
-
+HttpSession Session = request.getSession();
+String role = "";
+int userid = 0; 
+int roleID = Integer.parseInt(request.getParameter("roleID"));
+Connection conn = null;
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+} 
   //What else to add? try to add image path later maybe?
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
@@ -41,7 +47,7 @@ Description: ST0510 / JAD Assignment 1
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect("all-users.jsp?Err=DelSuccess&userid="+userid+"&role="+role);//Add EditSuccess at admin-page
+			    	  response.sendRedirect("all-users.jsp?Err=DelSuccess");//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    
