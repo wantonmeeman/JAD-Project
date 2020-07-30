@@ -27,6 +27,8 @@ Description: ST0510 / JAD Assignment 1
 	String firstname = "";
 	String lastname = "";
 	String phonenumber = "";
+	String cardnumber = "";
+	String CCV = "";
 	
 	String dbRoleID = "";
 	String roleName = "";
@@ -81,13 +83,13 @@ Description: ST0510 / JAD Assignment 1
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
              }}catch(Exception e){// if no id or role is detected
@@ -119,6 +121,8 @@ Description: ST0510 / JAD Assignment 1
 		        	    	firstname = rs.getString("firstname");
 		        	    	lastname = rs.getString("lastname");
 		        	    	phonenumber = rs.getString("phonenumber");
+		        	    	cardnumber = rs.getString("cardnumber");
+		        	    	CCV = rs.getString("ccv");
 		        	    	
 		        	    	// image = rs.getString("image");
 		        	    	rows += "<tr>"
@@ -128,9 +132,15 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "<td>" + lastname + "</td>"
 		        	    		+ "<td>" + email + "</td>"
 		        	    		+ "<td>" + dbRole + "</td>"
+		        	    		+ "<td>" + phonenumber + "</td>"
+		        	    		+ "<td>" + cardnumber.replaceFirst(".{12}", "**************") + "</td>"
+		        	    		+ "<td>" + CCV + "</td>"
 		        	    		+ "<td><div class='row'><div class='col-md-8'>"
-		        	    		+ "<div class='ml-4 col-md-2'>"
-		        	    		+ "<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        	    		+ "<div class='ml-2 col-md-1'>"
+		        	    		+ "<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a></div>"
+		        	    		+ "<div class='ml-2 col-md-1'>"
+				        	    + "<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a></div>"
+		        	    		+ "</div></td></tr>";
 		        	}
 		        		
 						String query2 = "SELECT * FROM roles";
@@ -381,10 +391,10 @@ Description: ST0510 / JAD Assignment 1
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
-			<div class="mt-4 ml-4">
+			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
 			  <div class="mt-4">
-		          <table class="table table-hover">
+		          <table class="table table-hover" >
 		            <thead>
 		              <tr>
 		                <th scope="col">#</th>
@@ -393,6 +403,9 @@ Description: ST0510 / JAD Assignment 1
 		                <th scope="col">Last Name</th>
 		                <th scope="col">Email</th>
 		                <th scope="col">Role</th>
+		                <th scope="col">Phone Number</th>
+		                <th scope="col">Card Number</th>
+		                <th scope="col">CCV</th>
 		                <th scope="col">Actions</th>
 		              </tr>
 		            </thead>

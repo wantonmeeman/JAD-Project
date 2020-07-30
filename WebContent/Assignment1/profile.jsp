@@ -108,7 +108,8 @@ Description: ST0510 / JAD Assignment 1
 	try{
 		if(role.equals("admin")){ 
 	        AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
-            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
+            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
+            		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
             		
 	        Header = "<div class='site-top-icons'>"
 	                + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
@@ -121,6 +122,7 @@ Description: ST0510 / JAD Assignment 1
 	                    + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
 	                    + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
 	                    + "<li id='logoutButton'></li></ul></div>";     
+	    	  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
 		  }}catch(Exception e){// if no id or role is detected
 			  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 		  }
@@ -199,7 +201,7 @@ input::-webkit-inner-spin-button {
         </div>
       </div>
       <nav class="site-navigation text-right text-md-center" role="navigation">
-        <div class="container" >
+        <div class="container">
           <ul class="site-menu js-clone-nav d-none d-md-block">
             <li><a href="index.jsp? ">Home</a></li>
             <li><a href="about.jsp? ">About</a></li>
@@ -376,11 +378,11 @@ input::-webkit-inner-spin-button {
                     </div>
                     <div class="col-md-3">
                       <label for="postal" class="text-black">CCV </label>
-                      <input type="text" class="form-control" id="zipcode" name="CCV" value="<%=CCV%>"> 
+                      <input type="text" class="form-control" id="zipcode" name="CCV" value="<%=CCV%>" > 
                     </div>
                     <div class="col-md-3">
                       <label for="postal" class="text-black">Expiry Date</label>
-                      <input type="text" class="form-control" id="zipcode" name="expirydate" value="<%=expirydate%>"> 
+                      <input type="text" class="form-control" id="zipcode" name="expirydate" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY"> 
                     </div>
                   </div>
                   

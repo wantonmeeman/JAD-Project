@@ -11,34 +11,50 @@ Description: ST0510 / JAD Assignment 1
  <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
-<%  HttpSession Session = request.getSession();
-	
-	String dbRoleID = request.getParameter("dbRoleID");
-	String AdminPage = "";
-	
-	String roleName = "";
-	
-	int userid = 0;
+<%  
+	HttpSession Session = request.getSession();
+	int userid = 0; 
 	String role = "";
-	String image = "";
+	String roles = "";
+	String dbrole = "";
+	String selected = "";
+	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 	String Error = request.getParameter("Err");
-	try{
-    	if(Error.equals("NullError")){
-    		out.print("<script>alert('Please Fill in all required fields!')</script>");
-    	}
-		if(Error.equals("NegativeError")){
-			out.print("<script>alert('Do not enter negative numbers!')</script>");
-    	}
-    }catch(Exception e){
-    		
-    } 
+	String username = "";
+	String password = "";
+	String email = "";
+	String firstname = "";
+	String lastname = "";
+	String phonenumber = "";
+	String address = "";
+	String company = "";
+	String cardnumber = "";
+	String CCV = "";
+	String expirydate = "";
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	} 
+	try{
+    	//if(Error.equals("NullError")){
+    	//	out.print("<script>alert('Please fill in all required fields!')</script>");
+    	//}
+    	if(Error.equals("NumberFormatError")){
+			out.print("<script>alert('Prices are not in numbers format!')</script>");
+    	}
+		if(Error.equals("NegativeError")){
+			out.print("<script>alert('Do not enter negative numbers!')</script>");
+    	}
+		if(Error.equals("AddSuccess")){
+			out.print("<script>alert('Changes saved.')</script>");
+    	}
+		
+    }catch(Exception e){
+    		
+    }    
 	try{
 		if(role.equals("admin")){ 
             AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
@@ -57,7 +73,7 @@ Description: ST0510 / JAD Assignment 1
                         + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                         + "<li id='logoutButton'></li></ul></div>";     
               AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-         }}catch(Exception e){// if no id or role is detected
+    }}catch(Exception e){// if no id or role is detected
     	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     }
     Connection conn = null;
@@ -72,13 +88,35 @@ Description: ST0510 / JAD Assignment 1
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "SELECT * FROM roles WHERE role_id =" + dbRoleID;
+		  		  String query = "SELECT * FROM users WHERE user_id ="+userid;
 		  		  Statement st = conn.createStatement();
 			      ResultSet rs = st.executeQuery(query);
 			      while(rs.next()){
-			    	  roleName = rs.getString("role_name");
+			    		username = rs.getString("username");
+			    		password = rs.getString("password");
+			    		dbrole = rs.getString("role");
+			    		email = rs.getString("email");
+			    		firstname = rs.getString("firstname");
+			    		lastname = rs.getString("lastname");
+			    		phonenumber = rs.getString("phonenumber");
+			    		address = rs.getString("address");
+			    		company = rs.getString("company");
+			    		cardnumber = rs.getString("cardnumber");
+			    		CCV = rs.getString("CCV");
+			    		expirydate = rs.getString("expirydate");
 			      }
-			      conn.close();
+			      query = "SELECT * FROM roles";
+			      st = conn.createStatement();
+			      rs = st.executeQuery(query);
+			      while(rs.next()){
+			    	if(dbrole.equals(rs.getString("role_name"))){
+			    		selected = "selected";
+			    	}else{
+			    		selected = "";
+			    	}
+			      	roles += "<option value='"+rs.getString("role_name")+"'"+selected+">"+rs.getString("role_name")+"</option>";
+			      }
+			      
 		  	}
     	%>
 <head>
@@ -152,7 +190,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Edit Product</strong></div>
+              class="text-black">Edit User</strong></div>
         </div>
       </div>
     </div>
@@ -162,34 +200,131 @@ Description: ST0510 / JAD Assignment 1
         <div class="row">
 
           <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Edit Category (Admin)</h2>
+            <h2 class="h3 mb-3 text-black">Edit User(Admin)</h2>
           </div>
 
           <div class="col-md-12">
 
-            <form action="EditRole.jsp? " method="post">
+            <form action="http://localhost:12978/ST0510-JAD/editUserAdmin" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
                 <div class="col-md-10">
 
                   <div class="form-group row">
-					<input type="hidden" name="dbRoleID" value="<%=dbRoleID%>"></input>
                     <div class="col-md-6">
-                      <label for="roleName" class="text-black">Role Name<span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="roleName" name="roleName" value="<%=roleName %>" placeholder="Category Name">
+                      <label for="title" class="text-black">Username <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="username" value="<%=username%>" >
+                    </div>
+
+                  </div>
+
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="c_price" class="text-black">Password <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" value="<%=password%>" name="password">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="r_price" class="text-black">Email <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="email" value="<%=email %>">
                     </div>
 
                   </div>
                   
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="productCat" class="text-black">User Role<span
+                          class="text-danger">*</span></label>
+                       <br>
+                      <select name="userrole">
+                      		<%=roles%>
+                      	</select>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="stockQty" class="text-black">First Name<span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="firstname" value="<%=firstname%>">
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-8">
+                      <label for="briefDesc" class="text-black">Last Name</label>
+                      <input type="text" name="lastname" class="form-control" value="<%=lastname %>"></input>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-md-8">
+                      <label for="fullDesc" class="text-black">Phone Number</label>
+                      <input type="text" name="phonenumber" class="form-control" value="<%=phonenumber%>"></input>
+                    </div>
+
+                  </div>
+                  
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Address</label>
+                      <input type="text" name="address" class="form-control" value="<%=address%>"></input>
+                    </div>
+
+                  </div>
+                   <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Company</label>
+                      <input type="text" name="company" id="image" class="form-control" value="<%=company%>"></input>
+                    </div>
+
+                  </div>
+                   <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Card Number</label>
+                      <input type="text" name="cardnumber" class="form-control" value="<%=cardnumber%>"></input>
+                    </div>
+
+                  </div>
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">CCV</label>
+                      <input type="text" name="CCV" class="form-control" value="<%=CCV%>" length=4></input>
+                    </div>
+
+                  </div>
+                  <div class="form-group row">
+
+                    <div class="col-md-6">
+                      <label for="ImagePath" class="text-black">Expiry Date</label>
+                      <input type="text" name="expirydate" class="form-control" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" ></textarea>
+                    </div>
+
+                  </div>
 
                 </div>
 
                 <div class="form-group col-md-12 mb-5 d-flex flex-row-reverse">
 
-                  <div class="col-lg-3 p-3">
-                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"
-                      value="Save Changes">
+                  <div class="col-lg-4 p-12">
+                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"value="Edit User">
                   </div>
 
                 </div>
@@ -198,21 +333,6 @@ Description: ST0510 / JAD Assignment 1
             </form>
           </div>
 
-          <!-- <div class="col-md-5 ml-auto">
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">New York</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">London</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">Canada</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-
-          </div> -->
         </div>
       </div>
     </div>

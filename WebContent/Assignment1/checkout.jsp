@@ -53,13 +53,13 @@ Description: ST0510 / JAD Assignment 1
             Header = "<div class='site-top-icons'>"
                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                       + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                      + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                       + "<li id='logoutButton'></li></ul></div>";              
          } else if (role.equals("member")) {
         	  Header = "<div class='site-top-icons'>"
                       + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                         + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                        + "<li><a href='index.jsp?' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                         + "<li id='logoutButton'></li></ul></div>";     
               AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
          }}catch(Exception e){// if no id or role is detected
@@ -208,13 +208,13 @@ Description: ST0510 / JAD Assignment 1
                 </div>
                <div class="col-md-5">
                   <label for="c_companyname" class="text-black">CCV </label>
-                  <input type="text" class="form-control" id="c_companyname" name="CCV" value="<%=CCV%>">
+                  <input type="text" class="form-control" id="c_companyname" name="CCV" value="<%=CCV%>" length=4><!-- Some CVVs are 4 digits -->
                 </div>
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-5">
                   <label for="c_companyname" class="text-black">Expiry Date</label>
-                  <input type="text" class="form-control" id="c_companyname" name="expirydate" value="<%=expirydate%>">
+                  <input type="text" class="form-control" id="c_companyname" name="expirydate" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY">
                 </div>
                 <div class="col-md-12">
                   <label for="c_companyname" class="text-black">Company Name </label>
@@ -237,7 +237,7 @@ Description: ST0510 / JAD Assignment 1
                 </div>
                 <div class="col-md-6">
                   <label for="c_postal_zip" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_postal_zip" name="zipcode" value="<%=zipcode%>">
+                  <input type="text" class="form-control" id="c_postal_zip" name="zipcode" value="<%=zipcode%>" length=6>
                 </div>
               </div>
 
