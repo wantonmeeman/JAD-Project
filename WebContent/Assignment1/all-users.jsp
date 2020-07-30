@@ -30,6 +30,25 @@ Description: ST0510 / JAD Assignment 1
 	String cardnumber = "";
 	String CCV = "";
 	
+	String orderUsername = "";
+	String orders = "";
+	String orderPhoneNumber = "";
+	String orderAddress = "";
+	String orderCountry = "";
+	String orderProduct = "";
+	String orderEmail = "";
+	int orderUserID = 0;
+	int orderProductID = 0;
+	String orderCompany = "";
+	String orderQuantity = "";
+	double orderTotal = 0;
+	String orderNotes = "";
+	String orderCCV = "";
+	String orderZipcode = "";
+	String orderCardNumber = "";
+	String orderImage = "";
+	String orderDate = "";
+	
 	String dbRoleID = "";
 	String roleName = "";
 	
@@ -112,17 +131,17 @@ Description: ST0510 / JAD Assignment 1
 		  		  String query = "SELECT * FROM users";
 		  		  Statement st = conn.createStatement();
 			      ResultSet rs = st.executeQuery(query);
-		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    	dbUserID = rs.getString("user_id");
-		        	    	username = rs.getString("username");
-		        	    	password = rs.getString("password");
-		        	    	email = rs.getString("email");
-		        	    	dbRole = rs.getString("role");
-		        	    	firstname = rs.getString("firstname");
-		        	    	lastname = rs.getString("lastname");
-		        	    	phonenumber = rs.getString("phonenumber");
-		        	    	cardnumber = rs.getString("cardnumber");
-		        	    	CCV = rs.getString("ccv");
+		        	while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        	    dbUserID = rs.getString("user_id");
+		        	    username = rs.getString("username");
+		        	    password = rs.getString("password");
+		        	    email = rs.getString("email");
+		        	    dbRole = rs.getString("role");
+		        	    firstname = rs.getString("firstname");
+		        	    lastname = rs.getString("lastname");
+		        	    phonenumber = rs.getString("phonenumber");
+		        	    cardnumber = rs.getString("cardnumber");
+		        	    CCV = rs.getString("ccv");
 		        	    	
 		        	    	// image = rs.getString("image");
 		        	    	rows += "<tr>"
@@ -143,13 +162,13 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "</div></td></tr>";
 		        	}
 		        		
-						String query2 = "SELECT * FROM roles";
-						Statement st2 = conn.createStatement();
-						ResultSet rs2 = st2.executeQuery(query2);
+						query = "SELECT * FROM roles";
+						st = conn.createStatement();
+						rs = st.executeQuery(query);
 						
-		        		while (rs2.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        			dbRoleID = rs2.getString("role_id");
-		        	    	roleName = rs2.getString("role_name");
+		        		while (rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        			dbRoleID = rs.getString("role_id");
+		        	    	roleName = rs.getString("role_name");
 		        	    	
 		        	    	roleTable += "<tr>"
 			        	    		+ "<th scope='row'>" + dbRoleID + "</th>"
@@ -157,7 +176,59 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+dbRoleID+"'><span class='icon icon-pencil'></span></a></div>"
 			        	    		+ "<div class='col-md-2'>"
 			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        	}
+		        		}
+		        		
+		        		query = "SELECT * FROM orders";
+						st = conn.createStatement();
+						rs = st.executeQuery(query);
+						
+		        		while (rs.next()){
+		        			orderDate = rs.getString("date");
+		    		    	orderProductID = rs.getInt("fk_productid");
+		    		    	orderUserID = rs.getInt("fk_userid");
+		    		    	orderCardNumber = rs.getString("cardnumber");
+		    		    	orderCCV = rs.getString("CCV");
+		    		    	orderAddress = rs.getString("address");
+		    		    	orderZipcode = rs.getString("zipcode");
+		    		    	orderCompany = rs.getString("company");
+		    		    	orderTotal = rs.getDouble("total");
+		    		    	orderNotes = rs.getString("notes");
+		    		    	orderQuantity = rs.getString("quantity");
+		    		    	
+		    		    	String query1 = "SELECT name FROM products where product_id = "+orderProductID;
+							Statement st1 = conn.createStatement();
+							ResultSet rs1 = st1.executeQuery(query1);
+							
+							while(rs1.next()){
+								orderProduct = rs1.getString("name");
+							}
+							
+							String query2 = "SELECT username,email,phonenumber FROM users where user_id = "+orderUserID;
+							Statement st2 = conn.createStatement();
+							ResultSet rs2 = st2.executeQuery(query2);
+							
+							while(rs2.next()){
+								orderUsername = rs2.getString("username");
+								orderEmail = rs2.getString("Email");
+								orderPhoneNumber = rs2.getString("phonenumber");
+							}
+		        	    	
+							orders += "<tr>"
+					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
+			        	    		+ "<td>" + orderProduct + "</td>"
+			        	    		+ "<td>" + orderUsername + "</td>"
+			        	    		+ "<td>" + orderEmail + "</td>"
+			        	    		+ "<td>" + orderPhoneNumber + "</td>"
+					        	    + "<td>" + orderCardNumber.replaceFirst(".{12}", "**************") + "</td>"
+					        	    + "<td>" + orderCCV + "</td>"
+			        	    		+ "<td>" + orderAddress + "</td>"
+			        	    		+ "<td>" + orderCompany + "</td>"
+			                	    + "<td>" + orderQuantity+ "</td>"
+			                	    + "<td>$" + format.format(orderTotal)+ "</td>"
+			                	    + "<td>" + orderDate + "</td>"
+			                	    + "<td class='col-md-12' span='1'>" + orderNotes + "</td>"
+			        	    		+ "</div></td></tr>";
+		        		}
 				        		
 		        conn.close();
 			}
@@ -388,6 +459,7 @@ Description: ST0510 / JAD Assignment 1
 		<div class="users-tab">
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')">Orders</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
@@ -431,6 +503,35 @@ Description: ST0510 / JAD Assignment 1
 		            </thead>
 		            <tbody>
 		              <%=roleTable %>
+		            </tbody>
+		          </table>
+        		</div>
+		  	</div>
+		</div>
+		
+		<div id="Orders" class="users-tabcontent">
+			<div class="mt-4 ml-4" >
+			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
+			  <div class="mt-4">
+		          <table class="table table-hover" >
+		            <thead>
+		              <tr>
+		              	<th scope="col">Product</th>
+		                <th scope="col">Username</th>
+		                <th scope="col">Email</th>
+		                <th scope="col">Phone Number</th>
+		                <th scope="col">Card Number</th>
+		                <th scope="col">CCV</th>
+		                <th scope="col">Address</th>
+		                <th scope="col">Company</th>
+		                <th scope="col">Quantity</th>
+		                <th scope="col">Total</th>
+		                <th scope="col">Time</th>
+		                <th scope="col">Notes</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		              <%=orders%>
 		            </tbody>
 		          </table>
         		</div>

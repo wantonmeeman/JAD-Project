@@ -98,7 +98,6 @@ Description: ST0510 / JAD Assignment 1
 		    Statement st = conn.createStatement();
 		    ResultSet rs = st.executeQuery(query);
 		    while (rs.next()) {
-		    	//orderDate = rs.getString("date");
 		    	orderProductID = rs.getInt("fk_productid");
 		    	orderDate = rs.getString("date");//rs.getString("cardnumber");
 		    	orderCardNumber = rs.getString("cardnumber");

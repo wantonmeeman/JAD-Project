@@ -27,7 +27,9 @@ Description: ST0510 / JAD Assignment 1
 	String rPrice = "";
 	int stockQuantity = 0;
 	String productCat = "";
-	String image = "";
+	String sold = "";
+	String lowStock = "";
+	String lowStockAlert = "";
 	
 	String categoryID = "";
 	String categoryName = "";
@@ -35,6 +37,7 @@ Description: ST0510 / JAD Assignment 1
 	
 	
 	String rows = "";
+	String rowsSold = "";
 	String categoryTable = "";
 	int RowCount;
 	String Error = request.getParameter("Err");
@@ -96,7 +99,7 @@ Description: ST0510 / JAD Assignment 1
 		  		  String query = "SELECT * FROM products";
 		  		  Statement st = conn.createStatement();
 			      ResultSet rs = st.executeQuery(query);
-		        		for(int i = 0;rs.next() == true;i++){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        		while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
 		        	    	productID = rs.getString("product_id");
 		        	    	Name = rs.getString("name");
 		        	    	briefDescription = rs.getString("brief_description");
@@ -105,18 +108,25 @@ Description: ST0510 / JAD Assignment 1
 		        	    	rPrice  =  format.format(rs.getDouble("r_price"));
 		        	    	stockQuantity = rs.getInt("stock_quantity");
 		        	    	productCat = rs.getString("product_cat");
-		        	    	image = rs.getString("image");
-		        	    	rows += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        }
+		        	    	sold = rs.getString("sold");
+		        	    	
+		        	    	if(stockQuantity < 100){
+		        	    		lowStockAlert = "background-color:#cc3300";
+		        	    	}else{
+		        	    		lowStockAlert = "";
+		        	    	}
+		        	    	
+		        	    	rows += "<tr style='"+lowStockAlert+"' ><th scope='row'>"+productID+"</th><td>"+productCat+"</td><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        			}
 		        		
-				String query2 = "SELECT * FROM categories";
-				Statement st2 = conn.createStatement();
-				ResultSet rs2 = st2.executeQuery(query2);
+				query = "SELECT * FROM categories";
+				st = conn.createStatement();
+				rs = st.executeQuery(query);
 				
-        		while (rs2.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-        	    	categoryID = rs2.getString("category_id");
-        	    	categoryName = rs2.getString("category_name");
-           	    	categoryURL = rs2.getString("image");
+        		while (rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+        	    	categoryID = rs.getString("category_id");
+        	    	categoryName = rs.getString("category_name");
+           	    	categoryURL = rs.getString("image");
         	    	
         	    	categoryTable += "<tr>"
 	        	    		+ "<th scope='row'>" + categoryID + "</th>"
@@ -125,7 +135,47 @@ Description: ST0510 / JAD Assignment 1
 	        	    		+ "<td><div class='row'><div class='col-md-4'><a href='edit-category.jsp?categoryID="+categoryID+"'><span class='icon icon-pencil'></span></a></div>"
 	        	    		+ "<div class='col-md-8'>"
 	        	    		+ "<a href='#' class='deleteCat'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-        	}
+        		}
+        		
+        		query = "SELECT * FROM products WHERE stock_quantity < 100";
+				st = conn.createStatement();
+				rs = st.executeQuery(query);
+        		
+				while(rs.next()){
+					productID = rs.getString("product_id");
+        	    	Name = rs.getString("name");
+        	    	briefDescription = rs.getString("brief_description");
+        	    	detailedDescription = rs.getString("detailed_description");
+        	    	cPrice =  format.format(rs.getDouble("c_price"));
+        	    	rPrice  =  format.format(rs.getDouble("r_price"));
+        	    	stockQuantity = rs.getInt("stock_quantity");
+        	    	sold = rs.getString("sold");
+        	    	lowStock += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'></a></div></div></td></tr>";
+				}
+				
+				  query = "SELECT * FROM products ORDER BY sold DESC";
+		  		  st = conn.createStatement();
+			      rs = st.executeQuery(query);
+		          while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
+		        	    productID = rs.getString("product_id");
+		        	    Name = rs.getString("name");
+		        	    briefDescription = rs.getString("brief_description");
+		        	    detailedDescription = rs.getString("detailed_description");
+		        	    cPrice =  format.format(rs.getDouble("c_price"));
+		        	    rPrice  =  format.format(rs.getDouble("r_price"));
+		        	    stockQuantity = rs.getInt("stock_quantity");
+		        	    productCat = rs.getString("product_cat");
+		        	    sold = rs.getString("sold");
+		        	    	
+		        	    if(stockQuantity < 100){
+		        	    	lowStockAlert = "background-color:#cc3300";
+		        	    }else{
+		        	    	lowStockAlert = "";
+		        	    }
+		        	    	
+		        	    rowsSold += "<tr style='"+lowStockAlert+"' ><th scope='row'>"+productID+"</th><td>"+productCat+"</td><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td></td></tr>";
+		        	}
+				
 		        conn.close();
 			}
 		  	
@@ -365,6 +415,8 @@ Description: ST0510 / JAD Assignment 1
 		<div class="users-tab">
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allProductsTab')" id="defaultOpen">All Products</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allCatTab')">Categories</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'lowStock')">Low Stock Items</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'bestSell')">Products By best selling</button>
 		</div>
 		
 		<div id="allProductsTab" class="users-tabcontent">
@@ -375,10 +427,12 @@ Description: ST0510 / JAD Assignment 1
 		            <thead>
 		              <tr>
 		                <th scope="col">#</th>
+		                <th scope="col">Product Category</th>
 		                <th scope="col">Product Name</th>
 		                <th scope="col">Cost Price</th>
 		                <th scope="col">Retail Price</th>
 		                <th scope="col">Quantity</th>
+		                <th scope="col">Items Sold</th>
 		                <th scope="col">Actions</th>
 		              </tr>
 		            </thead>
@@ -405,6 +459,53 @@ Description: ST0510 / JAD Assignment 1
 		            </thead>
 		            <tbody>
 		              <%=categoryTable %>
+		            </tbody>
+		          </table>
+        		</div>
+		  	</div>
+		</div>
+		
+		<div id="lowStock" class="users-tabcontent">
+		  <div class="mt-4 ml-4">
+			  <h3><text class="text-dark font-weight-bold">Low Stock List</text></h3>
+			  <div class="mt-4">
+		          <table class="table table-hover">
+		            <thead>
+		              <tr>
+		                <th scope="col">#</th>
+		                <th scope="col">Product Name</th>
+		                <th scope="col">Cost Price</th>
+		                <th scope="col">Retail Price</th>
+		                <th scope="col">Quantity</th>
+		                <th scope="col">Items Sold</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		              <%=lowStock %>
+		            </tbody>
+		          </table>
+        		</div>
+		  	</div>
+		</div>
+		
+		<div id="bestSell" class="users-tabcontent">
+		  <div class="mt-4 ml-4">
+			  <h3><text class="text-dark font-weight-bold">Products by Best Selling</text></h3>
+			  <div class="mt-4">
+		          <table class="table table-hover">
+		            <thead>
+		              <tr>
+		                <th scope="col">#</th>
+		                <th scope="col">Product Category</th>
+		                <th scope="col">Product Name</th>
+		                <th scope="col">Cost Price</th>
+		                <th scope="col">Retail Price</th>
+		                <th scope="col">Quantity</th>
+		                <th scope="col">Items Sold</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		              <%=rowsSold%>
 		            </tbody>
 		          </table>
         		</div>
