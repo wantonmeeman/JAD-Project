@@ -44,10 +44,14 @@ Description: ST0510 / JAD Assignment 1
 	double orderTotal = 0;
 	String orderNotes = "";
 	String orderCCV = "";
-	String orderZipcode = "";
+	String orderZipCode = "";
 	String orderCardNumber = "";
 	String orderImage = "";
 	String orderDate = "";
+	String orderExpiryDate = "";
+	
+	String userTotals = "";
+	double userTotal = 0;
 	
 	String dbRoleID = "";
 	String roleName = "";
@@ -188,8 +192,9 @@ Description: ST0510 / JAD Assignment 1
 		    		    	orderUserID = rs.getInt("fk_userid");
 		    		    	orderCardNumber = rs.getString("cardnumber");
 		    		    	orderCCV = rs.getString("CCV");
+		    		    	orderExpiryDate = rs.getString("expirydate");
 		    		    	orderAddress = rs.getString("address");
-		    		    	orderZipcode = rs.getString("zipcode");
+		    		    	orderZipCode = rs.getString("zipcode");
 		    		    	orderCompany = rs.getString("company");
 		    		    	orderTotal = rs.getDouble("total");
 		    		    	orderNotes = rs.getString("notes");
@@ -221,16 +226,50 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "<td>" + orderPhoneNumber + "</td>"
 					        	    + "<td>" + orderCardNumber.replaceFirst(".{12}", "**************") + "</td>"
 					        	    + "<td>" + orderCCV + "</td>"
+					        	    + "<td>" + orderExpiryDate + "</td>"
 			        	    		+ "<td>" + orderAddress + "</td>"
+			        	    		+ "<td>" + orderZipCode + "</td>"
 			        	    		+ "<td>" + orderCompany + "</td>"
 			                	    + "<td>" + orderQuantity+ "</td>"
 			                	    + "<td>$" + format.format(orderTotal)+ "</td>"
 			                	    + "<td>" + orderDate + "</td>"
-			                	    + "<td class='col-md-12' span='1'>" + orderNotes + "</td>"
+			                	    + "<td>" + orderNotes + "</td>"
 			        	    		+ "</div></td></tr>";
 		        		}
 				        		
+		        
+		        		query = "SELECT fk_userid,SUM(total) as user_total FROM digitgames.orders GROUP BY fk_userid order by user_total desc;";
+						st = conn.createStatement();
+						rs = st.executeQuery(query);
+						
+						while(rs.next()){
+							
+							String query4 = "SELECT username,email,phonenumber FROM users where user_id = "+rs.getInt("fk_userid");
+							Statement st4 = conn.createStatement();
+							ResultSet rs4 = st4.executeQuery(query4);
+							
+							while(rs4.next()){
+								orderUsername = rs4.getString("username");
+								orderEmail = rs4.getString("Email");
+								orderPhoneNumber = rs4.getString("phonenumber");
+							}
+							
+							userTotal = rs.getDouble("user_total");
+							out.print(userTotal);
+							
+							userTotals += "<tr>"
+					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
+			        	    		+ "<td>" + orderUsername + "</td>"
+			        	    		+ "<td>" + orderEmail + "</td>"
+			        	    		+ "<td>" + orderPhoneNumber + "</td>"
+			        	    		+ "<td>$" + format.format(userTotal) + "</td>"
+			        	    		+ "</div></td></tr>";
+							
+							
+						}
+						
 		        conn.close();
+		        
 			}
 		  	
 
@@ -442,7 +481,7 @@ Description: ST0510 / JAD Assignment 1
     </div>
 
     <div class="site-section">
-      <div class="container">
+      <div class="container-fluid">
 
         <div class="col-md-12">
           <h2 class="h3 mb-5 text-black">Admin Control Page (All Users) </h2>
@@ -460,6 +499,7 @@ Description: ST0510 / JAD Assignment 1
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')">Orders</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Total</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
@@ -522,16 +562,42 @@ Description: ST0510 / JAD Assignment 1
 		                <th scope="col">Phone Number</th>
 		                <th scope="col">Card Number</th>
 		                <th scope="col">CCV</th>
+		                <th scope="col">Expiry Date</th>
 		                <th scope="col">Address</th>
+		                <th scope="col">Zip Code</th>
 		                <th scope="col">Company</th>
 		                <th scope="col">Quantity</th>
 		                <th scope="col">Total</th>
 		                <th scope="col">Time</th>
 		                <th scope="col">Notes</th>
+		                
 		              </tr>
 		            </thead>
 		            <tbody>
 		              <%=orders%>
+		            </tbody>
+		          </table>
+        		</div>
+		  	</div>
+		</div>
+		
+		<div id="userTotal" class="users-tabcontent">
+			<div class="mt-4 ml-4" >
+			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
+			  <div class="mt-4">
+		          <table class="table table-hover" >
+		            <thead>
+		              <tr>
+		              	
+		                <th scope="col">Username</th>
+		                <th scope="col">Email</th>
+		                <th scope="col">Phone Number</th>
+		                <th scope="col">Total</th>
+		                
+		              </tr>
+		            </thead>
+		            <tbody>
+		              <%=userTotals%>
 		            </tbody>
 		          </table>
         		</div>
