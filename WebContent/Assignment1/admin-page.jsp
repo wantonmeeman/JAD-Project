@@ -35,12 +35,24 @@ Description: ST0510 / JAD Assignment 1
 	String categoryName = "";
 	String categoryURL = "";
 	
-	
+	String dropdownCategory = "";
 	String rows = "";
 	String rowsSold = "";
 	String categoryTable = "";
 	int RowCount;
+	String sortSuffix = "";
+	String filterSuffix = "";
+	String searchSuffix = "";
+	
+	String lowStockRange = request.getParameter("lowStockRange");
+	String lSRValue = "100";
+	String productSort = request.getParameter("productSort");
+	String productFilter = request.getParameter("productFilter");
+	String productSearch = request.getParameter("productSearch");
 	String Error = request.getParameter("Err");
+	ResultSet rs;
+	Statement st;
+	PreparedStatement ppst;
 	
 	try{
 		userid = (int)Session.getAttribute("userid");  
@@ -96,29 +108,79 @@ Description: ST0510 / JAD Assignment 1
 		  		out.print("Conn Error");
 		  		conn.close();
 		  	}else{
-		  		  String query = "SELECT * FROM products";
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-		        		while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    	productID = rs.getString("product_id");
-		        	    	Name = rs.getString("name");
-		        	    	briefDescription = rs.getString("brief_description");
-		        	    	detailedDescription = rs.getString("detailed_description");
-		        	    	cPrice =  format.format(rs.getDouble("c_price"));
-		        	    	rPrice  =  format.format(rs.getDouble("r_price"));
-		        	    	stockQuantity = rs.getInt("stock_quantity");
-		        	    	productCat = rs.getString("product_cat");
-		        	    	sold = rs.getString("sold");
+		  		
+		  		String query = "SELECT * FROM products ";//First Tab
+		  		
+		  		//Sorting Logic 
+		  		
+		  		if(productSort == null || productSort.equals("null") || productSort.equals("")){//Can Add a descending option btw,maybe later?
+        			sortSuffix = " ";
+            	}else if(productSort.equals("cPrice")){
+            		sortSuffix = " ORDER BY c_price "; 
+            	}else if(productSort.equals("rPrice")){
+            		sortSuffix = " ORDER BY r_price "; 
+            	}else if(productSort.equals("Quantity")){
+            		sortSuffix = " ORDER BY stock_quantity ";  
+            	}else if(productSort.equals("itemsSold")){
+            		sortSuffix = " ORDER BY sold "; 
+            	}
+				
+		  		//Filtering Logic
+		  		
+        		if(productFilter == null || productFilter.equals("null") ||  productFilter.equals("")){
+        			filterSuffix = "";
+        		}else{
+        			filterSuffix = " WHERE product_cat = '"+productFilter+"'";
+        		}
+        		
+		  		//Searching Logic
+        		
+		  		if(filterSuffix.equals("")){
+		  			//searchSuffix = " WHERE name LIKE '%"+productSearch+"%' ";
+		  			searchSuffix = " WHERE name LIKE ? ";
+		  		}else{
+		  			//searchSuffix = " AND name LIKE '%"+productSearch+"%' ";
+		  			searchSuffix = " WHERE name LIKE ? ";
+		  		}
+		  		
+		  		if(productSearch == null || productSearch.equals("null") || productSearch == ""){
+		  			searchSuffix = " ";
+		  		}	
+		  		 
+		  		//This Adds all of the suffixes together to perform a search
+		  		
+		  	  	query = query + filterSuffix + searchSuffix + sortSuffix;
+		  		
+		  	  	if(searchSuffix.equals(" ")){
+		  	  		st = conn.createStatement();
+			   	 	rs = st.executeQuery(query);
+		  	  	}else{
+		  	  		ppst = conn.prepareStatement(query);
+		  	  		ppst.setString(1,"%"+productSearch+"%");
+		  	 		rs = ppst.executeQuery();
+		  		 }
+		  	  	
+		        while(rs.next()){
+		        	productID = rs.getString("product_id");
+		        	Name = rs.getString("name");
+		        	briefDescription = rs.getString("brief_description");
+		        	detailedDescription = rs.getString("detailed_description");
+		        	cPrice =  format.format(rs.getDouble("c_price"));
+		        	rPrice  =  format.format(rs.getDouble("r_price"));
+		        	stockQuantity = rs.getInt("stock_quantity");
+		        	productCat = rs.getString("product_cat");
+		        	sold = rs.getString("sold");
 		        	    	
-		        	    	if(stockQuantity < 100){
-		        	    		lowStockAlert = "background-color:#cc3300";
-		        	    	}else{
-		        	    		lowStockAlert = "";
-		        	    	}
-		        	    	
-		        	    	rows += "<tr style='"+lowStockAlert+"' ><th scope='row'>"+productID+"</th><td>"+productCat+"</td><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        			}
-		        		
+		        	  if(stockQuantity < 100){//gives it color if low, we can change this to act on the third tab's number
+		        	    lowStockAlert = "background-color:#cc3300";
+		        	  }else{
+		        	    lowStockAlert = "";
+		        	  }
+		        	  
+		        	  rows += "<tr style='"+lowStockAlert+"' ><th scope='row'>"+productID+"</th><td>"+productCat+"</td><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'><a href='#' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+		        }
+		        	
+		        //2nd Tab		
 				query = "SELECT * FROM categories";
 				st = conn.createStatement();
 				rs = st.executeQuery(query);
@@ -135,12 +197,26 @@ Description: ST0510 / JAD Assignment 1
 	        	    		+ "<td><div class='row'><div class='col-md-4'><a href='edit-category.jsp?categoryID="+categoryID+"'><span class='icon icon-pencil'></span></a></div>"
 	        	    		+ "<div class='col-md-8'>"
 	        	    		+ "<a href='#' class='deleteCat'><span class='icon icon-trash'></span></a></div></div></td></tr>";
+	        	    
+	        	    dropdownCategory += "<a class='dropdown-item' href='admin-page.jsp?productFilter="+categoryName+"&productSort="+productSort+"&productSearch="+productSearch+"'>"+categoryName+"</a>";
+             		
         		}
         		
-        		query = "SELECT * FROM products WHERE stock_quantity < 100";
-				st = conn.createStatement();
-				rs = st.executeQuery(query);
-        		
+        		//3rd Tab
+        		if(lowStockRange == null || lowStockRange.equals("")){
+        			query = "SELECT * FROM products WHERE stock_quantity < 100";//We can change this to if equals("") WHERE stock_quantity < 0 ,LMKWYT
+        			st = conn.createStatement();
+    				rs = st.executeQuery(query);
+        		}else{
+        			//query = "SELECT * FROM products WHERE stock_quantity <"+lowStockRange;
+        			query = "SELECT * FROM products WHERE stock_quantity < ?";
+        			lSRValue = lowStockRange;
+        			ppst = conn.prepareStatement(query);
+		  	  		ppst.setString(1,lowStockRange);
+		  	 		rs = ppst.executeQuery();//Apparently theres a memory leak here
+		  	 		//rs.close(); doesnt help so :shrug:
+        		}
+
 				while(rs.next()){
 					productID = rs.getString("product_id");
         	    	Name = rs.getString("name");
@@ -153,6 +229,7 @@ Description: ST0510 / JAD Assignment 1
         	    	lowStock += "<tr><th scope='row'>"+productID+"</th><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="+productID+"'></a></div></div></td></tr>";
 				}
 				
+				//Fourth tab? Do we even need this? Maybe we delete it?
 				  query = "SELECT * FROM products ORDER BY sold DESC";
 		  		  st = conn.createStatement();
 			      rs = st.executeQuery(query);
@@ -422,6 +499,28 @@ Description: ST0510 / JAD Assignment 1
 		<div id="allProductsTab" class="users-tabcontent">
 			<div class="mt-4 ml-4">
 			  <h3><text class="text-dark font-weight-bold">Products List</text></h3>
+			  <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Sorting</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <a class="dropdown-item" href="admin-page.jsp?productFilter=<%=productFilter%>&productSort=cPrice&productSearch=<%=productSearch%>">Cost Price</a>
+                      <a class="dropdown-item" href="admin-page.jsp?productFilter=<%=productFilter%>&productSort=rPrice&productSearch=<%=productSearch%>">Retail Price</a>
+                      <a class="dropdown-item" href="admin-page.jsp?productFilter=<%=productFilter%>&productSort=Quantity&productSearch=<%=productSearch%>">Quantity</a>
+                      <a class="dropdown-item" href="admin-page.jsp?productFilter=<%=productFilter%>&productSort=itemsSold&productSearch=<%=productSearch%>">Items Sold</a>
+                    </div>
+               </div>
+               <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Filter by Categories</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <%=dropdownCategory %>
+                    </div>
+               </div>
+			  <form action="admin-page.jsp?productFilter=<%=productFilter%>&productSort=<%=productSort%>" method='post'>
+			  	<input type='text' name='productSearch'></input>
+			  	<input type='submit' placeholder="Search For Product"></input>
+			  </form>
+			  
 			  <div class="mt-4">
 		          <table class="table table-hover">
 		            <thead>
@@ -468,6 +567,10 @@ Description: ST0510 / JAD Assignment 1
 		<div id="lowStock" class="users-tabcontent">
 		  <div class="mt-4 ml-4">
 			  <h3><text class="text-dark font-weight-bold">Low Stock List</text></h3>
+			  <form action="admin-page.jsp" method='post'>
+			  	<input type='number' name='lowStockRange' value=<%=lSRValue %>></input>
+			  	<input type='submit' placeholder="Set Range"></input>
+			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover">
 		            <thead>

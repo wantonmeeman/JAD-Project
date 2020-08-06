@@ -17,8 +17,21 @@ Description: ST0510 / JAD Assignment 1
 	
 	DecimalFormat format = new DecimalFormat("#0.00"); 
 	HttpSession Session = request.getSession();
-	String AdminPage = "";
 	
+	String filterValue = request.getParameter("filterValue");
+	String filterCategory = request.getParameter("filterCategory");
+	String userSearch = request.getParameter("userSearch");
+	String userSearch4 = request.getParameter("userSearch4");
+	String filterSuffix = "";
+	String orderSort = request.getParameter("orderSort");
+	String sortSuffix = "";
+	String timeSort = request.getParameter("timeSort");
+	String timeSuffix = "";
+	
+	String query = "";
+	String query1 = "";
+	String query2 = "";
+	String AdminPage = "";
 	String dbUserID = "";
 	String username = "";
 	String password = "";
@@ -30,11 +43,12 @@ Description: ST0510 / JAD Assignment 1
 	String cardnumber = "";
 	String CCV = "";
 	
-	String orderUsername = "";
+	String options = "";
 	String orders = "";
-	String orderPhoneNumber = "";
 	String orderAddress = "";
 	String orderCountry = "";
+	String orderUsername = "";
+	String orderPhoneNumber = "";
 	String orderProduct = "";
 	String orderEmail = "";
 	int orderUserID = 0;
@@ -60,9 +74,19 @@ Description: ST0510 / JAD Assignment 1
 	String roleTable = "";
 	int RowCount;
 	String Error = request.getParameter("Err");
-	
 	int userid = 0;  
 	String role = "";
+	
+	ResultSet rs;
+	ResultSet rs1;
+	ResultSet rs2;
+	Statement st;
+	PreparedStatement ppst;
+	
+	if(filterCategory == null && filterValue == null){
+		filterValue = "";
+		filterCategory = "";
+	}
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -118,8 +142,207 @@ Description: ST0510 / JAD Assignment 1
              }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	}
-
-    	
+        
+		switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
+			case "username":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username' selected>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "email":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email' selected>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "phonenumber":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber' selected>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "cardnumber":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber' selected>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "ccv":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv' selected>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "expirydate":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate' selected>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "address":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address' selected>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "zipcode":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode' selected>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "company":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company' selected>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "total":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total' selected>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "quantity":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity' selected>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "notes":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes' selected>Notes</option>";
+				break;
+			default:
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				  break;
+		}
+        
+        
+        
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
@@ -131,10 +354,18 @@ Description: ST0510 / JAD Assignment 1
 		  	if(conn == null){
 		  		out.print("Conn Error");
 		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM users";
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
+		  	}else{//First Tab
+		  		if(userSearch == null || userSearch.equals("")){
+		  		  query = "SELECT * FROM users";
+		  		  st = conn.createStatement();
+			      rs = st.executeQuery(query);
+		  		}else{
+		  		  query = "SELECT * FROM users WHERE username LIKE ?"; //Change this to a PPst
+		  		  ppst = conn.prepareStatement(query);
+		  		  ppst.setString(1,"%"+userSearch+"%");
+		  		  rs = ppst.executeQuery();
+		  		}
+		  		  
 		        	while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
 		        	    dbUserID = rs.getString("user_id");
 		        	    username = rs.getString("username");
@@ -166,7 +397,7 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "</div></td></tr>";
 		        	}
 		        		
-						query = "SELECT * FROM roles";
+						query = "SELECT * FROM roles";//Second Tab
 						st = conn.createStatement();
 						rs = st.executeQuery(query);
 						
@@ -182,11 +413,71 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
 		        		}
 		        		
-		        		query = "SELECT * FROM orders";
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
+		        		//Third Tab
+		        		
+		        		
+		        		
+		        		query = "SELECT * FROM orders ";
+		        		if(orderSort == null || orderSort.equals("DTime") || orderSort.equals("")){
+		        			sortSuffix = " ORDER BY date " ;
+		            	}else if(orderSort.equals("ATime")){
+		            		sortSuffix = " ORDER BY date DESC "; 
+		            	}else if(orderSort.equals("DTotal")){
+		            		sortSuffix = " ORDER BY total "; 
+		            	}else if(orderSort.equals("ATotal")){
+		            		sortSuffix = " ORDER BY total DESC ";  
+		            	}else if(orderSort.equals("DQuantity")){
+		            		sortSuffix = " ORDER BY quantity "; 
+		            	}else if(orderSort.equals("AQuantity")){
+		            		sortSuffix = " ORDER BY quantity DESC "; 
+		            	}
+		        		
+		        		if(timeSort == null || timeSort.equals("")){
+		        			timeSuffix = " ";
+		        		}else if(timeSort.equals("Today")){
+		        			timeSuffix = "WHERE DATE(orders.date) = CURDATE()";
+		        		}else if(timeSort.equals("Week")){
+		        			timeSuffix = "WHERE YEARWEEK(orders.date) = YEARWEEK(CURDATE())";
+		        		}else if(timeSort.equals("Month")){
+		        			timeSuffix = "WHERE MONTH(orders.date) = MONTH(CURRENT_DATE()) AND YEAR(orders.date) = YEAR(CURRENT_DATE())";//No YearMonth Function :(
+		        		}
+		        		
+		        		
+		        		if(filterValue == null || filterCategory == null || filterValue == "" || filterCategory == "" || filterCategory.equals("name") || filterCategory.equals("username") || filterCategory.equals("email") || filterCategory.equals("phonenumber")){
+		        			filterSuffix = "";
+		        			query = query + timeSuffix +filterSuffix + sortSuffix;
+		        			st = conn.createStatement();
+			        		rs = st.executeQuery(query);
+		        		}else if(timeSort == null){
+		        			//cant supply preparedstatment with column name
+		        			//Work arounds include a using a switch case(but thats bad for effeciency and also looks like crap)
+		        			//Ask cher, ill just do a ppst without the column name,
+		        			//the column name is not a user input so it should be fine?
+		        					
+		        			
+		        			//filterSuffix = "WHERE "+filterCategory+" LIKE '%"+filterValue+"%'";	
+		        			filterSuffix = "WHERE "+filterCategory+" LIKE ?";
+		        			query = query + timeSuffix +filterSuffix + sortSuffix;
+		        			ppst = conn.prepareStatement(query);
+		        			ppst.setString(1,"%"+filterValue+"%");
+		        			rs = ppst.executeQuery();
+		        			
+		        			//rs.close(); doesnt work in stopping the memory leak		        			
+		        		}else{
+		        			filterSuffix = "AND "+filterCategory+" LIKE ?";
+		        			query = query + timeSuffix +filterSuffix + sortSuffix;
+		        			ppst = conn.prepareStatement(query);
+		        			ppst.setString(1,"%"+filterValue+"%");
+		        			rs = ppst.executeQuery();
+		        		}
+		        		
 						
 		        		while (rs.next()){
+		        			orderUsername = "";
+		        			orderPhoneNumber = "";
+		        			orderProduct = "";
+		        			orderEmail = "";
+		        			
 		        			orderDate = rs.getString("date");
 		    		    	orderProductID = rs.getInt("fk_productid");
 		    		    	orderUserID = rs.getInt("fk_userid");
@@ -200,24 +491,48 @@ Description: ST0510 / JAD Assignment 1
 		    		    	orderNotes = rs.getString("notes");
 		    		    	orderQuantity = rs.getString("quantity");
 		    		    	
-		    		    	String query1 = "SELECT name FROM products where product_id = "+orderProductID;
-							Statement st1 = conn.createStatement();
-							ResultSet rs1 = st1.executeQuery(query1);
+		    		    	if(filterCategory.equals("name")){//if sort by username
+		    		    		//query1 = "SELECT name FROM products where product_id = "+orderProductID+" AND "+filterCategory+" LIKE '%"+filterValue+"%'";
+								
+		    		    		query1 = "SELECT name FROM products where product_id = ? AND "+filterCategory+" LIKE ?";
+								ppst = conn.prepareStatement(query1);
+								ppst.setInt(1,orderProductID);
+			        			ppst.setString(2,"%"+filterValue+"%");
+			        			rs1 = ppst.executeQuery();
+							}else{
+								query1 = "SELECT name FROM products where product_id = ?";
+								ppst = conn.prepareStatement(query1);
+								ppst.setInt(1,orderProductID);
+			        			rs1 = ppst.executeQuery();
+							}
+		    		    	
 							
 							while(rs1.next()){
-								orderProduct = rs1.getString("name");
+								orderProduct = rs1.getString("name");	
 							}
 							
-							String query2 = "SELECT username,email,phonenumber FROM users where user_id = "+orderUserID;
-							Statement st2 = conn.createStatement();
-							ResultSet rs2 = st2.executeQuery(query2);
+							if(filterCategory.equals("username") || filterCategory.equals("email") || filterCategory.equals("phonenumber")){
+								query2 = "SELECT username,email,phonenumber FROM users where user_id = ? AND "+filterCategory+" LIKE ?";
+								ppst = conn.prepareStatement(query2);
+								ppst.setInt(1,orderProductID);
+			        			ppst.setString(2,"%"+filterValue+"%");
+			        			rs2 = ppst.executeQuery();
+							}else{
+								query2 = "SELECT username,email,phonenumber FROM users where user_id = ?";
+								ppst = conn.prepareStatement(query2);
+								ppst.setInt(1,orderProductID);
+			        			rs2 = ppst.executeQuery();
+							}
 							
 							while(rs2.next()){
 								orderUsername = rs2.getString("username");
 								orderEmail = rs2.getString("Email");
 								orderPhoneNumber = rs2.getString("phonenumber");
 							}
-		        	    	
+							
+							//The following commented code is if we don't want to use LIKE and use =, it uses the literal string value
+							//if((filterCategory.equals("name") && filterValue.equals(orderProduct)) || (filterCategory.equals("username") && filterValue.equals(orderUsername)) || (filterCategory.equals("email") && filterValue.equals(orderEmail)) || (filterCategory.equals("phonenumber") && filterValue.equals(orderPhoneNumber))){
+							if(!(orderProduct.equals("") || orderUsername.equals("") || orderEmail.equals("") || orderPhoneNumber.equals(""))){
 							orders += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
 			        	    		+ "<td>" + orderProduct + "</td>"
@@ -235,28 +550,40 @@ Description: ST0510 / JAD Assignment 1
 			                	    + "<td>" + orderDate + "</td>"
 			                	    + "<td>" + orderNotes + "</td>"
 			        	    		+ "</div></td></tr>";
+							//}
+							}
+							
 		        		}
 				        		
-		        
-		        		query = "SELECT fk_userid,SUM(total) as user_total FROM digitgames.orders GROUP BY fk_userid order by user_total desc;";
+		        		//Fourth Tab, Maybe combine with first?
+		        		query = "SELECT fk_userid,SUM(total) as user_total FROM orders GROUP BY fk_userid order by user_total desc;";
 						st = conn.createStatement();
 						rs = st.executeQuery(query);
 						
 						while(rs.next()){
+							orderUsername = "";
 							
-							String query4 = "SELECT username,email,phonenumber FROM users where user_id = "+rs.getInt("fk_userid");
-							Statement st4 = conn.createStatement();
-							ResultSet rs4 = st4.executeQuery(query4);
+							if(userSearch4 == null){
+								query1 = "SELECT username,email,phonenumber FROM users where user_id = ?";
+								ppst = conn.prepareStatement(query1);
+								ppst.setInt(1,rs.getInt("fk_userid"));
+			        			rs1 = ppst.executeQuery();
+							}else{
+								query1 = "SELECT username,email,phonenumber FROM users where user_id = ? AND username LIKE ?";
+								ppst = conn.prepareStatement(query1);
+								ppst.setInt(1,rs.getInt("fk_userid"));
+								ppst.setString(2,"%"+userSearch4+"%");
+								rs1 = ppst.executeQuery();
+							}
 							
-							while(rs4.next()){
-								orderUsername = rs4.getString("username");
-								orderEmail = rs4.getString("Email");
-								orderPhoneNumber = rs4.getString("phonenumber");
+							while(rs1.next()){
+								orderUsername = rs1.getString("username");
+								orderEmail = rs1.getString("Email");
+								orderPhoneNumber = rs1.getString("phonenumber");
 							}
 							
 							userTotal = rs.getDouble("user_total");
-							out.print(userTotal);
-							
+							if(!orderUsername.equals("")){ //Maybe i should add the rest of result set2, aka if !orderEmail.equals("")
 							userTotals += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
 			        	    		+ "<td>" + orderUsername + "</td>"
@@ -264,6 +591,7 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "<td>" + orderPhoneNumber + "</td>"
 			        	    		+ "<td>$" + format.format(userTotal) + "</td>"
 			        	    		+ "</div></td></tr>";
+							}
 							
 							
 						}
@@ -271,6 +599,9 @@ Description: ST0510 / JAD Assignment 1
 		        conn.close();
 		        
 			}
+		  	if(filterValue == null){
+		  		filterValue = "";
+		  	}
 		  	
 
 %>
@@ -505,6 +836,10 @@ Description: ST0510 / JAD Assignment 1
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
+			  <form action="all-users.jsp" method='post'>
+			  	<input type='text' name='userSearch'></input>
+			  	<input type='submit' placeholder="Search For User"></input>
+			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
@@ -551,7 +886,41 @@ Description: ST0510 / JAD Assignment 1
 		
 		<div id="Orders" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Orders List</text></h3>
+			  <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Sorting</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
+                    </div>
+               </div>
+               <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Filter By Date</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&">None</a>
+                    </div>
+               </div>
+              <form action="all-users.jsp?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              	<select name = "filterCategory">
+              		<%=options %>
+              	</select>
+              	<input type='text' name='filterValue' value="<%=filterValue%>"></input>
+              	<input type='submit' placeholder="Search">
+              </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
@@ -570,7 +939,6 @@ Description: ST0510 / JAD Assignment 1
 		                <th scope="col">Total</th>
 		                <th scope="col">Time</th>
 		                <th scope="col">Notes</th>
-		                
 		              </tr>
 		            </thead>
 		            <tbody>
@@ -584,6 +952,10 @@ Description: ST0510 / JAD Assignment 1
 		<div id="userTotal" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
+			  <form action="all-users.jsp" method='post'>
+			  	<input type='text' name='userSearch4'></input>
+			  	<input type='submit' placeholder="Search For User"></input>
+			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>

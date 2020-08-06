@@ -273,7 +273,6 @@ Description: ST0510 / JAD Assignment 1
 
             <div id="allListings" class="  row mb-5">
 
-              <!-- 1 SAMPLE PRODUCT (CHANGE TO LOOP) -->
               <%=cells%>
 
 

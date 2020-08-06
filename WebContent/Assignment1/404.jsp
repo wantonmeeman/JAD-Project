@@ -26,14 +26,14 @@ Description: ST0510 / JAD Assignment 1
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                           + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
-             } else if (role.equals("member")) {
+            } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                             + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-             }
+            }
             }catch(Exception e){// if no id or role is detected
             	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}%>
