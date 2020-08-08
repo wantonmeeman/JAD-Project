@@ -38,7 +38,7 @@ Description: ST0510 / JAD Assignment 1
             	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}%>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Error 404: Page not found.	</title>
 <head>
   <title>404</title>
   <meta charset="utf-8">
