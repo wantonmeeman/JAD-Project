@@ -6,8 +6,9 @@ Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" import="myclasses.*"%>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
 <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,75 +19,35 @@ Description: ST0510 / JAD Assignment 1
 	DecimalFormat format = new DecimalFormat("#0.00"); 
 	HttpSession Session = request.getSession();
 	
-	String filterValue = request.getParameter("filterValue");
-	String filterCategory = request.getParameter("filterCategory");
-	String userSearch = request.getParameter("userSearch");
-	String userSearch4 = request.getParameter("userSearch4");
+	
 	String filterSuffix = "";
 	String orderSort = request.getParameter("orderSort");
 	String sortSuffix = "";
+	String filterCategory = request.getParameter("filterCategory");
+	String filterValue = request.getParameter("filterValue");
+	filterValue = "";
+	filterCategory = "";
 	String timeSort = request.getParameter("timeSort");
 	String timeSuffix = "";
 	
-	String query = "";
-	String query1 = "";
-	String query2 = "";
+
 	String AdminPage = "";
 	String dbUserID = "";
-	String username = "";
-	String password = "";
-	String email = "";
-	String dbRole = "";
-	String firstname = "";
-	String lastname = "";
-	String phonenumber = "";
-	String cardnumber = "";
-	String CCV = "";
 	
 	String options = "";
 	String orders = "";
-	String orderAddress = "";
-	String orderCountry = "";
-	String orderUsername = "";
-	String orderPhoneNumber = "";
-	String orderProduct = "";
-	String orderEmail = "";
-	int orderUserID = 0;
-	int orderProductID = 0;
-	String orderCompany = "";
-	String orderQuantity = "";
-	double orderTotal = 0;
-	String orderNotes = "";
-	String orderCCV = "";
-	String orderZipCode = "";
-	String orderCardNumber = "";
-	String orderImage = "";
-	String orderDate = "";
-	String orderExpiryDate = "";
 	
 	String userTotals = "";
-	double userTotal = 0;
 	
-	String dbRoleID = "";
+	String dbRoleID = "";//Tie this to the thing
 	String roleName = "";
 	
 	String rows = "";
 	String roleTable = "";
-	int RowCount;
 	String Error = request.getParameter("Err");
 	int userid = 0;  
 	String role = "";
 	
-	ResultSet rs;
-	ResultSet rs1;
-	ResultSet rs2;
-	Statement st;
-	PreparedStatement ppst;
-	
-	if(filterCategory == null && filterValue == null){
-		filterValue = "";
-		filterCategory = "";
-	}
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -113,7 +74,10 @@ Description: ST0510 / JAD Assignment 1
 	} catch(Exception e) {
 		
 	}
-	
+	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
+	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
+	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
+	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
@@ -123,7 +87,7 @@ Description: ST0510 / JAD Assignment 1
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
@@ -341,54 +305,20 @@ Description: ST0510 / JAD Assignment 1
 				  break;
 		}
         
-        
-        
-        Connection conn = null;
-        try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{//First Tab
-		  		if(userSearch == null || userSearch.equals("")){
-		  		  query = "SELECT * FROM users";
-		  		  st = conn.createStatement();
-			      rs = st.executeQuery(query);
-		  		}else{
-		  		  query = "SELECT * FROM users WHERE username LIKE ?"; //Change this to a PPst
-		  		  ppst = conn.prepareStatement(query);
-		  		  ppst.setString(1,"%"+userSearch+"%");
-		  		  rs = ppst.executeQuery();
-		  		}
 		  		  
-		        	while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    dbUserID = rs.getString("user_id");
-		        	    username = rs.getString("username");
-		        	    password = rs.getString("password");
-		        	    email = rs.getString("email");
-		        	    dbRole = rs.getString("role");
-		        	    firstname = rs.getString("firstname");
-		        	    lastname = rs.getString("lastname");
-		        	    phonenumber = rs.getString("phonenumber");
-		        	    cardnumber = rs.getString("cardnumber");
-		        	    CCV = rs.getString("ccv");
+		        	for(int i = 0;Tab1.size() > i;i++){ //First Tab
 		        	    	
 		        	    	// image = rs.getString("image");
 		        	    	rows += "<tr>"
-		        	    		+ "<th scope='row'>" + dbUserID + "</th>"
-		        	    		+ "<td>" + username + "</td>"
-		        	    		+ "<td>" + firstname + "</td>"
-		        	    		+ "<td>" + lastname + "</td>"
-		        	    		+ "<td>" + email + "</td>"
-		        	    		+ "<td>" + dbRole + "</td>"
-		        	    		+ "<td>" + phonenumber + "</td>"
-		        	    		+ "<td>" + cardnumber.replaceFirst(".{12}", "**************") + "</td>"
-		        	    		+ "<td>" + CCV + "</td>"
+		        	    		+ "<th scope='row'>" + Tab1.get(i).getUserid() + "</th>"
+		        	    		+ "<td>" + Tab1.get(i).getUsername() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getFirstname() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getLastname() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getEmail() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getRole() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getPhonenumber() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCardnumber().replaceFirst(".{12}", "**************") + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCcv() + "</td>"
 		        	    		+ "<td><div class='row'><div class='col-md-8'>"
 		        	    		+ "<div class='ml-2 col-md-1'>"
 		        	    		+ "<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a></div>"
@@ -397,212 +327,53 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "</div></td></tr>";
 		        	}
 		        		
-						query = "SELECT * FROM roles";//Second Tab
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
 						
-		        		while (rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        			dbRoleID = rs.getString("role_id");
-		        	    	roleName = rs.getString("role_name");
+		        	for(int i = 0;Tab2.size() > i;i++){//Second Tab
 		        	    	
 		        	    	roleTable += "<tr>"
-			        	    		+ "<th scope='row'>" + dbRoleID + "</th>"
-			        	    		+ "<td>" + roleName + "</td>"
-			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+dbRoleID+"'><span class='icon icon-pencil'></span></a></div>"
+			        	    		+ "<th scope='row'>" + Tab2.get(i).getRoleid() + "</th>"
+			        	    		+ "<td>" + Tab2.get(i).getRolename() + "</td>"
+			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+Tab2.get(i).getRoleid()+"'><span class='icon icon-pencil'></span></a></div>"
 			        	    		+ "<div class='col-md-2'>"
 			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        		}
+		        	}
 		        		
 		        		//Third Tab
-		        		
-		        		
-		        		
-		        		query = "SELECT * FROM orders ";
-		        		if(orderSort == null || orderSort.equals("DTime") || orderSort.equals("")){
-		        			sortSuffix = " ORDER BY date " ;
-		            	}else if(orderSort.equals("ATime")){
-		            		sortSuffix = " ORDER BY date DESC "; 
-		            	}else if(orderSort.equals("DTotal")){
-		            		sortSuffix = " ORDER BY total "; 
-		            	}else if(orderSort.equals("ATotal")){
-		            		sortSuffix = " ORDER BY total DESC ";  
-		            	}else if(orderSort.equals("DQuantity")){
-		            		sortSuffix = " ORDER BY quantity "; 
-		            	}else if(orderSort.equals("AQuantity")){
-		            		sortSuffix = " ORDER BY quantity DESC "; 
-		            	}
-		        		
-		        		if(timeSort == null || timeSort.equals("")){
-		        			timeSuffix = " ";
-		        		}else if(timeSort.equals("Today")){
-		        			timeSuffix = "WHERE DATE(orders.date) = CURDATE()";
-		        		}else if(timeSort.equals("Week")){
-		        			timeSuffix = "WHERE YEARWEEK(orders.date) = YEARWEEK(CURDATE())";
-		        		}else if(timeSort.equals("Month")){
-		        			timeSuffix = "WHERE MONTH(orders.date) = MONTH(CURRENT_DATE()) AND YEAR(orders.date) = YEAR(CURRENT_DATE())";//No YearMonth Function :(
-		        		}
-		        		
-		        		
-		        		if(filterValue == null || filterCategory == null || filterValue == "" || filterCategory == "" || filterCategory.equals("name") || filterCategory.equals("username") || filterCategory.equals("email") || filterCategory.equals("phonenumber")){
-		        			filterSuffix = "";
-		        			query = query + timeSuffix +filterSuffix + sortSuffix;
-		        			st = conn.createStatement();
-			        		rs = st.executeQuery(query);
-		        		}else if(timeSort == null){
-		        			//cant supply preparedstatment with column name
-		        			//Work arounds include a using a switch case(but thats bad for effeciency and also looks like crap)
-		        			//Ask cher, ill just do a ppst without the column name,
-		        			//the column name is not a user input so it should be fine?
-		        					
-		        			
-		        			//filterSuffix = "WHERE "+filterCategory+" LIKE '%"+filterValue+"%'";	
-		        			filterSuffix = "WHERE "+filterCategory+" LIKE ?";
-		        			query = query + timeSuffix +filterSuffix + sortSuffix;
-		        			ppst = conn.prepareStatement(query);
-		        			ppst.setString(1,"%"+filterValue+"%");
-		        			rs = ppst.executeQuery();
-		        			
-		        			//rs.close(); doesnt work in stopping the memory leak		        			
-		        		}else{
-		        			filterSuffix = "AND "+filterCategory+" LIKE ?";
-		        			query = query + timeSuffix +filterSuffix + sortSuffix;
-		        			ppst = conn.prepareStatement(query);
-		        			ppst.setString(1,"%"+filterValue+"%");
-		        			rs = ppst.executeQuery();
-		        		}
-		        		
-						
-		        		while (rs.next()){
-		        			orderUsername = "";
-		        			orderPhoneNumber = "";
-		        			orderProduct = "";
-		        			orderEmail = "";
-		        			
-		        			orderDate = rs.getString("date");
-		    		    	orderProductID = rs.getInt("fk_productid");
-		    		    	orderUserID = rs.getInt("fk_userid");
-		    		    	orderCardNumber = rs.getString("cardnumber");
-		    		    	orderCCV = rs.getString("CCV");
-		    		    	orderExpiryDate = rs.getString("expirydate");
-		    		    	orderAddress = rs.getString("address");
-		    		    	orderZipCode = rs.getString("zipcode");
-		    		    	orderCompany = rs.getString("company");
-		    		    	orderTotal = rs.getDouble("total");
-		    		    	orderNotes = rs.getString("notes");
-		    		    	orderQuantity = rs.getString("quantity");
-		    		    	
-		    		    	if(filterCategory.equals("name")){//if sort by username
-		    		    		//query1 = "SELECT name FROM products where product_id = "+orderProductID+" AND "+filterCategory+" LIKE '%"+filterValue+"%'";
-								
-		    		    		query1 = "SELECT name FROM products where product_id = ? AND "+filterCategory+" LIKE ?";
-								ppst = conn.prepareStatement(query1);
-								ppst.setInt(1,orderProductID);
-			        			ppst.setString(2,"%"+filterValue+"%");
-			        			rs1 = ppst.executeQuery();
-							}else{
-								query1 = "SELECT name FROM products where product_id = ?";
-								ppst = conn.prepareStatement(query1);
-								ppst.setInt(1,orderProductID);
-			        			rs1 = ppst.executeQuery();
-							}
-		    		    	
-							
-							while(rs1.next()){
-								orderProduct = rs1.getString("name");	
-							}
-							
-							if(filterCategory.equals("username") || filterCategory.equals("email") || filterCategory.equals("phonenumber")){
-								query2 = "SELECT username,email,phonenumber FROM users where user_id = ? AND "+filterCategory+" LIKE ?";
-								ppst = conn.prepareStatement(query2);
-								ppst.setInt(1,orderProductID);
-			        			ppst.setString(2,"%"+filterValue+"%");
-			        			rs2 = ppst.executeQuery();
-							}else{
-								query2 = "SELECT username,email,phonenumber FROM users where user_id = ?";
-								ppst = conn.prepareStatement(query2);
-								ppst.setInt(1,orderProductID);
-			        			rs2 = ppst.executeQuery();
-							}
-							
-							while(rs2.next()){
-								orderUsername = rs2.getString("username");
-								orderEmail = rs2.getString("Email");
-								orderPhoneNumber = rs2.getString("phonenumber");
-							}
-							
-							//The following commented code is if we don't want to use LIKE and use =, it uses the literal string value
-							//if((filterCategory.equals("name") && filterValue.equals(orderProduct)) || (filterCategory.equals("username") && filterValue.equals(orderUsername)) || (filterCategory.equals("email") && filterValue.equals(orderEmail)) || (filterCategory.equals("phonenumber") && filterValue.equals(orderPhoneNumber))){
-							if(!(orderProduct.equals("") || orderUsername.equals("") || orderEmail.equals("") || orderPhoneNumber.equals(""))){
+		        		for(int i = 0;Tab3.size() > i;i++){
 							orders += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + orderProduct + "</td>"
-			        	    		+ "<td>" + orderUsername + "</td>"
-			        	    		+ "<td>" + orderEmail + "</td>"
-			        	    		+ "<td>" + orderPhoneNumber + "</td>"
-					        	    + "<td>" + orderCardNumber.replaceFirst(".{12}", "**************") + "</td>"
-					        	    + "<td>" + orderCCV + "</td>"
-					        	    + "<td>" + orderExpiryDate + "</td>"
-			        	    		+ "<td>" + orderAddress + "</td>"
-			        	    		+ "<td>" + orderZipCode + "</td>"
-			        	    		+ "<td>" + orderCompany + "</td>"
-			                	    + "<td>" + orderQuantity+ "</td>"
-			                	    + "<td>$" + format.format(orderTotal)+ "</td>"
-			                	    + "<td>" + orderDate + "</td>"
-			                	    + "<td>" + orderNotes + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderProduct() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderUsername() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderEmail() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderPhoneNumber() + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderCardNumber().replaceFirst(".{12}", "**************") + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderCCV() + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderExpiryDate() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderAddress() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderZipCode() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderCompany() + "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderQuantity()+ "</td>"
+			                	    + "<td>$" + format.format(Tab3.get(i).getOrderTotal())+ "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderDate() + "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderNotes() + "</td>"
 			        	    		+ "</div></td></tr>";
 							//}
 							}
-							
-		        		}
+		        		
 				        		
 		        		//Fourth Tab, Maybe combine with first?
-		        		query = "SELECT fk_userid,SUM(total) as user_total FROM orders GROUP BY fk_userid order by user_total desc;";
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
-						
-						while(rs.next()){
-							orderUsername = "";
-							
-							if(userSearch4 == null){
-								query1 = "SELECT username,email,phonenumber FROM users where user_id = ?";
-								ppst = conn.prepareStatement(query1);
-								ppst.setInt(1,rs.getInt("fk_userid"));
-			        			rs1 = ppst.executeQuery();
-							}else{
-								query1 = "SELECT username,email,phonenumber FROM users where user_id = ? AND username LIKE ?";
-								ppst = conn.prepareStatement(query1);
-								ppst.setInt(1,rs.getInt("fk_userid"));
-								ppst.setString(2,"%"+userSearch4+"%");
-								rs1 = ppst.executeQuery();
-							}
-							
-							while(rs1.next()){
-								orderUsername = rs1.getString("username");
-								orderEmail = rs1.getString("Email");
-								orderPhoneNumber = rs1.getString("phonenumber");
-							}
-							
-							userTotal = rs.getDouble("user_total");
-							if(!orderUsername.equals("")){ //Maybe i should add the rest of result set2, aka if !orderEmail.equals("")
+		        		
+						for(int i = 0;Tab4.size() > i;i++){
 							userTotals += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + orderUsername + "</td>"
-			        	    		+ "<td>" + orderEmail + "</td>"
-			        	    		+ "<td>" + orderPhoneNumber + "</td>"
-			        	    		+ "<td>$" + format.format(userTotal) + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getUsername() + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getEmail() + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getPhonenumber() + "</td>"
+			        	    		+ "<td>$" + format.format(Tab4.get(i).getTotal()) + "</td>"
 			        	    		+ "</div></td></tr>";
 							}
-							
-							
-						}
-						
-		        conn.close();
 		        
-			}
-		  	if(filterValue == null){
-		  		filterValue = "";
-		  	}
-		  	
+
 
 %>
   <title>Digit Games &mdash; Categories</title>
@@ -836,7 +607,7 @@ Description: ST0510 / JAD Assignment 1
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
-			  <form action="all-users.jsp" method='post'>
+			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
 			  	<input type='text' name='userSearch'></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>
@@ -891,35 +662,35 @@ Description: ST0510 / JAD Assignment 1
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Sorting</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
                     </div>
                </div>
                <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Filter By Date</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="all-users.jsp?orderSort=<%=orderSort%>&">None</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&">None</a>
                     </div>
                </div>
-              <form action="all-users.jsp?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              <form action="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
               	<select name = "filterCategory">
               		<%=options %>
               	</select>
-              	<input type='text' name='filterValue' value="<%=filterValue%>"></input>
-              	<input type='submit' placeholder="Search">
+              	<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Search"></input>
+              	<input type='submit' >
               </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
@@ -952,7 +723,7 @@ Description: ST0510 / JAD Assignment 1
 		<div id="userTotal" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
-			  <form action="all-users.jsp" method='post'>
+			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
 			  	<input type='text' name='userSearch4'></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>

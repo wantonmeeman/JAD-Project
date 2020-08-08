@@ -54,7 +54,7 @@ Description: ST0510 / JAD Assignment 1
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 		if(role.equals("admin")){ 
-            AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+            AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
             		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
             		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
             		

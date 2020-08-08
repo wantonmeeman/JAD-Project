@@ -18,7 +18,7 @@ Description: ST0510 / JAD Assignment 1
         	int userid = (int)Session.getAttribute("userid");  
         	String role = (String)Session.getAttribute("role");
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"

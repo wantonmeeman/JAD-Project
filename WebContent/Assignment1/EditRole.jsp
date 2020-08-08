@@ -56,7 +56,7 @@ try{
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect("all-users.jsp?Err=EditSuccess"); //Add EditSuccess at admin-page
+			    	  response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      

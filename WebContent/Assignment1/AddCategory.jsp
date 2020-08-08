@@ -35,7 +35,7 @@ try{
   	
   //What else to add? try to add image path later maybe?
  if( catName.equals("") || catImageURL.equals("")){
-	 response.sendRedirect("all-users.jsp?Err=NullError");
+	 response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=NullError");
 	 
  } else {
 
