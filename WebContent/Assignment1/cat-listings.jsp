@@ -49,7 +49,7 @@ Description: ST0510 / JAD Assignment 1
 	}
 		try{
 			if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
@@ -273,7 +273,6 @@ Description: ST0510 / JAD Assignment 1
 
             <div id="allListings" class="  row mb-5">
 
-              <!-- 1 SAMPLE PRODUCT (CHANGE TO LOOP) -->
               <%=cells%>
 
 

@@ -32,7 +32,7 @@ Description: ST0510 / JAD Assignment 1
   	
   //What else to add? try to add image path later maybe?
  if( dbRole.equals("")){
-	 response.sendRedirect("all-users.jsp?Err=NullError");
+	 response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=NullError");
 	 
  } else {
 
@@ -58,7 +58,7 @@ Description: ST0510 / JAD Assignment 1
 			      	out.print("Database Error"); 
 			      	
 			      } else {
-			    	 response.sendRedirect("all-users.jsp?Err=AddSuccess");
+			    	 response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=AddSuccess");
 			    	 
 			      }
 			      conn.close();

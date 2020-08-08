@@ -6,8 +6,9 @@ Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" import="myclasses.*"%>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
 <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,52 +18,36 @@ Description: ST0510 / JAD Assignment 1
 	
 	DecimalFormat format = new DecimalFormat("#0.00"); 
 	HttpSession Session = request.getSession();
+	
+	
+	String filterSuffix = "";
+	String orderSort = request.getParameter("orderSort");
+	String sortSuffix = "";
+	String filterCategory = request.getParameter("filterCategory");
+	String filterValue = request.getParameter("filterValue");
+	filterValue = "";
+	filterCategory = "";
+	String timeSort = request.getParameter("timeSort");
+	String timeSuffix = "";
+	
+
 	String AdminPage = "";
-	
 	String dbUserID = "";
-	String username = "";
-	String password = "";
-	String email = "";
-	String dbRole = "";
-	String firstname = "";
-	String lastname = "";
-	String phonenumber = "";
-	String cardnumber = "";
-	String CCV = "";
 	
-	String orderUsername = "";
+	String options = "";
 	String orders = "";
-	String orderPhoneNumber = "";
-	String orderAddress = "";
-	String orderCountry = "";
-	String orderProduct = "";
-	String orderEmail = "";
-	int orderUserID = 0;
-	int orderProductID = 0;
-	String orderCompany = "";
-	String orderQuantity = "";
-	double orderTotal = 0;
-	String orderNotes = "";
-	String orderCCV = "";
-	String orderZipCode = "";
-	String orderCardNumber = "";
-	String orderImage = "";
-	String orderDate = "";
-	String orderExpiryDate = "";
 	
 	String userTotals = "";
-	double userTotal = 0;
 	
-	String dbRoleID = "";
+	String dbRoleID = "";//Tie this to the thing
 	String roleName = "";
 	
 	String rows = "";
 	String roleTable = "";
-	int RowCount;
 	String Error = request.getParameter("Err");
-	
 	int userid = 0;  
 	String role = "";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -89,7 +74,10 @@ Description: ST0510 / JAD Assignment 1
 	} catch(Exception e) {
 		
 	}
-	
+	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
+	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
+	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
+	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
@@ -99,7 +87,7 @@ Description: ST0510 / JAD Assignment 1
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='all-users.jsp'>User Control</a></li>"
+                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
@@ -118,46 +106,219 @@ Description: ST0510 / JAD Assignment 1
              }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	}
-
-    	
-        Connection conn = null;
-        try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM users";
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-		        	while(rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        	    dbUserID = rs.getString("user_id");
-		        	    username = rs.getString("username");
-		        	    password = rs.getString("password");
-		        	    email = rs.getString("email");
-		        	    dbRole = rs.getString("role");
-		        	    firstname = rs.getString("firstname");
-		        	    lastname = rs.getString("lastname");
-		        	    phonenumber = rs.getString("phonenumber");
-		        	    cardnumber = rs.getString("cardnumber");
-		        	    CCV = rs.getString("ccv");
+        
+		switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
+			case "username":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username' selected>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "email":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email' selected>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "phonenumber":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber' selected>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "cardnumber":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber' selected>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "ccv":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv' selected>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "expirydate":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate' selected>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "address":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address' selected>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "zipcode":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode' selected>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "company":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company' selected>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "total":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total' selected>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "quantity":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity' selected>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				break;
+			case "notes":
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes' selected>Notes</option>";
+				break;
+			default:
+				options = "<option value = 'name'>Product</option>"
+				  		+"<option value = 'username'>Username</option>"
+				  		+"<option value = 'email'>Email</option>"
+				  		+"<option value = 'phonenumber'>Phone Number</option>"
+				  		+"<option value = 'cardnumber'>Card Number</option>"
+				  		+"<option value = 'ccv'>CCV</option>"
+				  		+"<option value = 'expirydate'>Expiry Date</option>"
+				  		+"<option value = 'address'>Address</option>"
+				  		+"<option value = 'zipcode'>Zip Code</option>"
+				  		+"<option value = 'company'>Company</option>"
+				  		+"<option value = 'quantity'>Quantity</option>"
+				  		+"<option value = 'total'>Total</option>"
+				  		+"<option value = 'notes'>Notes</option>";
+				  break;
+		}
+        
+		  		  
+		        	for(int i = 0;Tab1.size() > i;i++){ //First Tab
 		        	    	
 		        	    	// image = rs.getString("image");
 		        	    	rows += "<tr>"
-		        	    		+ "<th scope='row'>" + dbUserID + "</th>"
-		        	    		+ "<td>" + username + "</td>"
-		        	    		+ "<td>" + firstname + "</td>"
-		        	    		+ "<td>" + lastname + "</td>"
-		        	    		+ "<td>" + email + "</td>"
-		        	    		+ "<td>" + dbRole + "</td>"
-		        	    		+ "<td>" + phonenumber + "</td>"
-		        	    		+ "<td>" + cardnumber.replaceFirst(".{12}", "**************") + "</td>"
-		        	    		+ "<td>" + CCV + "</td>"
+		        	    		+ "<th scope='row'>" + Tab1.get(i).getUserid() + "</th>"
+		        	    		+ "<td>" + Tab1.get(i).getUsername() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getFirstname() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getLastname() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getEmail() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getRole() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getPhonenumber() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCardnumber().replaceFirst(".{12}", "**************") + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCcv() + "</td>"
 		        	    		+ "<td><div class='row'><div class='col-md-8'>"
 		        	    		+ "<div class='ml-2 col-md-1'>"
 		        	    		+ "<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a></div>"
@@ -166,112 +327,53 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "</div></td></tr>";
 		        	}
 		        		
-						query = "SELECT * FROM roles";
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
 						
-		        		while (rs.next()){//rs.next() returns true if there is a row below the current one, and moves to it when called.
-		        			dbRoleID = rs.getString("role_id");
-		        	    	roleName = rs.getString("role_name");
+		        	for(int i = 0;Tab2.size() > i;i++){//Second Tab
 		        	    	
 		        	    	roleTable += "<tr>"
-			        	    		+ "<th scope='row'>" + dbRoleID + "</th>"
-			        	    		+ "<td>" + roleName + "</td>"
-			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+dbRoleID+"'><span class='icon icon-pencil'></span></a></div>"
+			        	    		+ "<th scope='row'>" + Tab2.get(i).getRoleid() + "</th>"
+			        	    		+ "<td>" + Tab2.get(i).getRolename() + "</td>"
+			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+Tab2.get(i).getRoleid()+"'><span class='icon icon-pencil'></span></a></div>"
 			        	    		+ "<div class='col-md-2'>"
 			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        		}
+		        	}
 		        		
-		        		query = "SELECT * FROM orders";
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
-						
-		        		while (rs.next()){
-		        			orderDate = rs.getString("date");
-		    		    	orderProductID = rs.getInt("fk_productid");
-		    		    	orderUserID = rs.getInt("fk_userid");
-		    		    	orderCardNumber = rs.getString("cardnumber");
-		    		    	orderCCV = rs.getString("CCV");
-		    		    	orderExpiryDate = rs.getString("expirydate");
-		    		    	orderAddress = rs.getString("address");
-		    		    	orderZipCode = rs.getString("zipcode");
-		    		    	orderCompany = rs.getString("company");
-		    		    	orderTotal = rs.getDouble("total");
-		    		    	orderNotes = rs.getString("notes");
-		    		    	orderQuantity = rs.getString("quantity");
-		    		    	
-		    		    	String query1 = "SELECT name FROM products where product_id = "+orderProductID;
-							Statement st1 = conn.createStatement();
-							ResultSet rs1 = st1.executeQuery(query1);
-							
-							while(rs1.next()){
-								orderProduct = rs1.getString("name");
-							}
-							
-							String query2 = "SELECT username,email,phonenumber FROM users where user_id = "+orderUserID;
-							Statement st2 = conn.createStatement();
-							ResultSet rs2 = st2.executeQuery(query2);
-							
-							while(rs2.next()){
-								orderUsername = rs2.getString("username");
-								orderEmail = rs2.getString("Email");
-								orderPhoneNumber = rs2.getString("phonenumber");
-							}
-		        	    	
+		        		//Third Tab
+		        		for(int i = 0;Tab3.size() > i;i++){
 							orders += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + orderProduct + "</td>"
-			        	    		+ "<td>" + orderUsername + "</td>"
-			        	    		+ "<td>" + orderEmail + "</td>"
-			        	    		+ "<td>" + orderPhoneNumber + "</td>"
-					        	    + "<td>" + orderCardNumber.replaceFirst(".{12}", "**************") + "</td>"
-					        	    + "<td>" + orderCCV + "</td>"
-					        	    + "<td>" + orderExpiryDate + "</td>"
-			        	    		+ "<td>" + orderAddress + "</td>"
-			        	    		+ "<td>" + orderZipCode + "</td>"
-			        	    		+ "<td>" + orderCompany + "</td>"
-			                	    + "<td>" + orderQuantity+ "</td>"
-			                	    + "<td>$" + format.format(orderTotal)+ "</td>"
-			                	    + "<td>" + orderDate + "</td>"
-			                	    + "<td>" + orderNotes + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderProduct() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderUsername() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderEmail() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderPhoneNumber() + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderCardNumber().replaceFirst(".{12}", "**************") + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderCCV() + "</td>"
+					        	    + "<td>" + Tab3.get(i).getOrderExpiryDate() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderAddress() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderZipCode() + "</td>"
+			        	    		+ "<td>" + Tab3.get(i).getOrderCompany() + "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderQuantity()+ "</td>"
+			                	    + "<td>$" + format.format(Tab3.get(i).getOrderTotal())+ "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderDate() + "</td>"
+			                	    + "<td>" + Tab3.get(i).getOrderNotes() + "</td>"
 			        	    		+ "</div></td></tr>";
-		        		}
-				        		
-		        
-		        		query = "SELECT fk_userid,SUM(total) as user_total FROM digitgames.orders GROUP BY fk_userid order by user_total desc;";
-						st = conn.createStatement();
-						rs = st.executeQuery(query);
-						
-						while(rs.next()){
-							
-							String query4 = "SELECT username,email,phonenumber FROM users where user_id = "+rs.getInt("fk_userid");
-							Statement st4 = conn.createStatement();
-							ResultSet rs4 = st4.executeQuery(query4);
-							
-							while(rs4.next()){
-								orderUsername = rs4.getString("username");
-								orderEmail = rs4.getString("Email");
-								orderPhoneNumber = rs4.getString("phonenumber");
+							//}
 							}
-							
-							userTotal = rs.getDouble("user_total");
-							out.print(userTotal);
-							
+		        		
+				        		
+		        		//Fourth Tab, Maybe combine with first?
+		        		
+						for(int i = 0;Tab4.size() > i;i++){
 							userTotals += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + orderUsername + "</td>"
-			        	    		+ "<td>" + orderEmail + "</td>"
-			        	    		+ "<td>" + orderPhoneNumber + "</td>"
-			        	    		+ "<td>$" + format.format(userTotal) + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getUsername() + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getEmail() + "</td>"
+			        	    		+ "<td>" + Tab4.get(i).getPhonenumber() + "</td>"
+			        	    		+ "<td>$" + format.format(Tab4.get(i).getTotal()) + "</td>"
 			        	    		+ "</div></td></tr>";
-							
-							
-						}
-						
-		        conn.close();
+							}
 		        
-			}
-		  	
+
 
 %>
   <title>Digit Games &mdash; Categories</title>
@@ -491,10 +593,6 @@ Description: ST0510 / JAD Assignment 1
           	<div class="p-2">
             	<a href="#" class="addRole btn btn-sm btn-dark">Add New Role</a>
          	 </div>
-         	 
-         	 <div class="p-2">
-            	<a href="#" class="addRole btn btn-sm btn-secondary">Add New User</a>
-         	 </div>
 
         </div>
 
@@ -503,12 +601,16 @@ Description: ST0510 / JAD Assignment 1
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')">Orders</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Spendings</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Total</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
+			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
+			  	<input type='text' name='userSearch'></input>
+			  	<input type='submit' placeholder="Search For User"></input>
+			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
@@ -555,7 +657,41 @@ Description: ST0510 / JAD Assignment 1
 		
 		<div id="Orders" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Orders</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Orders List</text></h3>
+			  <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Sorting</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
+                    </div>
+               </div>
+               <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                      data-toggle="dropdown">Filter By Date</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&">None</a>
+                    </div>
+               </div>
+              <form action="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              	<select name = "filterCategory">
+              		<%=options %>
+              	</select>
+              	<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Search"></input>
+              	<input type='submit' >
+              </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
@@ -574,7 +710,6 @@ Description: ST0510 / JAD Assignment 1
 		                <th scope="col">Total</th>
 		                <th scope="col">Time</th>
 		                <th scope="col">Notes</th>
-		                
 		              </tr>
 		            </thead>
 		            <tbody>
@@ -587,7 +722,11 @@ Description: ST0510 / JAD Assignment 1
 		
 		<div id="userTotal" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Total Amount Spent by all Users</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
+			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
+			  	<input type='text' name='userSearch4'></input>
+			  	<input type='submit' placeholder="Search For User"></input>
+			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
