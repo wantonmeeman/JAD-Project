@@ -25,12 +25,9 @@ Description: ST0510 / JAD Assignment 1
 	String sortSuffix = "";
 	String filterCategory = request.getParameter("filterCategory");
 	String filterValue = request.getParameter("filterValue");
-	filterValue = "";
-	filterCategory = "";
 	String timeSort = request.getParameter("timeSort");
 	String timeSuffix = "";
 	
-
 	String AdminPage = "";
 	String dbUserID = "";
 	
@@ -108,7 +105,6 @@ Description: ST0510 / JAD Assignment 1
              }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         	}
-        
 		switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
 			case "username":
 				options = "<option value = 'name'>Product</option>"
@@ -307,8 +303,8 @@ Description: ST0510 / JAD Assignment 1
 				  break;
 		}
         
-		  		  
-		        	for(int i = 0;Tab1.size() > i;i++){ //First Tab
+		  		  		try{
+		        		for(int i = 0;Tab1.size() > i;i++){ //First Tab
 		        	    	
 		        	    	// image = rs.getString("image");
 		        	    	rows += "<tr>"
@@ -327,20 +323,27 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "<div class='ml-2 col-md-1'>"
 				        	    + "<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a></div>"
 		        	    		+ "</div></td></tr>";
-		        	}
+		        		}
+		  		  		}catch(Exception e){
+		  		  			
+		  		  		}
 		        		
-						
-		        	for(int i = 0;Tab2.size() > i;i++){//Second Tab
+		  		  		try{
+		        		for(int i = 0;Tab2.size() > i;i++){//Second Tab
 		        	    	
-		        	    	roleTable += "<tr>"
+		        	    		roleTable += "<tr>"
 			        	    		+ "<th scope='row'>" + Tab2.get(i).getRoleid() + "</th>"
 			        	    		+ "<td>" + Tab2.get(i).getRolename() + "</td>"
 			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+Tab2.get(i).getRoleid()+"'><span class='icon icon-pencil'></span></a></div>"
 			        	    		+ "<div class='col-md-2'>"
 			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        	}
+		        		}
+		  		  		}catch(Exception e){
+		  		  			
+		  		  		}
 		        		
 		        		//Third Tab
+		        		try{
 		        		for(int i = 0;Tab3.size() > i;i++){
 							orders += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
@@ -361,10 +364,13 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "</div></td></tr>";
 							//}
 							}
+		        		}catch(Exception e){
+		        			
+		        		}
 		        		
 				        		
 		        		//Fourth Tab, Maybe combine with first?
-		        		
+		        		try{
 						for(int i = 0;Tab4.size() > i;i++){
 							userTotals += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
@@ -374,6 +380,14 @@ Description: ST0510 / JAD Assignment 1
 			        	    		+ "<td>$" + format.format(Tab4.get(i).getTotal()) + "</td>"
 			        	    		+ "</div></td></tr>";
 							}
+		        		}catch(Exception e){
+		        			
+		        		}
+		        		
+						if(filterValue == null || filterValue.equals("null")){
+							filterValue = "";
+						}
+						
 		        
 
 
