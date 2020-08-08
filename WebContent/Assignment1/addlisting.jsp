@@ -48,8 +48,8 @@ Description: ST0510 / JAD Assignment 1
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		}catch(Exception e){
 			out.print(e);
 		}
@@ -165,7 +165,7 @@ Description: ST0510 / JAD Assignment 1
 
           <div class="col-md-12">
 
-            <form action="AddProduct.jsp? " method="post">
+            <form action="<%=request.getContextPath() %>/add-product" method="post" enctype="multipart/form-data">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
@@ -242,11 +242,12 @@ Description: ST0510 / JAD Assignment 1
                     </div>
 
                   </div>
-                  <div class="form-group row">
+                  
+				   <div class="form-group row">
 
                     <div class="col-md-6">
-                      <label for="ImagePath" class="text-black">Image Path</label>
-                      <input type="text" name="image" id="image" class="form-control" placeholder="Image Path"></textarea>
+                      <label for="ImagePath" class="text-black">Upload Image</label>
+                      <input type="file" name="file" id="imagefile" class="form-control" placeholder="Image Path"></textarea>
                     </div>
 
                   </div>

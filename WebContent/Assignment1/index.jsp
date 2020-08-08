@@ -70,8 +70,8 @@ Description: ST0510 / JAD Assignment 1
         
         try{
            Class.forName("com.mysql.jdbc.Driver");
-         //conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-           conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+           conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+           // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
            
          	if(conn == null){
 		  		out.print("Conn Error");

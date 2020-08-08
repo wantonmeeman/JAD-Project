@@ -123,8 +123,8 @@ Description: ST0510 / JAD Assignment 1
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
 		  	}
@@ -491,6 +491,10 @@ Description: ST0510 / JAD Assignment 1
           	<div class="p-2">
             	<a href="#" class="addRole btn btn-sm btn-dark">Add New Role</a>
          	 </div>
+         	 
+         	 <div class="p-2">
+            	<a href="#" class="addRole btn btn-sm btn-secondary">Add New User</a>
+         	 </div>
 
         </div>
 
@@ -499,7 +503,7 @@ Description: ST0510 / JAD Assignment 1
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')">Orders</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Total</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Spendings</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
@@ -551,7 +555,7 @@ Description: ST0510 / JAD Assignment 1
 		
 		<div id="Orders" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Orders</text></h3>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>
@@ -583,7 +587,7 @@ Description: ST0510 / JAD Assignment 1
 		
 		<div id="userTotal" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
+			  <h3><text class="text-dark font-weight-bold">Total Amount Spent by all Users</text></h3>
 			  <div class="mt-4">
 		          <table class="table table-hover" >
 		            <thead>

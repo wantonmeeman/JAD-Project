@@ -43,6 +43,7 @@ Description: ST0510 / JAD Assignment 1
             }catch(Exception e){// if no id or role is detected
             	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}%>
+    	
 <meta charset="ISO-8859-1">
 	<title>Insert title here</title>
 <head>

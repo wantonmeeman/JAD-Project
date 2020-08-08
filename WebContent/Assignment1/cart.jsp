@@ -89,8 +89,8 @@ quantityArr = ((int[]) Session.getAttribute("quantityArr"));
 productArr = ((int[]) Session.getAttribute("productArr"));
 try {
 	Class.forName("com.mysql.jdbc.Driver");
-	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 } catch (Exception e) {
 
 }
