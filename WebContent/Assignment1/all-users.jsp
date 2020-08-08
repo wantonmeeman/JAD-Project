@@ -39,7 +39,7 @@ Description: ST0510 / JAD Assignment 1
 	
 	String userTotals = "";
 	
-	String dbRoleID = "";//Tie this to the thing
+	String dbRoleID = ""; //Tie this to the thing
 	String roleName = "";
 	
 	String rows = "";
@@ -74,10 +74,12 @@ Description: ST0510 / JAD Assignment 1
 	} catch(Exception e) {
 		
 	}
+	
 	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
 	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
 	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
 	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
