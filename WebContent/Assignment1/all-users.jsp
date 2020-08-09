@@ -36,7 +36,7 @@ Description: ST0510 / JAD Assignment 1
 	
 	String userTotals = "";
 	
-	String dbRoleID = ""; //Tie this to the thing
+	String dbRoleID = "";//Tie this to the thing
 	String roleName = "";
 	
 	String rows = "";
@@ -71,35 +71,35 @@ Description: ST0510 / JAD Assignment 1
 	} catch(Exception e) {
 		
 	}
-	
 	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
 	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
 	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
 	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
-	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 	
 	}
+	String Path = "http://localhost:12978"+request.getContextPath()+"/";
+	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
         try{
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
+                AdminPage = "<li><a href='"+Path+"allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li><a href='"+Path+"invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li><a href='"+Path+"invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
              }}catch(Exception e){// if no id or role is detected
@@ -389,8 +389,6 @@ Description: ST0510 / JAD Assignment 1
 						}
 						
 		        
-
-
 %>
   <title>Digit Games &mdash; Categories</title>
   <meta charset="utf-8">
@@ -623,7 +621,7 @@ Description: ST0510 / JAD Assignment 1
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
-			  <form action="${pageContext.request.contextPath}/allUsersDetails" method='post'>
+			  <form action="<%=Path%>allUsersDetails" method='post'>
 			  	<input type='text' name='userSearch'></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>
@@ -678,31 +676,31 @@ Description: ST0510 / JAD Assignment 1
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Sorting</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
                     </div>
                </div>
                <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Filter By Date</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&">None</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&">None</a>
                     </div>
                </div>
-              <form action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
-              	<select name = "filterCategory" style="display: 'block' !important;">
+              <form action="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              	<select name = "filterCategory">
               		<%=options %>
               	</select>
               	<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Search"></input>
@@ -739,7 +737,7 @@ Description: ST0510 / JAD Assignment 1
 		<div id="userTotal" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
-			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
+			  <form action="<%=Path%>allUsersDetails" method='post'>
 			  	<input type='text' name='userSearch4'></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>
