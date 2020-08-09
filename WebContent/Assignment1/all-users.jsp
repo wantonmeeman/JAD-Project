@@ -623,7 +623,7 @@ Description: ST0510 / JAD Assignment 1
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
-			  <form action="http://localhost:12978/ST0510-JAD/allUsersDetails" method='post'>
+			  <form action="${pageContext.request.contextPath}/allUsersDetails" method='post'>
 			  	<input type='text' name='userSearch'></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>
@@ -701,8 +701,8 @@ Description: ST0510 / JAD Assignment 1
                       <a class="dropdown-item" href="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&">None</a>
                     </div>
                </div>
-              <form action="http://localhost:12978/ST0510-JAD/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
-              	<select name = "filterCategory">
+              <form action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              	<select name = "filterCategory" style="display: 'block' !important;">
               		<%=options %>
               	</select>
               	<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Search"></input>

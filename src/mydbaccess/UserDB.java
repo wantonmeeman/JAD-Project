@@ -38,38 +38,28 @@ public class UserDB {
 		return userData;
 	}
 
-	public void addUser() {
+	public void addUser(String username, String password, String email) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			String connURL = "jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC";
 			Connection conn = DriverManager.getConnection(connURL);
 
-			String query = "INSERT INTO users(user_id, username, password, ) VALUES ()";
-			PreparedStatement pstmt = conn.prepareStatement(query);
+			String query = "INSERT INTO users(username,password,email,role) VALUES('" + username + "','" + password
+					+ "','" + email + "','member')";
+			Statement st = conn.createStatement();
 
-			pstmt.setString(1, name);
-			pstmt.setString(2, briefDesc);
-			pstmt.setString(3, detailedDesc);
-			pstmt.setFloat(4, Float.parseFloat(c_price));
-			pstmt.setFloat(5, Float.parseFloat(r_price));
-			pstmt.setInt(6, Integer.parseInt(stockQuantity));
-			pstmt.setString(7, productCat);
-			pstmt.setString(8, sold);
-
-			int rs = pstmt.executeUpdate();
-
-			if (rs != 0) {
-				query = "SELECT product_id FROM products WHERE name = ?";
-				pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, name);
-
-				ResultSet productIdRS = pstmt.executeQuery();
-
-				if (productIdRS.next()) {
-					productId = productIdRS.getInt("product_id");
-				}
+			int rs = st.executeUpdate(query);
+			if (rs != 1) {
+				System.out.print("Error");
 			}
 
+			String Selectquery = "SELECT user_id FROM users WHERE username = '" + username + "' ORDER BY user_id DESC LIMIT 1";
+			Statement Selectst = conn.createStatement();
+			ResultSet Selectrs = Selectst.executeQuery(Selectquery);
+			while (Selectrs.next()) {
+				int userid = Selectrs.getInt("user_id");
+				// response.sendRedirect("index.jsp?role=member&userid="+userid);
+			}
 			conn.close();
 
 		} catch (Exception e) {
@@ -77,7 +67,27 @@ public class UserDB {
 		}
 	}
 
-	public user editUser() {
-		return null;
+	public void editUser(String email, String firstName, String lastName, String phoneNo, int userid) {
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String connURL = "jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC";
+			Connection conn = DriverManager.getConnection(connURL);
+
+			String query = "UPDATE users SET email = '"+email+"',  firstname = '"+firstName+"', lastname = '"+lastName+"', phonenumber = '"+phoneNo+"' WHERE user_id = "+userid;
+			Statement st = conn.createStatement();
+
+			int rs = st.executeUpdate(query);
+			
+			if (rs != 1) {
+				System.out.print("Error");
+			}
+
+			conn.close();
+
+		} catch (Exception e) {
+			System.out.println("Error :" + e);
+		}
+		
 	}
 }
