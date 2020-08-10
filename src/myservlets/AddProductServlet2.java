@@ -207,15 +207,15 @@ public class AddProductServlet2 extends HttpServlet {
 					}
 				} else {
 					request.getSession().setAttribute("error", "Duplicate Product Found.");
-					response.sendRedirect(request.getContextPath() + "/admin");
+					response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
 				}
 
-				response.sendRedirect(request.getContextPath() + "/admin");
+				response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
 			} catch (Exception e) {
 				System.err.println("Error: " + e);
 			}
 		} else {
-			response.sendRedirect(request.getContextPath() + "/admin-login");
+			response.sendRedirect(request.getContextPath() + "/Assignment1/loginpage.jsp");
 		}
 	}
 

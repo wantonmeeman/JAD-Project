@@ -49,7 +49,7 @@ public class allUsersDetails extends HttpServlet {
 		
 		response.setContentType("text/html");
 		//request.getRequestDispatcher("JAD-Project/WebContent/Assignment1/all-users.jsp").forward(request, response);
-		response.sendRedirect(request.getContextPath() + "/Assignment1/all-users.jsp?orderSort="+request.getParameter("orderSort")+"&timeSort="+request.getParameter("timeSort"));
+		response.sendRedirect(request.getContextPath() + "/Assignment1/all-users.jsp?orderSort="+request.getParameter("orderSort")+"&timeSort="+request.getParameter("timeSort")+"&filterCategory="+request.getParameter("filterCategory"));
 		
 		
 	}

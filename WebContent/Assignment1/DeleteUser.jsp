@@ -22,6 +22,9 @@ int userid = (int)Session.getAttribute("userid");
 String role = (String)Session.getAttribute("role");
 int dbUserID = Integer.parseInt(request.getParameter("dbUserID"));
 Connection conn = null;
+
+String path = request.getContextPath() + "/";
+
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -30,8 +33,8 @@ Connection conn = null;
 	} 
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	  }catch(Exception e){
 			    out.print(e);
       }
@@ -46,7 +49,7 @@ Connection conn = null;
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=DelSuccess");//Add EditSuccess at admin-page
+			    	  response.sendRedirect(path + "allUsersDetails?Err=DelSuccess");//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    

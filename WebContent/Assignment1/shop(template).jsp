@@ -14,23 +14,26 @@ Description: ST0510 / JAD Assignment 1
 <%  HttpSession Session = request.getSession();
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
         try{
         	int userid = (int)Session.getAttribute("userid");  
         	String role = (String)Session.getAttribute("role");
         	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
+                AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
         	  }}catch(Exception e){// if no id or role is detected
         		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";

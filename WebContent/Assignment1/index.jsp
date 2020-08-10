@@ -38,6 +38,9 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -46,20 +49,20 @@ Description: ST0510 / JAD Assignment 1
 	} 
 	try{
     	if(role.equals("admin")){ 
-            AdminPage = "<li><a href='" + request.getContextPath() + "/allUsersDetails'>User Control</a></li>"
+            AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
             		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
             		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
             		
             Header = "<div class='site-top-icons'>"
                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                       + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                      + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                      + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                       + "<li id='logoutButton'></li></ul></div>";              
          } else if (role.equals("member")) {
         	  Header = "<div class='site-top-icons'>"
                       + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                         + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                        + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                        + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                         + "<li id='logoutButton'></li></ul></div>";     
               AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
          }}catch(Exception e){// if no id or role is detected
@@ -70,8 +73,8 @@ Description: ST0510 / JAD Assignment 1
         
         try{
            Class.forName("com.mysql.jdbc.Driver");
-           //conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-           conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+           conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+           // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
            
          	if(conn == null){
 		  		out.print("Conn Error");

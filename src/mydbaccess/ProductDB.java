@@ -21,7 +21,7 @@ public class ProductDB {
 			
 			if (rs.next()) {
 				product = new ProductClass(rs.getInt("product_id"), rs.getString("name"), rs.getDouble("c_price"), rs.getDouble("r_price"), 
-						rs.getInt("stock_quantity"), rs.getString("productCat"), rs.getString("brief_description"), 
+						rs.getInt("stock_quantity"), rs.getString("product_cat"), rs.getString("brief_description"), 
 						rs.getString("detailed_description"), rs.getString("image"), rs.getString("sold"));
 				
 			}

@@ -15,22 +15,25 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 		try{
 			if(role.equals("admin")){ 
-                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
+                AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
             } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
             }
@@ -38,9 +41,9 @@ Description: ST0510 / JAD Assignment 1
             	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     	}%>
 <meta charset="ISO-8859-1">
-<title>Error 404: Page not found.	</title>
+<title>Error 403: You are not allowed to access this page.</title>
 <head>
-  <title>404</title>
+  <title>403</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -108,12 +111,21 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">About</strong></div>
+              class="text-black">Error</strong></div>
         </div>
       </div>
     </div>
 
-   404 page not found!
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <span class="icon-error display-3 text-danger"></span>
+            <p class="lead mb-5">Error 403: You are not allowed to access this page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
     <!-- FOOTER -->

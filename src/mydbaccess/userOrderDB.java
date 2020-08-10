@@ -263,11 +263,8 @@ public class userOrderDB {
 	public ArrayList<user> getMaxUser(String userSearch4) {
 		ArrayList<user> users = new ArrayList<user>();
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			// conn =
-			// DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+			// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		} catch (Exception e) {
 			return null;
 		}
@@ -275,7 +272,7 @@ public class userOrderDB {
 			query = "SELECT fk_userid,SUM(total) as user_total FROM orders GROUP BY fk_userid order by user_total desc;";
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
-
+			
 			while (rs.next()) {
 				user userObj = new user();
 				if (userSearch4 == null) {

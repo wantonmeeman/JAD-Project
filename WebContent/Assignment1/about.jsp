@@ -15,6 +15,9 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
@@ -23,20 +26,20 @@ Description: ST0510 / JAD Assignment 1
 	}
 		try{
 			if(role.equals("admin")){ 
-                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
+                AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
                 		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
                 		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                           + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                          + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                           + "<li id='logoutButton'></li></ul></div>";              
              } else if (role.equals("member")) {
             	  Header = "<div class='site-top-icons'>"
                           + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                             + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                            + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                             + "<li id='logoutButton'></li></ul></div>";     
                   AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
              }
@@ -52,18 +55,17 @@ Description: ST0510 / JAD Assignment 1
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
 
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/magnific-popup.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/jquery-ui.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/owl.carousel.min.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
+  <link rel="stylesheet" href="css/aos.css">
 
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/aos.css">
-
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 
 </head>
 

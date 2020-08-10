@@ -1,7 +1,11 @@
 package myservlets;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,16 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class editDeliveryDetails
+ * Servlet implementation class AddUserAdmin
  */
-@WebServlet("/editUserAdmin")
-public class editUserAdmin extends HttpServlet {
+@WebServlet("/addUserAdmin")
+public class AddUserAdmin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public editUserAdmin() {
+    public AddUserAdmin() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -27,6 +31,8 @@ public class editUserAdmin extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -36,17 +42,10 @@ public class editUserAdmin extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String email = request.getParameter("email");
+		String role = request.getParameter("userrole");
 		String firstname = request.getParameter("firstname");
 		String lastname = request.getParameter("lastname");
 		String phonenumber = request.getParameter("phonenumber");
-		String country = request.getParameter("country");
-		String company = request.getParameter("company");
-		String zipcode = request.getParameter("zipcode");
-		String address = request.getParameter("address");
-		String cardnumber = request.getParameter("cardnumber");
-		String CCV = request.getParameter("CCV");
-		String expirydate = request.getParameter("expirydate");
-		int userid = (int)request.getSession().getAttribute("userid");
 		
 		Connection conn = null;
 		try{
@@ -60,22 +59,15 @@ public class editUserAdmin extends HttpServlet {
 		  	if(conn == null){
 		  		conn.close();
 		  	}else{//should we add null error redirecting? This involves a stupidly long if statement.
-		  		  String query = "UPDATE users SET username = ?, password = ?, email = ?, firstname = ?, lastname = ?, phonenumber = ?, expirydate= ?, CCV = ?, cardnumber = ?, country = ?, zipcode = ?, address = ?, company = ? WHERE user_id = ?"; 
+		  		  String query = "INSERT INTO users (username, password, email, role, firstname, lastname, phonenumber) VALUES (?, ?, ?, ?, ?, ?, ?);"; 
 		  	      PreparedStatement pstmt = conn.prepareStatement(query);
 		  	      pstmt.setString(1, username);
 		  	      pstmt.setString(2, password);
 		  	      pstmt.setString(3, email);
-		  	      pstmt.setString(4, firstname);
-		  	      pstmt.setString(5, lastname);
-		  	      pstmt.setString(6, phonenumber);
-		  	      pstmt.setString(7, expirydate);
-		  	      pstmt.setString(8, CCV);
-		  	      pstmt.setString(9, cardnumber);
-		  	      pstmt.setString(10, country);
-		  	      pstmt.setString(11, zipcode);
-		  	      pstmt.setString(12, address);
-		  	      pstmt.setString(13, company);
-		  	      pstmt.setInt(14, userid);
+		  	      pstmt.setString(4, role);
+		  	      pstmt.setString(5, firstname);
+		  	      pstmt.setString(6, lastname);
+		  	      pstmt.setString(7, phonenumber);
 		  	      
 			      int rs = pstmt.executeUpdate();
 			      conn.close();

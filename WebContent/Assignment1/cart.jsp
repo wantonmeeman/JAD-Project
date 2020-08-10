@@ -32,6 +32,9 @@ int[] productArr = {};
 int[] quantityArr = {};
 //Connecting to Database
 Connection conn = null;
+
+String path = request.getContextPath() + "/";
+
 try{
 	userid = (int)Session.getAttribute("userid");  
 	role = (String)Session.getAttribute("role");
@@ -89,8 +92,8 @@ quantityArr = ((int[]) Session.getAttribute("quantityArr"));
 productArr = ((int[]) Session.getAttribute("productArr"));
 try {
 	Class.forName("com.mysql.jdbc.Driver");
-	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 } catch (Exception e) {
 
 }
@@ -113,10 +116,10 @@ try {
 		rows += "<tr><td class='product-thumbnail'><img src='" + image
 				+ "' alt='Image' class='img-fluid'></td><td class='product-name'><h2 class='h5 text-black'>"
 				+ name + "</h2></td><td>$" + r_price
-				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='http://localhost:12978/ST0510-JAD/changeQuantity?productID="+productArr[x]+"' method='POST'><input type='number' name='quantity' value="
+				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='" + path + "changeQuantity?productID="+productArr[x]+"' method='POST'><input type='number' name='quantity' value="
 				+ quantityArr[x] + "></input></div></td><td>$"
 				+ format.format(((double) quantityArr[x]) * Double.parseDouble(r_price)) + "</td>"
-				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?product="+productArr[x]+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
+				+"<th class='product-total'><a href='" + path + "deleteFromCart?product="+productArr[x]+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
 		total += quantityArr[x] * Double.parseDouble(r_price);//For prices
 	}
 		}
@@ -136,20 +139,20 @@ try{
 
 try {
 	if(role.equals("admin")){
-        AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
+        AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
         		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
         		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
         		
         Header = "<div class='site-top-icons'>"
                 + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                   + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                  + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                  + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                   + "<li id='logoutButton'></li></ul></div>";              
      } else if (role.equals("member")) {
     	  Header = "<div class='site-top-icons'>"
                   + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
                     + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                    + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
+                    + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                     + "<li id='logoutButton'></li></ul></div>";     
           AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
      }
@@ -269,7 +272,7 @@ Session.removeAttribute("productID");
 					<div class="col-md-6">
 						<div class="row mb-5">
 							<div class="col-md-6 mb-3 mb-md-0">
-								<a href='http://localhost:12978/ST0510-JAD/invalidate?rd=cart'><button
+								<a href='<%=path %>invalidate?rd=cart'><button
 										class="btn btn-primary btn-sm btn-block">Clear Cart</button></a>
 							</div>
 							<div class="col-md-6">
