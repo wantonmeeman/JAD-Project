@@ -20,29 +20,7 @@ Description: ST0510 / JAD Assignment 1
 	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		
-	}
-		try{
-			if(role.equals("admin")){ 
-                AdminPage = "<li><a href='http://localhost:12978/ST0510-JAD/allUsersDetails'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-                		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
-                		
-                Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                          + "<li id='logoutButton'></li></ul></div>";              
-             } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                            + "<li id='logoutButton'></li></ul></div>";     
-                  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-             }
-            }catch(Exception e){// if no id or role is detected
-            	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    	}%>
+	}%>
     	
 <meta charset="ISO-8859-1">
 	<title>Insert title here</title>
@@ -52,18 +30,18 @@ Description: ST0510 / JAD Assignment 1
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
 
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/magnific-popup.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/jquery-ui.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/owl.carousel.min.css">
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
 
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/aos.css">
+  <link rel="stylesheet" href="css/aos.css">
 
-  <link rel="stylesheet" href="hey1/ST0510-JAD/WebContent/JAD-Project/WebContent/Assignment1/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -89,7 +67,29 @@ Description: ST0510 / JAD Assignment 1
               <div class="site-top-icons">
        
 	  		
-                <%=Header%>
+                <%
+                                    if (role.equals("admin") || role.equals("member")) {
+                                %>
+                                <ul>
+                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                            class='icon icon-shopping_cart'></span></a></li>
+                                    <li><a href='profile.jsp'>Edit Profile</a></li>
+                                    <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
+                                        class='btn btn-sm btn-secondary'>Logout</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    } else {
+                                %>
+                                <ul>
+                                    <li><a href='loginpage.jsp'>Login</a></li>
+                                    <li><a href='register.jsp'>Register</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    }
+                                %>
+
 
               </div>
             </div>
@@ -105,7 +105,19 @@ Description: ST0510 / JAD Assignment 1
             <li><a href="categories.jsp? ">Shop</a></li>
             <li><a href="all-listings.jsp? ">Catalogue</a></li>
             <li><a href="contact.jsp? ">Contact</a></li>
-            <%=AdminPage %>
+            <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='admin-page.jsp'>Product Control</a></li>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            }
+                        %>
           </ul>
         </div>
       </nav>

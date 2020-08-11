@@ -7,25 +7,34 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+ <%@ page import ="myclasses.*" %>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.util.ArrayList" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
 <%  
+	
 	HttpSession Session = request.getSession();
-	int userid = 0;
+	
 	String role = "";
-	String AdminPage = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	int userid = 0;
+	
+	double ptotal = 0;
+	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
+	String query = "";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
-	    role = (String)Session.getAttribute("role");
+		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
-		
-	}	
-	%>
-<meta charset="ISO-8859-1">
-<title>Error 404: Page not found.	</title>
-<head>
-  <title>404</title>
+		response.sendRedirect("404.jsp");
+	}   
+    
+        %>
+  <title>Digit Games&mdash;</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -54,7 +63,7 @@ Description: ST0510 / JAD Assignment 1
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-
+              
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
@@ -65,8 +74,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-       
-	  		
+
                 <%
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
@@ -116,7 +124,7 @@ Description: ST0510 / JAD Assignment 1
                         <li><a href='view-order.jsp'>View Order History</a></li>
                         <%
                             }
-            %>
+                        %>
           </ul>
         </div>
       </nav>
@@ -126,13 +134,23 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">About</strong></div>
+              class="text-black">Contact</strong></div>
         </div>
       </div>
     </div>
 
-   404 page not found!
-
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <span class="icon-check_circle display-3 text-success"></span>
+            <h2 class="display-3 text-black">Error!</h2>
+            <p class="lead mb-5">Something Went Wrong</p>
+            <p><a href='index.jsp' class="btn btn-sm btn-primary">Back to Cart</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">
@@ -209,4 +227,5 @@ Description: ST0510 / JAD Assignment 1
   <script src="js/main.js"></script>
 
 </body>
+
 </html>

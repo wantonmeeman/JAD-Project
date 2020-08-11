@@ -26,6 +26,7 @@ Description: ST0510 / JAD Assignment 1
 	String filterCategory = request.getParameter("filterCategory");
 	String filterValue = request.getParameter("filterValue");
 	String timeSort = request.getParameter("timeSort");
+	String tab = request.getParameter("tab");
 	String timeSuffix = "";
 	
 	String AdminPage = "";
@@ -44,6 +45,10 @@ Description: ST0510 / JAD Assignment 1
 	String Error = request.getParameter("Err");
 	int userid = 0;  
 	String role = "";
+	
+	if(tab == null){
+		tab = "";
+	}
 	
 	try{
 		userid = (int)Session.getAttribute("userid");  
@@ -74,38 +79,93 @@ Description: ST0510 / JAD Assignment 1
 	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
 	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
 	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
+	
 	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
+	int total_users = (int)Session.getAttribute("total_users");
+	int total_roles = (int)Session.getAttribute("total_roles");
+	int total_orders = (int)Session.getAttribute("total_orders");
+	int total_users_max = (int)Session.getAttribute("total_users_max");
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 	
 	}
-	String Path = "http://localhost:12978"+request.getContextPath()+"/";
+	String Tabs = "";
 	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        try{
-        	if(role.equals("admin")){ 
-                AdminPage = "<li><a href='"+Path+"allUsersDetails'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-                		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
-                		
-                Header = "<div class='site-top-icons'>"
-                        + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                          + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                          + "<li><a href='"+Path+"invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                          + "<li id='logoutButton'></li></ul></div>";              
-             } else if (role.equals("member")) {
-            	  Header = "<div class='site-top-icons'>"
-                          + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                            + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                            + "<li><a href='"+Path+"invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                            + "<li id='logoutButton'></li></ul></div>";     
-                  AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-             }}catch(Exception e){// if no id or role is detected
-        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        	}
-		switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
+	String Open1 = "";
+	String Open2 = "";
+	String Open3 = "";
+	String Open4 = "";
+	
+	String Pagination1 = "";
+	int PageNumber1 = 0;
+	String Pagination2 = "";
+	int PageNumber2 = 0;
+	String Pagination3 = "";
+	int PageNumber3 = 0;
+	String Pagination4 = "";
+	int PageNumber4 = 0;
+	
+	String Path = "http://localhost:8080"+request.getContextPath()+"/";
+      
+        //Pagination for Users,Tab1
+    	for(int i = 0;i < total_users;i++){
+    		if((i % 5) == 0){
+    			PageNumber1 += 1;
+        		Pagination1 += "<a href='"+Path+"allUsersDetails?page1="+PageNumber1+"'><button class = 'btn btn-secondary'>"+PageNumber1+"</button></a>";
+    		}else{
+    			
+    		}
+        	
+        }
+    	for(int i = 0;i < total_roles;i++){
+    		if((i % 5) == 0){
+    			PageNumber2 += 1;
+        		Pagination2 += "<a href='"+Path+"allUsersDetails?page2="+PageNumber2+"'><button class = 'btn btn-secondary'>"+PageNumber2+"</button></a>";
+    		}else{
+    			
+    		}
+        	
+        }
+    	for(int i = 0;i < total_orders;i++){
+    		if((i % 5) == 0){
+    			PageNumber3 += 1;
+        		Pagination3 += "<a href='"+Path+"allUsersDetails?page3="+PageNumber3+"&orderSort="+orderSort+"&timeSort="+timeSort+"&filterCategory="+filterCategory+"&filterValue="+filterValue+"'><button class = 'btn btn-secondary'>"+PageNumber3+"</button></a>";
+    		}else{
+    			
+    		}
+        	
+        }
+    	out.print(total_users_max);
+    	for(int i = 0;i < total_users_max;i++){
+    		if((i % 5) == 0){
+    			PageNumber4 += 1;
+        		Pagination4 += "<a href='"+Path+"allUsersDetails?page4="+PageNumber4+"&orderSort="+orderSort+"&timeSort="+timeSort+"&filterCategory="+filterCategory+"&filterValue="+filterValue+"'><button class = 'btn btn-secondary'>"+PageNumber4+"</button></a>";
+    		}else{
+    			
+    		}
+        	
+        }
+		
+    	
+		switch(tab){ //Makes A tab open by default
+			case "2":
+				Open2 = "defaultOpen";
+				break;
+			case "3":
+				Open3 = "defaultOpen";
+				break;
+			case "4":
+				Open4 = "defaultOpen";
+				break;
+			case "1":
+			default:
+				Open1 = "defaultOpen";
+				break;
+		}
+        
+        switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
 			case "username":
 				options = "<option value = 'name'>Product</option>"
 				  		+"<option value = 'username' selected>Username</option>"
@@ -363,10 +423,12 @@ Description: ST0510 / JAD Assignment 1
 			                	    + "<td>" + Tab3.get(i).getOrderNotes() + "</td>"
 			        	    		+ "</div></td></tr>";
 							//}
-							}
+						}
 		        		}catch(Exception e){
+		        			out.print("Exception is "+e);
 		        			
 		        		}
+		        		
 		        		
 				        		
 		        		//Fourth Tab, Maybe combine with first?
@@ -565,7 +627,28 @@ Description: ST0510 / JAD Assignment 1
               <div class="site-top-icons">
        
 	  		
-                <%=Header%>
+                <%
+                                    if (role.equals("admin") || role.equals("member")) {
+                                %>
+                                <ul>
+                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                            class='icon icon-shopping_cart'></span></a></li>
+                                    <li><a href='profile.jsp'>Edit Profile</a></li>
+                                    <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
+                                        class='btn btn-sm btn-secondary'>Logout</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    } else {
+                                %>
+                                <ul>
+                                    <li><a href='loginpage.jsp'>Login</a></li>
+                                    <li><a href='register.jsp'>Register</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    }
+                                %>
 
               </div>
             </div>
@@ -581,7 +664,19 @@ Description: ST0510 / JAD Assignment 1
             <li><a href="categories.jsp">Shop</a></li>
             <li><a href="all-listings.jsp">Catalogue</a></li>
             <li><a href="contact.jsp">Contact</a></li>
-            <%=AdminPage %>
+            <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='admin-page.jsp'>Product Control</a></li>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            }
+             %>
           </ul>
         </div>
       </nav>
@@ -612,17 +707,17 @@ Description: ST0510 / JAD Assignment 1
 
 		<!-- TABS -->
 		<div class="users-tab">
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="defaultOpen">All Users</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')">Roles</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')">Orders</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')">User Total</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="<%=Open1%>">All Users</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')" id="<%=Open2%>">Roles</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')" id="<%=Open3%>">Orders</button>
+		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')" id="<%=Open4%>">User Total</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
 			<div class="mt-4 ml-4" >
 			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
 			  <form action="<%=Path%>allUsersDetails" method='post'>
-			  	<input type='text' name='userSearch'></input>
+			  	<input type='text' name='userSearch' ></input>
 			  	<input type='submit' placeholder="Search For User"></input>
 			  </form>
 			  <div class="mt-4">
@@ -644,9 +739,12 @@ Description: ST0510 / JAD Assignment 1
 		            <tbody>
 		              <%=rows%>
 		            </tbody>
+		            
 		          </table>
+		          
         		</div>
 		  	</div>
+		  	<%=Pagination1 %>
 		</div>
 		
 		<div id="allRolesTab" class="users-tabcontent">
@@ -667,6 +765,7 @@ Description: ST0510 / JAD Assignment 1
 		          </table>
         		</div>
 		  	</div>
+		  	<%=Pagination2 %>
 		</div>
 		
 		<div id="Orders" class="users-tabcontent">
@@ -676,30 +775,30 @@ Description: ST0510 / JAD Assignment 1
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Sorting</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
                     </div>
                </div>
                <div class="btn-group">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Filter By Date</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today">Today</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Today">Today</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&">None</a>
+                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1>&orderSort=<%=orderSort%>&">None</a>
                     </div>
                </div>
-              <form action="<%=Path%>allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
+              <form action="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
               	<select name = "filterCategory">
               		<%=options %>
               	</select>
@@ -732,6 +831,7 @@ Description: ST0510 / JAD Assignment 1
 		          </table>
         		</div>
 		  	</div>
+		  	<%=Pagination3 %>
 		</div>
 		
 		<div id="userTotal" class="users-tabcontent">
@@ -759,6 +859,7 @@ Description: ST0510 / JAD Assignment 1
 		          </table>
         		</div>
 		  	</div>
+		  	<%=Pagination4 %>
 		</div>
 
       </div>
