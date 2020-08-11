@@ -521,21 +521,20 @@ String Path = request.getContextPath() + "/";
 						<form
 							action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort%>"
 							method='post'>
-							<label>Search by:</label> <select name="filterCategory"
-								value="<%if (filterCategory != null) {%> <%=filterCategory%> %> <%} else {%> name <%}%>">
-								<option value='name'>Product</option>
-								<option value='username'>Username</option>
-								<option value='email'>Email</option>
-								<option value='phonenumber'>Phone Number</option>
-								<option value='cardnumber'>Card Number</option>
-								<option value='ccv'>CCV</option>
-								<option value='expirydate'>Expiry Date</option>
-								<option value='address'>Address</option>
-								<option value='zipcode'>Zip Code</option>
-								<option value='company'>Company</option>
-								<option value='quantity'>Quantity</option>
-								<option value='total'>Total</option>
-								<option value='notes'>Notes</option>
+							<label>Search by:</label> <select name="filterCategory">
+								<option value='name' <%if (filterCategory != null) { if (filterCategory.equals("name")) { %> selected <% } } else {%> selected <%}%>>Product</option>
+								<option value='username' <%if (filterCategory != null) { if (filterCategory.equals("username")) { %> selected <% } } %>>Username</option>
+								<option value='email' <%if (filterCategory != null) { if (filterCategory.equals("email")) { %> selected <% } } %>>Email</option>
+								<option value='phonenumber' <%if (filterCategory != null) { if (filterCategory.equals("phonenumber")) { %> selected <% } } %>>Phone Number</option>
+								<option value='cardnumber' <%if (filterCategory != null) { if (filterCategory.equals("cardnumber")) { %> selected <% } } %>>Card Number</option>
+								<option value='ccv' <%if (filterCategory != null) { if (filterCategory.equals("ccv")) { %> selected <% } } %>>CCV</option>
+								<option value='expirydate' <%if (filterCategory != null) { if (filterCategory.equals("expirydate")) { %> selected <% } } %>>Expiry Date</option>
+								<option value='address' <%if (filterCategory != null) { if (filterCategory.equals("address")) { %> selected <% } } %>>Address</option>
+								<option value='zipcode' <%if (filterCategory != null) { if (filterCategory.equals("zipcode")) { %> selected <% } } %>>Zip Code</option>
+								<option value='company' <%if (filterCategory != null) { if (filterCategory.equals("company")) { %> selected <% } } %>>Company</option>
+								<option value='quantity' <%if (filterCategory != null) { if (filterCategory.equals("quantity")) { %> selected <% } } %>>Quantity</option>
+								<option value='total' <%if (filterCategory != null) { if (filterCategory.equals("total")) { %> selected <% } } %>>Total</option>
+								<option value='notes' <%if (filterCategory != null) { if (filterCategory.equals("notes")) { %> selected <% } } %>>Notes</option>
 							</select> <br> <input type='text' name='filterValue'
 								value="<%=filterValue%>" placeholder="Keyword"></input> <input
 								type='submit' value="Search">
