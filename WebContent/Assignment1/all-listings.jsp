@@ -48,6 +48,7 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 	
 	}
+
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");

@@ -14,7 +14,7 @@ Description: ST0510 / JAD Assignment 1
 	int userid = 0;
 	String role = "";
 	String AdminPage = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
@@ -23,9 +23,9 @@ Description: ST0510 / JAD Assignment 1
 	}	
 	%>
 <meta charset="ISO-8859-1">
-<title>Error 404: Page not found.	</title>
+<title>Error 403: You are not allowed to access this page.</title>
 <head>
-  <title>404</title>
+  <title>403</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -126,12 +126,21 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">About</strong></div>
+              class="text-black">Error</strong></div>
         </div>
       </div>
     </div>
 
-   404 page not found!
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <span class="icon-error display-3 text-danger"></span>
+            <p class="lead mb-5">Error 403: You are not allowed to access this page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
     <!-- FOOTER -->

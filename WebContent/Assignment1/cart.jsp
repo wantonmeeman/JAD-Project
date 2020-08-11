@@ -31,6 +31,17 @@ String role = "";
 
 ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
 //Connecting to Database
+
+Connection conn = null;
+
+String path = request.getContextPath() + "/";
+
+try{
+	userid = (int)Session.getAttribute("userid");  
+	role = (String)Session.getAttribute("role");
+}catch(Exception e){
+	response.sendRedirect("404.jsp");
+}
 try{
 	switch(Err) {
 		case "Invalid":
@@ -53,24 +64,16 @@ try{
 				+ format.format(cart.get(x).getProductQuantity() * cart.get(x).getProductPrice()) + "</td>"
 				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?productID="+cart.get(x).getProductID()+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
 		total += cart.get(x).getProductQuantity() * cart.get(x).getProductPrice();//For prices
-		out.print(cart.get(x).getError());
+		out.print(cart.get(x).getError());//Error Debugging
+
 	}
 }catch(Exception e){
 	disabled = "disabled";//new code to check if cart is empty
 }
-try{
-	userid = (int)Session.getAttribute("userid");  
-    role = (String)Session.getAttribute("role");
-}catch(Exception e){
 
-}
 
-//Old Code to check if cart is empty
-/* if(cart == null || cart.size() < 1 || total == 0 ){
-	disabled = "disabled";
-} */
 String strTotal = format.format(total);
-String strTotalGST = format.format(total*1.07);
+String strTotalGST = format.format(total*1.07); 
 %>
 <title>Digit Games &mdash; Shopping Cart</title>
 <meta charset="utf-8">
@@ -211,7 +214,7 @@ String strTotalGST = format.format(total*1.07);
 					<div class="col-md-6">
 						<div class="row mb-5">
 							<div class="col-md-6 mb-3 mb-md-0">
-								<a href='http://localhost:12978/ST0510-JAD/invalidate?rd=cart'><button
+								<a href='<%=path %>invalidate?rd=cart'><button
 										class="btn btn-primary btn-sm btn-block">Clear Cart</button></a>
 							</div>
 							<div class="col-md-6">

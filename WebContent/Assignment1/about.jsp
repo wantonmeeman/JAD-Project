@@ -15,12 +15,16 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	String AdminPage = "";
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		
-	}%>
+	}
+%>
     	
 <meta charset="ISO-8859-1">
 	<title>Insert title here</title>
@@ -37,7 +41,6 @@ Description: ST0510 / JAD Assignment 1
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
-
 
   <link rel="stylesheet" href="css/aos.css">
 

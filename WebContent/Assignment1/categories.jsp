@@ -33,6 +33,9 @@ Description: ST0510 / JAD Assignment 1
 	String categoryArr[] = new String[10];
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 		try{
 			userid = (int)Session.getAttribute("userid");  
 	    	role = (String)Session.getAttribute("role");

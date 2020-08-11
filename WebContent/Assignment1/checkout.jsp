@@ -42,41 +42,15 @@ Description: ST0510 / JAD Assignment 1
 	
 	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
 	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-    }catch(Exception e){
-    	
-	    out.print(e);
-	    
-  	}
-    if(conn == null){
-  		out.print("Conn Error");
-  		conn.close();
-  	}else{
   		try{
-  			String query = "SELECT * FROM users WHERE user_id = "+userid;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			
-			while(rs.next()){
-				address = rs.getString("address");
-				country = rs.getString("country");
-				zipcode = rs.getString("zipcode");
-				company = rs.getString("company");
-				cardnumber = rs.getString("cardnumber");
-				CCV = rs.getString("CCV");
-				expirydate = rs.getString("expirydate");
-			}
 			for(int x = 0;cart.size()>x;x++){
 				name = cart.get(x).getProductName();
 				r_price = cart.get(x).getProductPrice();
@@ -89,8 +63,6 @@ Description: ST0510 / JAD Assignment 1
   		}catch(Exception e){
   			
   		}
-		conn.close();
-	}
         
         	  
         	  %>

@@ -12,8 +12,7 @@ Description: ST0510 / JAD Assignment 1
 
 <head>
 <%  HttpSession Session = request.getSession();
-	String AdminPage = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
 	int userid = 0;  
 	String role = ""; 
 	try{
@@ -23,6 +22,7 @@ Description: ST0510 / JAD Assignment 1
         	
         }
  %>
+
   <title>Digit Games &mdash; Contact Us</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

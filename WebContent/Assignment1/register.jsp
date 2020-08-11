@@ -11,7 +11,7 @@ Description: ST0510 / JAD Assignment 1
 <html lang="en">
 
 <head>
-	<title>Login Page</title>
+	<title>Register Page</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 

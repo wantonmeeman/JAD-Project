@@ -25,6 +25,8 @@ String Error = "";
   
 String dbRoleID = request.getParameter("dbRoleID");
 String roleName = request.getParameter("roleName");
+
+String path = request.getContextPath() + "/";
   
   //What else to add? try to add image path later maybe?
 try{
@@ -40,7 +42,7 @@ try{
 	  try{
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	 conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 	  }catch(Exception e){
 			    out.print(e);
       }
@@ -56,7 +58,7 @@ try{
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
+			    	  response.sendRedirect(path + "allUsersDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      

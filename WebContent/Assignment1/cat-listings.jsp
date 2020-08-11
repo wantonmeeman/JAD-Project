@@ -41,11 +41,14 @@ Description: ST0510 / JAD Assignment 1
 	String discountMsg = "";
 	String priceMsg = "";
 	
+
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 	}	
+
+		
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");

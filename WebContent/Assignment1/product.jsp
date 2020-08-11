@@ -39,6 +39,8 @@ Description: ST0510 / JAD Assignment 1
 	
     String Err = request.getParameter("Err");
     
+    String path = request.getContextPath() + "/";
+    
     try{
 		if(Err.equals("OverStk")){
 			out.print("<script>alert('Amount Specified is more than stock quantity!')</script>");
@@ -53,7 +55,7 @@ Description: ST0510 / JAD Assignment 1
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
-	}catch(Exception e){// if no id or role is detected
+		}catch(Exception e){// if no id or role is detected
         	
      }
         Connection conn = null;

@@ -98,7 +98,9 @@ Description: ST0510 / JAD Assignment 1
 	String orderZipcode = "";
 	String orderCardNumber = "";
 	String orderImage = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -109,8 +111,8 @@ Description: ST0510 / JAD Assignment 1
 	Connection conn = null; 
 	try{
 		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		// conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+		//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
 	}catch(Exception e){
 	    out.print(e);
 	}
@@ -356,7 +358,7 @@ input::-webkit-inner-spin-button {
           <div id="addressTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="http://localhost:12978/ST0510-JAD/editDeliveryDetails" method="post">
+              <form action="<%=path %>editDeliveryDetails" method="post">
 
                 <div class="p-3 p-lg-5 border">
 

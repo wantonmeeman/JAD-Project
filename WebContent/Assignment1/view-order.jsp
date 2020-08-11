@@ -56,18 +56,20 @@ Description: ST0510 / JAD Assignment 1
 	String orderImage = "";
 	String orderDate = "";
 	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+
      Connection conn = null;
      try{
         Class.forName("com.mysql.jdbc.Driver");
       	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+       	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
         if(conn == null){
         	out.print("Conn Error");
         	conn.close();

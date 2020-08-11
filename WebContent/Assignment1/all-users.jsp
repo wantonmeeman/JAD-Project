@@ -56,26 +56,7 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}
-	try{
-	   	if(Error.equals("NullError")){
-	   		out.print("<script>alert('Please fill in all required fields!')</script>");
-	   	}
-	   	
-		if(Error.equals("DelSuccess")){
-			out.print("<script>alert('Successfully deleted.')</script>");
-		}
-		
-		if(Error.equals("AddSuccess")){
-			out.print("<script>alert('Successfully added.')</script>");
-		}
-		
-		if(Error.equals("EditSuccess")){
-			out.print("<script>alert('Changes saved.')</script>");
-		}
-		
-	} catch(Exception e) {
-		
-	}
+	
 	ArrayList<user> Tab1 = (ArrayList<user>)Session.getAttribute("Tab1");
 	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
 	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
@@ -107,6 +88,27 @@ Description: ST0510 / JAD Assignment 1
 	String Pagination4 = "";
 	int PageNumber4 = 0;
 	
+	/* try{		Old way to do error handling, leave it here incase we need to revert back
+	   	if(Error.equals("NullError")){		
+	   		out.print("<script>alert('Please fill in all required fields!')</script>");			
+	   	}	
+	   		
+		if(Error.equals("DelSuccess")){	
+			out.print("<script>alert('Successfully deleted.')</script>");	
+		}	
+			
+		if(Error.equals("AddSuccess")){	
+			out.print("<script>alert('Successfully added.')</script>");	
+		}	
+			
+		if(Error.equals("EditSuccess")){	
+			out.print("<script>alert('Changes saved.')</script>");	
+		}	
+			
+	} catch(Exception e) {	
+			
+	} */
+	
 	String Path = "http://localhost:8080"+request.getContextPath()+"/";
       
         //Pagination for Users,Tab1
@@ -137,7 +139,6 @@ Description: ST0510 / JAD Assignment 1
     		}
         	
         }
-    	out.print(total_users_max);
     	for(int i = 0;i < total_users_max;i++){
     		if((i % 5) == 0){
     			PageNumber4 += 1;
@@ -475,6 +476,20 @@ Description: ST0510 / JAD Assignment 1
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   
   <script>
+  if (<%=Error %> == "NullError") {
+		alert('Please fill in all required fields!')
+	}		
+			
+	if (<%=Error %> == "DelSuccess") {
+			alert('Successfully deleted.')
+	}
+	if (<%=Error %> == "AddSuccess") {
+		alert('Successfully added.')
+	}			
+			
+	if (<%=Error %> == "EditSuccess") {
+		alert('Changes saved.')
+	}
     $(document).ready(function () {
       var modal = document.getElementById("myModal");
       var span = document.getElementById("close");
@@ -714,153 +729,310 @@ Description: ST0510 / JAD Assignment 1
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
-			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Users List</text></h3>
-			  <form action="<%=Path%>allUsersDetails" method='post'>
-			  	<input type='text' name='userSearch' ></input>
-			  	<input type='submit' placeholder="Search For User"></input>
-			  </form>
-			  <div class="mt-4">
-		          <table class="table table-hover" >
-		            <thead>
-		              <tr>
-		                <th scope="col">#</th>
-		                <th scope="col">Username</th>
-		                <th scope="col">First Name</th>
-		                <th scope="col">Last Name</th>
-		                <th scope="col">Email</th>
-		                <th scope="col">Role</th>
-		                <th scope="col">Phone Number</th>
-		                <th scope="col">Card Number</th>
-		                <th scope="col">CCV</th>
-		                <th scope="col">Actions</th>
-		              </tr>
-		            </thead>
-		            <tbody>
-		              <%=rows%>
-		            </tbody>
-		            
-		          </table>
-		          
-        		</div>
-		  	</div>
-		  	<%=Pagination1 %>
-		</div>
+					<div class="mt-4 ml-4">
+						<h3>
+							<text class="text-dark font-weight-bold">Users List</text>
+						</h3>
+						<form action="${pageContext.request.contextPath}/allUsersDetails" method='post'>
+							<input type='text' name='userSearch'></input> <input
+								type='submit' placeholder="Search For User"></input>
+						</form>
+						<div class="mt-4">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Username</th>
+										<th scope="col">First Name</th>
+										<th scope="col">Last Name</th>
+										<th scope="col">Email</th>
+										<th scope="col">Role</th>
+										<th scope="col">Phone Number</th>
+										<th scope="col">Card Number</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% 
+									if (Tab1 != null && Tab1.size() > 0) {
+										for (user user : Tab1) { 
+									%>
+									<tr>
+										<th scope='row'> <%=user.getUserid() %></th>
+										<td><%=user.getUsername() %></td>
+										<td><%=user.getFirstname() %></td>
+										<td><%=user.getLastname() %></td>
+										<td><%=user.getEmail() %></td>
+										<td><%=user.getRole() %></td>
+										<td><%=user.getPhonenumber() %></td>
+										<td><% if (user.getCardnumber() != null) { %> <%=user.getCardnumber().replaceFirst(".{12}", "**************") %> <% } else { %> null <% } %></td>
+										<td>
+											<div class='row'>
+												<div class='col-md-8'>
+													<div class='ml-2 col-md-1'>
+														<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a>
+													</div>
+													<div class='ml-2 col-md-1'>
+														<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a>
+													</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<%
+										}
+									} else {
+									%>
+									<tr>
+										<td colspan="10">No users found.</td>
+									</tr>
+									<% 
+									} 
+									%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<%=Pagination1 %>
+				</div>
+
 		
 		<div id="allRolesTab" class="users-tabcontent">
-		  <div class="mt-4 ml-4">
-			  <h3><text class="text-dark font-weight-bold">Roles List</text></h3>
-			  <div class="mt-4">
-		          <table class="table table-hover">
-		            <thead>
-		              <tr>
-		                <th scope="col">#</th>
-		                <th scope="col">Role Names</th>
-		                <th scope="col">Actions</th>
-		              </tr>
-		            </thead>
-		            <tbody>
-		              <%=roleTable %>
-		            </tbody>
-		          </table>
-        		</div>
-		  	</div>
-		  	<%=Pagination2 %>
-		</div>
+					<div class="mt-4 ml-4">
+						<h3>
+							<text class="text-dark font-weight-bold">Roles List</text>
+						</h3>
+						<div class="mt-4">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Role Names</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<%
+									if (Tab2 != null && Tab2.size() > 0) {
+										for (role userRole : Tab2) {
+									%>
+									<tr>
+										<th scope='row'><%=userRole.getRoleid() %></th>
+										<td><%=userRole.getRolename() %></td>
+										<td>
+											<div class='row'>
+												<div class='col-md-3'>
+													<a href='edit-role.jsp?dbRoleID=<%=userRole.getRoleid() %>'><span class='icon icon-pencil'></span></a>
+												</div>
+												<div class='col-md-2'>
+													<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<%
+										}
+									} else {
+									%>
+									<tr>
+										<td colspan="3">No roles found.</td>
+									</tr>
+									<%
+									}
+									%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<%=Pagination2 %>
+				</div>
 		
 		<div id="Orders" class="users-tabcontent">
-			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Orders List</text></h3>
-			  <div class="btn-group">
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
-                      data-toggle="dropdown">Sorting</button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DTime&timeSort=<%=timeSort %>">Time</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=ATime&timeSort=<%=timeSort %>">Time, Descending</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DTotal&timeSort=<%=timeSort %>">Total</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=ATotal&timeSort=<%=timeSort %>">Total, Descending</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=DQuantity&timeSort=<%=timeSort %>">Quantity</a>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=AQuantity&timeSort=<%=timeSort %>">Quantity, Descending</a>
-                    </div>
-               </div>
-               <div class="btn-group">
-                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
-                      data-toggle="dropdown">Filter By Date</button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Today">Today</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Week">This Week</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=Month">This Month</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="<%=Path%>allUsersDetails?page3=1>&orderSort=<%=orderSort%>&">None</a>
-                    </div>
-               </div>
-              <form action="<%=Path%>allUsersDetails?page3=1&orderSort=<%=orderSort%>&timeSort=<%=timeSort %>" method='post'>
-              	<select name = "filterCategory">
-              		<%=options %>
-              	</select>
-              	<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Search"></input>
-              	<input type='submit' >
-              </form>
-			  <div class="mt-4">
-		          <table class="table table-hover" >
-		            <thead>
-		              <tr>
-		              	<th scope="col">Product</th>
-		                <th scope="col">Username</th>
-		                <th scope="col">Email</th>
-		                <th scope="col">Phone Number</th>
-		                <th scope="col">Card Number</th>
-		                <th scope="col">CCV</th>
-		                <th scope="col">Expiry Date</th>
-		                <th scope="col">Address</th>
-		                <th scope="col">Zip Code</th>
-		                <th scope="col">Company</th>
-		                <th scope="col">Quantity</th>
-		                <th scope="col">Total</th>
-		                <th scope="col">Time</th>
-		                <th scope="col">Notes</th>
-		              </tr>
-		            </thead>
-		            <tbody>
-		              <%=orders%>
-		            </tbody>
-		          </table>
-        		</div>
-		  	</div>
-		  	<%=Pagination3 %>
-		</div>
+					<div class="mt-4 ml-4">
+						<h3>
+							<text class="text-dark font-weight-bold">Orders List</text>
+						</h3>
+						<div class="btn-group">
+							<button type="button"
+								class="btn btn-secondary btn-sm dropdown-toggle"
+								id="dropdownMenuReference" data-toggle="dropdown">Sorting</button>
+							<div class="dropdown-menu"
+								aria-labelledby="dropdownMenuReference">
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DTime&timeSort=<%=timeSort%>&tab=3">Time</a>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=ATime&timeSort=<%=timeSort%>&tab=3">Time,
+									Descending</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort%>&tab=3">Total</a>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort%>&tab=3">Total,
+									Descending</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort%>&tab=3">Quantity</a>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort%>&tab=3">Quantity,
+									Descending</a>
+							</div>
+						</div>
+						<div class="m-3 btn-group">
+							<button type="button"
+								class="btn btn-secondary btn-sm dropdown-toggle"
+								id="dropdownMenuReference" data-toggle="dropdown">Filter
+								By Date</button>
+							<div class="dropdown-menu"
+								aria-labelledby="dropdownMenuReference">
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today&tab=3">Today</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week&tab=3">This
+									Week</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month&tab=3">This
+									Month</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item"
+									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&tab=3">None</a>
+							</div>
+						</div>
+						<%if (filterCategory != null) {%> 
+						<%out.print("Filter Category is "+filterCategory);%>
+						<%} else {%>
+						 name 
+						 <%}%>
+						<form
+							action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort%>&tab=3"
+							method='post'>
+							<label>Search by:</label> <select name="filterCategory">
+								<option value='name' <%if (filterCategory != null) { if (filterCategory.equals("name")) { %> selected <% } } else {%> selected <%}%>>Product</option>
+								<option value='username' <%if (filterCategory != null) { if (filterCategory.equals("username")) { %> selected <% } } else {%> selected <%}%>>Username</option>
+								<option value='email' <%if (filterCategory != null) { if (filterCategory.equals("email")) { %> selected <% } } else {%> selected <%}%>>Email</option>
+								<option value='phonenumber' <%if (filterCategory != null) { if (filterCategory.equals("phonenumber")) { %> selected <% } } else {%> selected <%}%>>Phone Number</option>
+								<option value='cardnumber' <%if (filterCategory != null) { if (filterCategory.equals("cardnumber")) { %> selected <% } } else {%> selected <%}%>>Card Number</option>
+								<option value='ccv' <%if (filterCategory != null) { if (filterCategory.equals("ccv")) { %> selected <% } } else {%> selected <%}%>>CCV</option>
+								<option value='expirydate' <%if (filterCategory != null) { if (filterCategory.equals("expirydate")) { %> selected <% } } else {%> selected <%}%>>Expiry Date</option>
+								<option value='address' <%if (filterCategory != null) { if (filterCategory.equals("address")) { %> selected <% } } else {%> selected <%}%>>Address</option>
+								<option value='zipcode' <%if (filterCategory != null) { if (filterCategory.equals("zipcode")) { %> selected <% } } else {%> selected <%}%>>Zip Code</option>
+								<option value='company' <%if (filterCategory != null) { if (filterCategory.equals("company")) { %> selected <% } } else {%> selected <%}%>>Company</option>
+								<option value='quantity' <%if (filterCategory != null) { if (filterCategory.equals("quantity")) { %> selected <% } } else {%> selected <%}%>>Quantity</option>
+								<option value='total' <%if (filterCategory != null) { if (filterCategory.equals("total")) { %> selected <% } } else {%> selected <%}%>>Total</option>
+								<option value='notes' <%if (filterCategory != null) { if (filterCategory.equals("notes")) { %> selected <% } } else {%> selected <%}%>>Notes</option>
+							</select> <br> <input type='text' name='filterValue'
+								value="<%=filterValue%>" placeholder="Keyword"></input> <input
+								type='submit' value="Search">
+						</form>
+						<div class="mt-4">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th scope="col">Product</th>
+										<th scope="col">Username</th>
+										<th scope="col">Email</th>
+										<th scope="col">Phone Number</th>
+										<th scope="col">Card Number</th>
+										<th scope="col">CCV</th>
+										<th scope="col">Expiry Date</th>
+										<th scope="col">Address</th>
+										<th scope="col">Zip Code</th>
+										<th scope="col">Company</th>
+										<th scope="col">Quantity</th>
+										<th scope="col">Total</th>
+										<th scope="col">Time</th>
+										<th scope="col">Notes</th>
+									</tr>
+								</thead>
+								<tbody>
+									<%
+									if (Tab3 != null && Tab3.size() > 0) {
+										for (order order : Tab3) {
+									%>
+									<tr>
+										<td><%=order.getOrderProduct() %></td>
+										<td><%=order.getOrderUsername() %></td>
+										<td><%=order.getOrderEmail() %></td>
+										<td><%=order.getOrderPhoneNumber() %></td>
+										<td><%=order.getOrderCardNumber().replaceFirst(".{12}", "**************") %></td>
+										<td><%=order.getOrderCCV() %></td>
+										<td><%=order.getOrderExpiryDate() %></td>
+										<td><%=order.getOrderAddress() %></td>
+										<td><%=order.getOrderZipCode() %></td>
+										<td><%=order.getOrderCompany() %></td>
+										<td><%=order.getOrderQuantity() %></td>
+										<td><%=format.format(order.getOrderTotal()) %></td>
+										<td><%=order.getOrderDate() %></td>
+										<td><%=order.getOrderNotes() %></td>
+									</tr>
+									<%
+										}
+									} else {
+									%>
+									<tr>
+										<td colspan="14">No orders found.</td>
+									</tr>
+									<%
+									}
+									%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<%=Pagination3 %>
+				</div>
 		
 		<div id="userTotal" class="users-tabcontent">
-			<div class="mt-4 ml-4" >
-			  <h3><text class="text-dark font-weight-bold">Users Max Purchase</text></h3>
-			  <form action="<%=Path%>allUsersDetails" method='post'>
-			  	<input type='text' name='userSearch4'></input>
-			  	<input type='submit' placeholder="Search For User"></input>
-			  </form>
-			  <div class="mt-4">
-		          <table class="table table-hover" >
-		            <thead>
-		              <tr>
-		              	
-		                <th scope="col">Username</th>
-		                <th scope="col">Email</th>
-		                <th scope="col">Phone Number</th>
-		                <th scope="col">Total</th>
-		                
-		              </tr>
-		            </thead>
-		            <tbody>
-		              <%=userTotals%>
-		            </tbody>
-		          </table>
-        		</div>
-		  	</div>
-		  	<%=Pagination4 %>
-		</div>
+					<div class="mt-4 ml-4">
+						<h3>
+							<text class="text-dark font-weight-bold">Users Max
+							Purchase</text>
+						</h3>
+						<form action="${pageContext.request.contextPath}/allUsersDetails?tab=4" method='post'>
+							<input type='text' name='userSearch4'></input> <input
+								type='submit' placeholder="Search For User"></input>
+						</form>
+						<div class="mt-4">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+
+										<th scope="col">Username</th>
+										<th scope="col">Email</th>
+										<th scope="col">Phone Number</th>
+										<th scope="col">Total</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<%
+									if (Tab4 != null && Tab4.size() > 0) {
+										for (user user : Tab4) {
+									%>
+									<tr>
+										<td><%=user.getUsername() %></td>
+										<td><%=user.getEmail() %></td>
+										<td><%=user.getPhonenumber() %></td>
+										<td>$<%=format.format(user.getTotal()) %></td>
+									</tr>
+									<%
+										}
+									} else {
+									%>
+									<tr>
+										<td colspan="4">No Orders found.</td>
+									</tr>
+									<%
+									}
+									%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<%=Pagination4 %>
+				</div>
+			</div>
 
       </div>
     </div>

@@ -33,13 +33,15 @@ Description: ST0510 / JAD Assignment 1
 	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
 	String query = "";
 	
+	String path = request.getContextPath() + "/";
+	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}   
-    
+
         %>
   <title>Digit Games&mdash;</title>
   <meta charset="utf-8">
@@ -153,7 +155,7 @@ Description: ST0510 / JAD Assignment 1
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Thank you!</h2>
             <p class="lead mb-5">Your order has been successfully completed.</p>
-            <p><a href='http://localhost:12978/ST0510-JAD/invalidate?rd=cart' class="btn btn-sm btn-primary">Back to Cart</a></p>
+            <p><a href='<%=path %>invalidate?rd=cart' class="btn btn-sm btn-primary">Back to Cart</a></p>
           </div>
         </div>
       </div>
