@@ -8,7 +8,9 @@ Description: ST0510 / JAD Assignment 1
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
 <%@page import="java.text.DecimalFormat" %>
+<%@ page import ="myclasses.*" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,13 +20,14 @@ Description: ST0510 / JAD Assignment 1
 	HttpSession Session = request.getSession();
 	DecimalFormat format = new DecimalFormat("#0.00"); 
 	String name = "";
-	String r_price = "";
+	double r_price = 0.0;
 	String AdminPage = "";
 	String dtotal = "";
 	String GST = "";
 	double total = 0.00;
 	String role = "";
 	int userid = 0;
+	
 	String fname = "";
 	String lname = "";
 	String pnumber = "";
@@ -37,7 +40,7 @@ Description: ST0510 / JAD Assignment 1
 	String CCV = "";
 	String expirydate = "";
 	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
 	
 	String path = request.getContextPath() + "/";
 	
@@ -47,74 +50,19 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}
-	try{
-		if(role.equals("admin")){ 
-            AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
-            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-            		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
-            		
-            Header = "<div class='site-top-icons'>"
-                    + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                      + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                      + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                      + "<li id='logoutButton'></li></ul></div>";              
-         } else if (role.equals("member")) {
-        	  Header = "<div class='site-top-icons'>"
-                      + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                        + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                        + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                        + "<li id='logoutButton'></li></ul></div>";     
-              AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-         }}catch(Exception e){// if no id or role is detected
-        		  Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-        }
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-    }catch(Exception e){
-    	
-	    out.print(e);
-	    
-  	}
-    if(conn == null){
-  		out.print("Conn Error");
-  		conn.close();
-  	}else{
   		try{
-  			String query = "SELECT * FROM users WHERE user_id = "+userid;
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			
-			while(rs.next()){
-				address = rs.getString("address");
-				country = rs.getString("country");
-				zipcode = rs.getString("zipcode");
-				company = rs.getString("company");
-				cardnumber = rs.getString("cardnumber");
-				CCV = rs.getString("CCV");
-				expirydate = rs.getString("expirydate");
-			}
-			for(int x = 0;((int[])Session.getAttribute("productArr")).length>x;x++){
-			  	query = "SELECT * FROM products WHERE product_id ="+((int[])Session.getAttribute("productArr"))[x];
-			  	st = conn.createStatement();
-				rs = st.executeQuery(query);
-			
-				while(rs.next()){
-				    name = rs.getString("name");
-				    r_price = format.format(rs.getDouble("r_price"));
-				    total += Double.parseDouble(r_price)*(((int[])Session.getAttribute("quantityArr"))[x]);
-				    products += "<tr><td>"+name+" <strong class='mx-2'>x</strong>"+((int[])Session.getAttribute("quantityArr"))[x]+"</td><td>$"+format.format(Double.parseDouble(r_price)*(((int[])Session.getAttribute("quantityArr"))[x]))+"</td></tr>";
-				}
+			for(int x = 0;cart.size()>x;x++){
+				name = cart.get(x).getProductName();
+				r_price = cart.get(x).getProductPrice();
+				total += r_price*cart.get(x).getProductQuantity();
 				GST = format.format(total*.07);
 				dtotal = format.format(total*1.07);
+				products += "<tr><td>"+name+" <strong class='mx-2'>x</strong>"+cart.get(x).getProductQuantity()+"</td><td>$"+format.format(r_price*cart.get(x).getProductQuantity())+"</td></tr>";
 			}
+			
   		}catch(Exception e){
   			
   		}
-		conn.close();
-	}
         
         	  
         	  %>
@@ -163,7 +111,28 @@ Description: ST0510 / JAD Assignment 1
               <div class="site-top-icons">
        
 	  		
-                <%=Header%>
+                <%
+                                    if (role.equals("admin") || role.equals("member")) {
+                                %>
+                                <ul>
+                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                            class='icon icon-shopping_cart'></span></a></li>
+                                    <li><a href='profile.jsp'>Edit Profile</a></li>
+                                    <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
+                                        class='btn btn-sm btn-secondary'>Logout</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    } else {
+                                %>
+                                <ul>
+                                    <li><a href='loginpage.jsp'>Login</a></li>
+                                    <li><a href='register.jsp'>Register</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    }
+                                %>
 
               </div>
             </div>
@@ -179,7 +148,19 @@ Description: ST0510 / JAD Assignment 1
             <li><a href="categories.jsp? ">Shop</a></li>
             <li><a href="all-listings.jsp? ">Catalogue</a></li>
             <li><a href="contact.jsp? ">Contact</a></li>
-            <%=AdminPage %>
+            <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='admin-page.jsp'>Product Control</a></li>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            }
+                        %>
           </ul>
         </div>
       </nav>
@@ -202,7 +183,7 @@ Description: ST0510 / JAD Assignment 1
             <h2 class="h3 mb-3 text-black">Billing Details</h2>
             <div class="p-3 p-lg-5 border">
               
-              <form method="POST" id="details" action="thankyou.jsp">
+              <form method="POST" id="details" action="http://localhost:12978/ST0510-JAD/checkout">
               
               <div class="form-group row">
               <div class="col-md-12">

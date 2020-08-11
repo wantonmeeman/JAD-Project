@@ -7,7 +7,9 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page import ="myclasses.*" %>
 <%@ page import="java.sql.*"%>
+<%@ page import="java.util.ArrayList" %>
 <%@page import="java.text.DecimalFormat"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,14 +25,13 @@ String image = "";
 String rows = "";
 String disabled = "";
 DecimalFormat format = new DecimalFormat("#0.00");
-String quantity = request.getParameter("quantity");
-String productID = String.valueOf(Session.getAttribute("productID"));
 double total = 0;
 int userid = 0;  
 String role = "";
-int[] productArr = {};
-int[] quantityArr = {};
+
+ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
 //Connecting to Database
+
 Connection conn = null;
 
 String path = request.getContextPath() + "/";
@@ -54,117 +55,25 @@ try{
 	
 }
 try{
-if (quantity != null) {
-	//Creating new cart or adding to cart 
-	
-	if (Session.getAttribute("productArr") == null || ((int[])Session.getAttribute("productArr"))[0] == 0) { //Creating new cart
-		productArr = new int[50];
-		quantityArr = new int[50];
-		productArr[0] = Integer.parseInt(productID);
-		quantityArr[0] = Integer.parseInt(quantity);
-		Session.setAttribute("productArr", productArr);
-		Session.setAttribute("quantityArr", quantityArr);
-	} else {//Adding to cart
-		productArr = (int[]) Session.getAttribute("productArr");
-		quantityArr = (int[]) Session.getAttribute("quantityArr");
-		for (int x = 0; ((int[]) Session.getAttribute("productArr")).length > x; x++) {
-			//out.print("product: "+productArr[x]+",");
-			//out.print("quantity: "+quantityArr[x]);
-			if (((int[]) Session.getAttribute("productArr"))[x] == Integer.parseInt(productID)) {
-					quantityArr[x] += Integer.parseInt(quantity);//Adds it to the first instance
-					x = 51;
-			}else if (((int[]) Session.getAttribute("productArr"))[x] == 0) {
-					productArr[x] = Integer.parseInt(productID);
-					quantityArr[x] = Integer.parseInt(quantity);
-					x = 51;//stops the for loop
-			}
-		}
-		Session.setAttribute("productArr", productArr);
-		Session.setAttribute("quantityArr", quantityArr);
-	}
-}
-}catch(Exception e){
-	
-}
-//Connecting to Database
-conn = null;
-quantityArr = ((int[]) Session.getAttribute("quantityArr"));
-productArr = ((int[]) Session.getAttribute("productArr"));
-try {
-	Class.forName("com.mysql.jdbc.Driver");
-	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-} catch (Exception e) {
-
-}
-
-try {
-	if (conn == null) {
-		out.print("Conn Error");
-		conn.close();
-	} else {
-		for (int x = 0; productArr.length > x; x++) {
-	if (((int[]) Session.getAttribute("productArr"))[x] != 0) {
-		String query = "SELECT * FROM products WHERE product_id =" + productArr[x];
-		Statement st = conn.createStatement();
-		ResultSet rs = st.executeQuery(query);
-		while (rs.next()) {
-			name = rs.getString("name");
-			r_price = format.format(rs.getDouble("r_price"));
-			image = rs.getString("image");
-		} //This below makes tables
-		rows += "<tr><td class='product-thumbnail'><img src='" + image
+	for(int x = 0;x < cart.size();x++){
+		rows += "<tr><td class='product-thumbnail'><img src='" + cart.get(x).getProductImage()
 				+ "' alt='Image' class='img-fluid'></td><td class='product-name'><h2 class='h5 text-black'>"
-				+ name + "</h2></td><td>$" + r_price
-				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='" + path + "changeQuantity?productID="+productArr[x]+"' method='POST'><input type='number' name='quantity' value="
-				+ quantityArr[x] + "></input></div></td><td>$"
-				+ format.format(((double) quantityArr[x]) * Double.parseDouble(r_price)) + "</td>"
-				+"<th class='product-total'><a href='" + path + "deleteFromCart?product="+productArr[x]+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
-		total += quantityArr[x] * Double.parseDouble(r_price);//For prices
-	}
-		}
-		conn.close();
-	}
-} catch (Exception e) {
+				+ cart.get(x).getProductName() + "</h2></td><td>$" + cart.get(x).getProductPrice()
+				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='http://localhost:12978/ST0510-JAD/changeQuantity?productID="+cart.get(x).getProductID()+"' method='POST'><input type='number' name='quantity' value="
+				+ cart.get(x).getProductQuantity() + "></input></div></td><td>$"
+				+ format.format(cart.get(x).getProductQuantity() * cart.get(x).getProductPrice()) + "</td>"
+				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?productID="+cart.get(x).getProductID()+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
+		total += cart.get(x).getProductQuantity() * cart.get(x).getProductPrice();//For prices
+		out.print(cart.get(x).getError());//Error Debugging
 
-}
-String AdminPage = "";
-String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-try{
-	userid = (int)Session.getAttribute("userid");  
-    role = (String)Session.getAttribute("role");
+	}
 }catch(Exception e){
-
+	disabled = "disabled";//new code to check if cart is empty
 }
 
-try {
-	if(role.equals("admin")){
-        AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
-        		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-        		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
-        		
-        Header = "<div class='site-top-icons'>"
-                + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                  + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                  + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                  + "<li id='logoutButton'></li></ul></div>";              
-     } else if (role.equals("member")) {
-    	  Header = "<div class='site-top-icons'>"
-                  + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                    + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                    + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                    + "<li id='logoutButton'></li></ul></div>";     
-          AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-     }
-} catch (Exception e) {// if no id or role is detected
-	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-}
-if(productArr == null || total == 0 ){
-	disabled = "disabled";
-}
+
 String strTotal = format.format(total);
-String strTotalGST = format.format(total*1.07);
-Session.removeAttribute("productID");
+String strTotalGST = format.format(total*1.07); 
 %>
 <title>Digit Games &mdash; Shopping Cart</title>
 <meta charset="utf-8">
@@ -212,7 +121,28 @@ Session.removeAttribute("productID");
 							<div class="site-top-icons">
 
 
-								<%=Header%>
+								<%
+                                    if (role.equals("admin") || role.equals("member")) {
+                                %>
+                                <ul>
+                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                            class='icon icon-shopping_cart'></span></a></li>
+                                    <li><a href='profile.jsp'>Edit Profile</a></li>
+                                    <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
+                                        class='btn btn-sm btn-secondary'>Logout</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    } else {
+                                %>
+                                <ul>
+                                    <li><a href='loginpage.jsp'>Login</a></li>
+                                    <li><a href='register.jsp'>Register</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    }
+                                %>
 
 							</div>
 						</div>
@@ -229,7 +159,19 @@ Session.removeAttribute("productID");
 						<li><a href="categories.jsp? ">Shop</a></li>
 						<li><a href="all-listings.jsp? ">Catalogue</a></li>
 						<li><a href="contact.jsp? ">Contact</a></li>
-						<%=AdminPage%>
+						<%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='admin-page.jsp'>Product Control</a></li>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            }
+                        %>
 					</ul>
 				</div>
 			</nav>

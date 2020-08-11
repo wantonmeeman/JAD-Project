@@ -68,8 +68,8 @@ Description: ST0510 / JAD Assignment 1
     Connection conn = null;
     try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	 conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		  	}catch(Exception e){
 			    out.print(e);
 		  	}
@@ -132,7 +132,28 @@ Description: ST0510 / JAD Assignment 1
               <div class="site-top-icons">
        
 	  		
-                <%=Header%>
+                <%
+                                    if (role.equals("admin") || role.equals("member")) {
+                                %>
+                                <ul>
+                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                            class='icon icon-shopping_cart'></span></a></li>
+                                    <li><a href='profile.jsp'>Edit Profile</a></li>
+                                    <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
+                                        class='btn btn-sm btn-secondary'>Logout</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    } else {
+                                %>
+                                <ul>
+                                    <li><a href='loginpage.jsp'>Login</a></li>
+                                    <li><a href='register.jsp'>Register</span></a></li>
+                                    <li id='logoutButton'></li>
+                                </ul>
+                                <%
+                                    }
+                                %>
 
               </div>
             </div>
@@ -148,7 +169,19 @@ Description: ST0510 / JAD Assignment 1
             <li><a href="categories.jsp? ">Shop</a></li>
             <li><a href="all-listings.jsp? ">Catalogue</a></li>
             <li><a href="contact.jsp? ">Contact</a></li>
-            <%=AdminPage %>
+            <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='admin-page.jsp'>Product Control</a></li>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <%
+                            }
+                        %>
           </ul>
         </div>
       </nav>
