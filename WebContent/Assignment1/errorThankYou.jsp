@@ -116,12 +116,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -143,7 +143,6 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Error!</h2>
             <p class="lead mb-5">Something Went Wrong</p>
             <p><a href='index.jsp' class="btn btn-sm btn-primary">Back to Cart</a></p>

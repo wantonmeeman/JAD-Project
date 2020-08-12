@@ -47,8 +47,8 @@ Description: ST0510 / JAD Assignment 1
 	try{
 		if(role.equals("admin")){ 
             AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
-            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-            		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
+            		+ "<li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>"
+            		+ "<li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>";
             		
             Header = "<div class='site-top-icons'>"
                     + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
@@ -61,7 +61,7 @@ Description: ST0510 / JAD Assignment 1
                         + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
                         + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
                         + "<li id='logoutButton'></li></ul></div>";     
-              AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
+              AdminPage = "<li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>";
          }}catch(Exception e){// if no id or role is detected
     	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
     }
@@ -173,12 +173,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>

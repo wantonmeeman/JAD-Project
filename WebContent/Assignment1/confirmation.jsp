@@ -7,64 +7,64 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.sql.*" %>
- <%@page import="java.text.DecimalFormat" %>
+ <%@ page import ="myclasses.*" %>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.util.ArrayList" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
-<%  HttpSession Session = request.getSession();
+
+<head>
+<%  
+	HttpSession Session = request.getSession();
 	
-	String dbRoleID = request.getParameter("dbRoleID");
-	String AdminPage = "";
 	
-	String roleName = "";
-	
-	int userid = 0;
 	String role = "";
-	String image = "";
-	String Error = request.getParameter("Err");
+	int userid = 0;
 	
+	double ptotal = 0;
+	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
+	String query = "";
+	String type = request.getParameter("type");
+	String id = request.getParameter("id");
 	String path = request.getContextPath() + "/";
 	
-	try{
-    	if(Error.equals("NullError")){
-    		out.print("<script>alert('Please Fill in all required fields!')</script>");
-    	}
-		if(Error.equals("NegativeError")){
-			out.print("<script>alert('Do not enter negative numbers!')</script>");
-    	}
-    }catch(Exception e){
-    		
-    } 
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
-	} 
+	}   
+	
+	String deleteType = "";
+	String declineType = "";
+	String deleteQuery = "";
+	switch(type){
+		case "cat":
+			deleteQuery = "categoryID="+id;
+			deleteType = "DeleteCategory";
+		break;
+		case "list":
+			deleteQuery = "productID="+id;
+			deleteType = "DeleteListing";
+		break;
+		case "role":
+			deleteQuery = "roleID="+id;
+			deleteType = "DeleteRole";
+		break;
+		case "user":
+			deleteQuery = "dbUserID="+id;
+			deleteType = "DeleteUser";
+		break;
+	}
+	if(type.equals("cat") || type.equals("list")){
+		declineType = "Products";
+	}else if(type.equals("user")||type.equals("role")){
+		declineType = "Users";
+	}
 
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	 conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM roles WHERE role_id =" + dbRoleID;
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-			      while(rs.next()){
-			    	  roleName = rs.getString("role_name");
-			      }
-			      conn.close();
-		  	}
-    	%>
-<head>
-  <title>Digit Games &mdash; Upload Product</title>
+        %>
+  <title>Digit Games&mdash;</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -76,8 +76,6 @@ Description: ST0510 / JAD Assignment 1
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="css/aos.css">
@@ -95,7 +93,7 @@ Description: ST0510 / JAD Assignment 1
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-
+              
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
@@ -106,8 +104,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-       
-	  		
+
                 <%
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
@@ -167,7 +164,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Edit Product</strong></div>
+              class="text-black">Contact</strong></div>
         </div>
       </div>
     </div>
@@ -175,59 +172,13 @@ Description: ST0510 / JAD Assignment 1
     <div class="site-section">
       <div class="container">
         <div class="row">
-
-          <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Edit Category (Admin)</h2>
+          <div class="col-md-12 text-center">
+            <span class="icon-check_circle display-3 text-success"></span>
+            <h2 class="display-3 text-black">Are you sure?</h2>
+            <p class="lead mb-5">Do you really want to delete? This cannot be undone.</p>
+            <p><a href='<%=deleteType %>.jsp?<%=deleteQuery %>' class="btn btn-sm btn-primary">Yes</a></p>
+            <p><a href='<%=path %>all<%=declineType %>Details' class="btn btn-sm btn-primary">No</a></p>
           </div>
-
-          <div class="col-md-12">
-
-            <form action="EditRole.jsp? " method="post">
-
-              <div class="p-3 p-lg-5 border row justify-content-center">
-
-                <div class="col-md-10">
-
-                  <div class="form-group row">
-					<input type="hidden" name="dbRoleID" value="<%=dbRoleID%>"></input>
-                    <div class="col-md-6">
-                      <label for="roleName" class="text-black">Role Name<span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="roleName" name="roleName" value="<%=roleName %>" placeholder="Category Name">
-                    </div>
-
-                  </div>
-                  
-
-                </div>
-
-                <div class="form-group col-md-12 mb-5 d-flex flex-row-reverse">
-
-                  <div class="col-lg-3 p-3">
-                    <input id="uploadProd" type="submit" class="btn btn-primary btn-lg btn-block"
-                      value="Save Changes">
-                  </div>
-
-                </div>
-              </div>
-
-            </form>
-          </div>
-
-          <!-- <div class="col-md-5 ml-auto">
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">New York</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">London</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-            <div class="p-4 border mb-3">
-              <span class="d-block text-primary h6 text-uppercase">Canada</span>
-              <p class="mb-0">203 Fake St. Mountain View, San Francisco, California, USA</p>
-            </div>
-
-          </div> -->
         </div>
       </div>
     </div>

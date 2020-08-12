@@ -108,36 +108,8 @@ Description: ST0510 / JAD Assignment 1
               <div class="site-top-icons">
        
 	  		
-               <%
-                            if (role.equals("admin")) {
-                        %>
-                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
-                        <%
-                            } else if (role.equals("member")) {
-                        %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
-                        <%
-                            }
-                        %>
-
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <nav class="site-navigation text-right text-md-center" role="navigation">
-        <div class="container">
-          <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp? ">Home</a></li>
-            <li><a href="about.jsp? ">About</a></li>
-            <li><a href="categories.jsp? ">Shop</a></li>
-            <li><a href="all-listings.jsp? ">Catalogue</a></li>
-            <li><a href="contact.jsp? ">Contact</a></li>
-            <%
+              
+<%
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
@@ -159,6 +131,34 @@ Description: ST0510 / JAD Assignment 1
                                 <%
                                     }
             %>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <nav class="site-navigation text-right text-md-center" role="navigation">
+        <div class="container">
+          <ul class="site-menu js-clone-nav d-none d-md-block">
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
+             <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                       <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
+                        <%
+                            }
+                        %>
 
           </ul>
         </div>

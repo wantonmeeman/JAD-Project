@@ -21,6 +21,7 @@ HttpSession Session = request.getSession();
 int userid = 0;  
 String role = "";
 int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+String Path = "http://localhost:8080"+request.getContextPath()+"/";
 Connection conn = null;
 
   //What else to add? try to add image path later maybe?
@@ -49,7 +50,7 @@ try{
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect("admin-page.jsp?Err=DelSuccess");//Add EditSuccess at admin-page
+			    	  response.sendRedirect(Path+"/allProductsDetails?Err=DelSuccess");//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    

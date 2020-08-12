@@ -41,6 +41,7 @@ Description: ST0510 / JAD Assignment 1
 	String expirydate = "";
 	
 	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
+	user userDetails = (user)Session.getAttribute("userDetails");
 	
 	String path = request.getContextPath() + "/";
 	
@@ -152,12 +153,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                       <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -188,28 +189,28 @@ Description: ST0510 / JAD Assignment 1
               <div class="form-group row">
               <div class="col-md-12">
                   <label for="c_companyname" class="text-black">Card Number </label>
-                  <input type="text" class="form-control" id="c_companyname" name="cardnumber" value="<%=cardnumber%>">
+                  <input type="text" class="form-control" id="c_companyname" name="cardnumber" value="<%=userDetails.getCardnumber()%>">
                 </div>
                <div class="col-md-5">
                   <label for="c_companyname" class="text-black">CCV </label>
-                  <input type="text" class="form-control" id="c_companyname" name="CCV" value="<%=CCV%>" length=4><!-- Some CVVs are 4 digits -->
+                  <input type="text" class="form-control" id="c_companyname" name="CCV" value="<%=userDetails.getCcv()%>" length=4><!-- Some CVVs are 4 digits -->
                 </div>
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-5">
                   <label for="c_companyname" class="text-black">Expiry Date</label>
-                  <input type="text" class="form-control" id="c_companyname" name="expirydate" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY">
+                  <input type="text" class="form-control" id="c_companyname" name="expirydate" value="<%=userDetails.getExpirydate()%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY">
                 </div>
                 <div class="col-md-12">
                   <label for="c_companyname" class="text-black">Company Name </label>
-                  <input type="text" class="form-control" id="c_companyname" name="company" value="<%=company%>">
+                  <input type="text" class="form-control" id="c_companyname" name="company" value="<%=userDetails.getCompany()%>">
                 </div>
               </div>
 
               <div class="form-group row">
                 <div class="col-md-12">
                   <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_address" name="address" placeholder="Street address" value="<%=address%>">
+                  <input type="text" class="form-control" id="c_address" name="address" placeholder="Street address" value="<%=userDetails.getAddress()%>">
                 </div>
               </div>
 
@@ -217,11 +218,11 @@ Description: ST0510 / JAD Assignment 1
                 <div class="col-md-6">
                   <label for="c_state_country" class="text-black">State / Country <span
                       class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_state_country" name="country" value="<%=country%>">
+                  <input type="text" class="form-control" id="c_state_country" name="country" value="<%=userDetails.getCountry()%>">
                 </div>
                 <div class="col-md-6">
                   <label for="c_postal_zip" class="text-black">Postal / Zip <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="c_postal_zip" name="zipcode" value="<%=zipcode%>" length=6>
+                  <input type="text" class="form-control" id="c_postal_zip" name="zipcode" value="<%=userDetails.getZipcode()%>" length=6>
                 </div>
               </div>
 

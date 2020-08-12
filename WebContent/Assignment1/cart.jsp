@@ -64,7 +64,7 @@ try{
 				+ format.format(cart.get(x).getProductQuantity() * cart.get(x).getProductPrice()) + "</td>"
 				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?productID="+cart.get(x).getProductID()+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
 		total += cart.get(x).getProductQuantity() * cart.get(x).getProductPrice();//For prices
-		out.print(cart.get(x).getError());//Error Debugging
+		//out.print(cart.get(x).getError());//Error Debugging
 
 	}
 }catch(Exception e){
@@ -163,12 +163,12 @@ String strTotalGST = format.format(total*1.07);
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -264,7 +264,7 @@ String strTotalGST = format.format(total*1.07);
 								<div class="row">
 									<div class="col-md-12">
 										<button class="btn btn-primary btn-lg py-3 btn-block"
-											onclick="window.location='checkout.jsp? '" <%=disabled%>>Proceed
+											onclick="window.location='${pageContext.request.contextPath}/getUserDetails'" <%=disabled%>>Proceed
 											To Checkout</button>
 									</div>
 								</div>

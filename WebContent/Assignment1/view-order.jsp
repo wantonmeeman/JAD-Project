@@ -6,9 +6,11 @@ Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ page import="java.sql.*" %>
- <%@page import="java.text.DecimalFormat" %>
+	pageEncoding="ISO-8859-1"%>
+<%@ page import ="myclasses.*" %>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.util.ArrayList" %>
+<%@page import="java.text.DecimalFormat"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,66 +57,49 @@ Description: ST0510 / JAD Assignment 1
 	String orderCardNumber = "";
 	String orderImage = "";
 	String orderDate = "";
-	
-	String path = request.getContextPath() + "/";
+	String Pagination = "";
+	int PageNumber = 0;
 	
 	try{
 		userid = (int)Session.getAttribute("userid");  
-	    role = (String)Session.getAttribute("role");
+		role = (String)Session.getAttribute("role");
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	}
+	
+	int total_Orders = (int)Session.getAttribute("OrdersT");
+	ArrayList<order> Orders = (ArrayList<order>)Session.getAttribute("Orders");
+	
+	
+	
+	String Path = request.getContextPath() + "/";
 
-     Connection conn = null;
-     try{
-        Class.forName("com.mysql.jdbc.Driver");
-      	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-       	conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
-        if(conn == null){
-        	out.print("Conn Error");
-        	conn.close();
-        }else{
-        	query = "SELECT * FROM orders WHERE fk_userid = "+userid;
-		    Statement st = conn.createStatement();
-		    ResultSet rs = st.executeQuery(query);
-		    while (rs.next()) {
-		    	orderProductID = rs.getInt("fk_productid");
-		    	orderDate = rs.getString("date");//rs.getString("cardnumber");
-		    	orderCardNumber = rs.getString("cardnumber");
-		    	orderAddress = rs.getString("address");
-		    	orderZipcode = rs.getString("zipcode");
-		    	orderCompany = rs.getString("company");
-		    	orderTotal = rs.getDouble("total");
-		    	orderNotes = rs.getString("notes");
-		    	orderQuantity = rs.getString("quantity");
-		    	
-		    	query = "SELECT * FROM products WHERE product_id = "+orderProductID;
-			    st = conn.createStatement();
-			    ResultSet rs1 = st.executeQuery(query);
-
-				while(rs1.next()){
-					orderImage = rs1.getString("image");
-				    orderProduct = rs1.getString("name");
-				}
-			    
-		    	orders += "<tr>"
-		    			+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>"
-        	    		+ "<td class='col-md-12'>" + orderProduct + "</td>"
-        	    		+ "<td>" + orderDate + "</td>"
-        	    		+ "<td>" + orderCardNumber.replaceFirst(".{12}", "**************") + "</td>"
-        	    		+ "<td>" + orderAddress + "</td>"
-        	    		+ "<td>" + orderZipcode+ "</td>"
-        	    		+ "<td>" + orderCompany + "</td>"
-                	    + "<td>" + orderQuantity+ "</td>"
-                	    + "<td>$" + format.format(orderTotal)+ "</td>"
-                	    + "<td class='col-md-12' span='1'>" + orderNotes + "</td>"
-        	    		+ "<div class='ml-4 col-md-2'>"
-        	    		+ "</div></div></td></tr>";
-        }
-        }
-     }catch(Exception e){
-    	 out.print(e);
-     }
+	for(int i = 0;i < total_Orders;i++){
+		
+		if((i % 5) == 0){
+			PageNumber += 1;
+    		Pagination += "<a href='"+Path+"viewOrders?page="+PageNumber+"'><button class = 'btn btn-secondary'>"+PageNumber+"</button></a>";
+		}else{
+			
+		}
+    	
+    }
+	
+	for(int i = 0;Orders.size() > i;i++){
+	orders += "<tr>"
+		   + "<td><img width='200' height='200' src='"+ Orders.get(i).getOrderImage() + "'></img></td>"
+           + "<td class='col-md-12'>" + Orders.get(i).getOrderProduct() + "</td>"
+           + "<td>" + Orders.get(i).getOrderDate() + "</td>"
+           + "<td>" + Orders.get(i).getOrderCardNumber().replaceFirst(".{12}", "**************") + "</td>"
+           + "<td>" + Orders.get(i).getOrderAddress() + "</td>"
+           + "<td>" + Orders.get(i).getOrderZipCode()+ "</td>"
+           + "<td>" + Orders.get(i).getOrderCompany() + "</td>"
+           + "<td>" + Orders.get(i).getOrderQuantity()+ "</td>"
+           + "<td>$" + format.format(Orders.get(i).getOrderTotal())+ "</td>"
+           + "<td class='col-md-12' span='1'>" + orderNotes + "</td>"
+           + "<div class='ml-4 col-md-2'>"
+           + "</div></div></td></tr>";
+	}
         
 %>
   <title>Digit Games &mdash; All Products</title>
@@ -205,7 +190,7 @@ Description: ST0510 / JAD Assignment 1
                                 </ul>
                                 <%
                                     }
-                                %>
+                %>
 
               </div>
             </div>
@@ -225,12 +210,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -260,6 +245,7 @@ Description: ST0510 / JAD Assignment 1
 		            </tbody>
 		          </table>	
 		        </div>
+		        <%=Pagination%>
 		        </div>
 
     <!-- FOOTER -->

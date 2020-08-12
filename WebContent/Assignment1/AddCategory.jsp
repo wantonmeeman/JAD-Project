@@ -20,6 +20,7 @@ Description: ST0510 / JAD Assignment 1
 HttpSession Session = request.getSession();
 int userid = 0;
 String role = "";
+String Path = "http://localhost:8080"+request.getContextPath()+"/";
 try{
 	userid = (int)Session.getAttribute("userid");  
    	role = (String)Session.getAttribute("role");
@@ -61,7 +62,7 @@ try{
 			      	out.print("Database Error"); 
 			      	
 			      } else {
-			    	 response.sendRedirect("admin-page.jsp?Err=AddSuccess");
+			    	 response.sendRedirect(Path+"/allProductsDetails?Err=AddSuccess");
 			    	 
 			      }
 			      conn.close();

@@ -23,6 +23,7 @@ Description: ST0510 / JAD Assignment 1
   Connection conn = null; 
   String Error = "";
   String dbRole = request.getParameter("dbRole");
+  String Path = "http://localhost:8080"+request.getContextPath()+"/";
   try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
@@ -58,7 +59,7 @@ Description: ST0510 / JAD Assignment 1
 			      	out.print("Database Error"); 
 			      	
 			      } else {
-			    	 response.sendRedirect(request.getContextPath() + "allUsersDetails?Err=AddSuccess");
+			    	 response.sendRedirect(Path + "allUsersDetails?Err=AddSuccess");
 			    	 
 			      }
 			      conn.close();

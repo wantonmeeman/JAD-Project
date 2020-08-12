@@ -26,7 +26,9 @@ Description: ST0510 / JAD Assignment 1
 	String filterCategory = request.getParameter("filterCategory");
 	String filterValue = request.getParameter("filterValue");
 	String timeSort = request.getParameter("timeSort");
-	String tab = request.getParameter("tab");
+	String userCategory = request.getParameter("userCategory");
+	String userSearch = request.getParameter("userSearch");
+	
 	String timeSuffix = "";
 	
 	String AdminPage = "";
@@ -39,16 +41,14 @@ Description: ST0510 / JAD Assignment 1
 	
 	String dbRoleID = "";//Tie this to the thing
 	String roleName = "";
-	
+	String userRoles = "";
 	String rows = "";
 	String roleTable = "";
 	String Error = request.getParameter("Err");
 	int userid = 0;  
 	String role = "";
+	String tab = request.getParameter("tab");
 	
-	if(tab == null){
-		tab = "";
-	}
 	
 	try{
 		userid = (int)Session.getAttribute("userid");  
@@ -61,11 +61,11 @@ Description: ST0510 / JAD Assignment 1
 	ArrayList<role> Tab2 = (ArrayList<role>)Session.getAttribute("Tab2");
 	ArrayList<order> Tab3 = (ArrayList<order>)Session.getAttribute("Tab3");
 	
-	ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
-	int total_users = (int)Session.getAttribute("total_users");
-	int total_roles = (int)Session.getAttribute("total_roles");
-	int total_orders = (int)Session.getAttribute("total_orders");
-	int total_users_max = (int)Session.getAttribute("total_users_max");
+	//ArrayList<user> Tab4 = (ArrayList<user>)Session.getAttribute("Tab4");
+	int total_users = (int)Session.getAttribute("Tab1T");
+	int total_roles = (int)Session.getAttribute("Tab2T");
+	int total_orders = (int)Session.getAttribute("Tab3T");
+	//int total_users_max = (int)Session.getAttribute("Tab4T");
 	try{
 		userid = (int)Session.getAttribute("userid");  
 	    role = (String)Session.getAttribute("role");
@@ -77,7 +77,7 @@ Description: ST0510 / JAD Assignment 1
 	String Open1 = "";
 	String Open2 = "";
 	String Open3 = "";
-	String Open4 = "";
+	//String Open4 = "";
 	
 	String Pagination1 = "";
 	int PageNumber1 = 0;
@@ -85,8 +85,8 @@ Description: ST0510 / JAD Assignment 1
 	int PageNumber2 = 0;
 	String Pagination3 = "";
 	int PageNumber3 = 0;
-	String Pagination4 = "";
-	int PageNumber4 = 0;
+	/* String Pagination4 = "";
+	int PageNumber4 = 0; */
 	
 	/* try{		Old way to do error handling, leave it here incase we need to revert back
 	   	if(Error.equals("NullError")){		
@@ -110,7 +110,9 @@ Description: ST0510 / JAD Assignment 1
 	} */
 	
 	String Path = "http://localhost:8080"+request.getContextPath()+"/";
-      
+	if(tab == null){
+		tab = "";
+	} 
         //Pagination for Users,Tab1
     	for(int i = 0;i < total_users;i++){
     		if((i % 5) == 0){
@@ -139,7 +141,7 @@ Description: ST0510 / JAD Assignment 1
     		}
         	
         }
-    	for(int i = 0;i < total_users_max;i++){
+    	/* for(int i = 0;i < total_users_max;i++){
     		if((i % 5) == 0){
     			PageNumber4 += 1;
         		Pagination4 += "<a href='"+Path+"allUsersDetails?page4="+PageNumber4+"&orderSort="+orderSort+"&timeSort="+timeSort+"&filterCategory="+filterCategory+"&filterValue="+filterValue+"'><button class = 'btn btn-secondary'>"+PageNumber4+"</button></a>";
@@ -147,7 +149,7 @@ Description: ST0510 / JAD Assignment 1
     			
     		}
         	
-        }
+        } */
 		
     	
 		switch(tab){ //Makes A tab open by default
@@ -157,214 +159,24 @@ Description: ST0510 / JAD Assignment 1
 			case "3":
 				Open3 = "defaultOpen";
 				break;
-			case "4":
+			/* case "4":
 				Open4 = "defaultOpen";
-				break;
+				break; */
 			case "1":
 			default:
 				Open1 = "defaultOpen";
 				break;
 		}
         
-        switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
-			case "username":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username' selected>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "email":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email' selected>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "phonenumber":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber' selected>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "cardnumber":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber' selected>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "ccv":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv' selected>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "expirydate":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate' selected>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "address":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address' selected>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "zipcode":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode' selected>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "company":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company' selected>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "total":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total' selected>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "quantity":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity' selected>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "notes":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes' selected>Notes</option>";
-				break;
-			default:
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				  break;
-		}
+		 try{
+	       for(int i = 0;Tab2.size() > i;i++){
+	        		userRoles += "<a class='dropdown-item' href='"+Path+"/allUsersDetails?userSearch="+userSearch+"&userCategory="+userCategory+"&roleFilter="+Tab2.get(i).getRolename()+"'>"+Tab2.get(i).getRolename()+"</a>";
+	        }
+	        }catch(Exception e){
+	        	out.print(e);
+	        }
         
-		  		  		try{
+		  		  	/* try{
 		        		for(int i = 0;Tab1.size() > i;i++){ //First Tab
 		        	    	
 		        	    	// image = rs.getString("image");
@@ -377,7 +189,9 @@ Description: ST0510 / JAD Assignment 1
 		        	    		+ "<td>" + Tab1.get(i).getRole() + "</td>"
 		        	    		+ "<td>" + Tab1.get(i).getPhonenumber() + "</td>"
 		        	    		+ "<td>" + Tab1.get(i).getCardnumber().replaceFirst(".{12}", "**************") + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getCcv() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCompany() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getAddress() + "</td>"
+		        	    		+ "<td>" + Tab1.get(i).getCountry() + "</td>"
 		        	    		+ "<td><div class='row'><div class='col-md-8'>"
 		        	    		+ "<div class='ml-2 col-md-1'>"
 		        	    		+ "<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a></div>"
@@ -387,9 +201,9 @@ Description: ST0510 / JAD Assignment 1
 		        		}
 		  		  		}catch(Exception e){
 		  		  			
-		  		  		}
+		  		  		} */
 		        		
-		  		  		try{
+		  		  		/* try{
 		        		for(int i = 0;Tab2.size() > i;i++){//Second Tab
 		        	    	
 		        	    		roleTable += "<tr>"
@@ -401,10 +215,10 @@ Description: ST0510 / JAD Assignment 1
 		        		}
 		  		  		}catch(Exception e){
 		  		  			
-		  		  		}
+		  		  		} */
 		        		
 		        		//Third Tab
-		        		try{
+		        		/* try{
 		        		for(int i = 0;Tab3.size() > i;i++){
 							orders += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
@@ -428,11 +242,11 @@ Description: ST0510 / JAD Assignment 1
 		        		}catch(Exception e){
 		        			out.print("Exception is "+e);
 		        			
-		        		}
+		        		} */
 		        		
 		        		
 				        		
-		        		//Fourth Tab, Maybe combine with first?
+		        		/* //Fourth Tab, Maybe combine with first?
 		        		try{
 						for(int i = 0;Tab4.size() > i;i++){
 							userTotals += "<tr>"
@@ -445,11 +259,17 @@ Description: ST0510 / JAD Assignment 1
 							}
 		        		}catch(Exception e){
 		        			
-		        		}
+		        		} */
 		        		
 						if(filterValue == null || filterValue.equals("null")){
 							filterValue = "";
 						}
+		        		
+		        		if(userSearch == null || userSearch.equals("null")){
+		        			userSearch = "";
+		        		}
+		        		
+		        		
 						
 		        
 %>
@@ -490,7 +310,7 @@ Description: ST0510 / JAD Assignment 1
 	if (<%=Error %> == "EditSuccess") {
 		alert('Changes saved.')
 	}
-    $(document).ready(function () {
+    /* $(document).ready(function () {
       var modal = document.getElementById("myModal");
       var span = document.getElementById("close");
 
@@ -505,7 +325,7 @@ Description: ST0510 / JAD Assignment 1
       })
 
 
-    });
+    }); */
     
     $(document).ready(function () {
         var modal = document.getElementById("addRoleModal");
@@ -524,7 +344,7 @@ Description: ST0510 / JAD Assignment 1
 
       });
     
-    $(document).ready(function () {
+    /* $(document).ready(function () {
         var modal = document.getElementById("delRoleModal");
         var span = document.getElementById("close3");
 
@@ -539,7 +359,7 @@ Description: ST0510 / JAD Assignment 1
         })
 
 
-      });
+      }); */
     
   </script>
 </head>
@@ -597,28 +417,6 @@ Description: ST0510 / JAD Assignment 1
 
   </div>
   
-  
-  
-   <!-- The Modal (Delete Role) -->
-  <div id="delRoleModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="close3" class="close">&times;</span>
-      <div class="form-group row">
-
-        <div class="col-md-5">
-          <form>
-            <h3 mb-5 class="text-dark">Are you sure you want to delete this role?</h3>
-            
-           	<a href="DeleteRole.jsp?dbRoleID=<%=dbRoleID %>" class="btn btn-sm btn-danger">Delete Role</a>
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
   
 
 
@@ -683,15 +481,15 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
-             %>
+                        %>
           </ul>
         </div>
       </nav>
@@ -725,7 +523,6 @@ Description: ST0510 / JAD Assignment 1
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allUsersTab')" id="<%=Open1%>">All Users</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'allRolesTab')" id="<%=Open2%>">Roles</button>
 		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'Orders')" id="<%=Open3%>">Orders</button>
-		  <button class="users-tablinks btn btn-secondary" onclick="openCity(event, 'userTotal')" id="<%=Open4%>">User Total</button>
 		</div>
 		
 		<div id="allUsersTab" class="users-tabcontent">
@@ -734,7 +531,31 @@ Description: ST0510 / JAD Assignment 1
 							<text class="text-dark font-weight-bold">Users List</text>
 						</h3>
 						<form action="${pageContext.request.contextPath}/allUsersDetails" method='post'>
-							<input type='text' name='userSearch'></input> <input
+						
+						<div class="btn-group">
+							<button type="button"
+								class="btn btn-secondary btn-sm dropdown-toggle"
+								id="dropdownMenuReference" data-toggle="dropdown">Filter By Roles</button>
+							<div class="dropdown-menu"
+								aria-labelledby="dropdownMenuReference">
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?">None</a>
+								<%=userRoles %>
+							</div>
+						</div>
+						
+						<label>Search by:</label> <select name="userCategory">
+								<option value='username' <%if (userCategory != null) { if (userCategory.equals("username")) { %> selected <% } } else {%> selected <%}%>>Username</option>
+								<option value='firstname' <%if (userCategory != null) { if (userCategory.equals("firstname")) { %> selected <% } } else {%> selected <%}%>>First Name</option>
+								<option value='lastname' <%if (userCategory != null) { if (userCategory.equals("lastname")) { %> selected <% } } else {%> selected <%}%>>Last Name</option>
+								<option value='email' <%if (userCategory != null) { if (userCategory.equals("email")) { %> selected <% } } else {%> selected <%}%>>Email</option>
+								<option value='phonenumber' <%if (userCategory != null) { if (userCategory.equals("phonenumber")) { %> selected <% } } else {%> selected <%}%>>Phone Number</option>
+								<option value='cardnumber' <%if (userCategory != null) { if (userCategory.equals("cardnumber")) { %> selected <% } } else {%> selected <%}%>>Card Number</option>
+								<option value='country' <%if (userCategory != null) { if (userCategory.equals("country")) { %> selected <% } } else {%> selected <%}%>>Country</option>
+								<option value='address' <%if (userCategory != null) { if (userCategory.equals("address")) { %> selected <% } } else {%> selected <%}%>>Address</option>
+								<option value='company' <%if (userCategory != null) { if (userCategory.equals("company")) { %> selected <% } } else {%> selected <%}%>>Company</option>
+						
+							</select> 
+							<input type='text' name='userSearch' value=<%=userSearch %>></input> <input
 								type='submit' placeholder="Search For User"></input>
 						</form>
 						<div class="mt-4">
@@ -749,6 +570,10 @@ Description: ST0510 / JAD Assignment 1
 										<th scope="col">Role</th>
 										<th scope="col">Phone Number</th>
 										<th scope="col">Card Number</th>
+										<th scope="col">Company</th>
+										<th scope="col">Address</th>
+										<th scope="col">Country</th>
+										<th scope="col">Total</th>
 										<th scope="col">Actions</th>
 									</tr>
 								</thead>
@@ -766,6 +591,10 @@ Description: ST0510 / JAD Assignment 1
 										<td><%=user.getRole() %></td>
 										<td><%=user.getPhonenumber() %></td>
 										<td><% if (user.getCardnumber() != null) { %> <%=user.getCardnumber().replaceFirst(".{12}", "**************") %> <% } else { %> null <% } %></td>
+										<td><%=user.getCompany() %></td>
+										<td><%=user.getAddress() %></td>
+										<td><%=user.getCountry() %></td>
+										<td>$<%=user.getTotal()%></td>
 										<td>
 											<div class='row'>
 												<div class='col-md-8'>
@@ -773,7 +602,7 @@ Description: ST0510 / JAD Assignment 1
 														<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a>
 													</div>
 													<div class='ml-2 col-md-1'>
-														<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a>
+														<a href='confirmation.jsp?id=<%=user.getUserid()%>&type=user' class='deleteUser'><span class='icon icon-trash'></span></a>
 													</div>
 												</div>
 											</div>
@@ -825,7 +654,7 @@ Description: ST0510 / JAD Assignment 1
 													<a href='edit-role.jsp?dbRoleID=<%=userRole.getRoleid() %>'><span class='icon icon-pencil'></span></a>
 												</div>
 												<div class='col-md-2'>
-													<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a>
+													<a href='confirmation.jsp?id=<%=userRole.getRoleid()%>&type=role' class='deleteRole'><span class='icon icon-trash'></span></a>
 												</div>
 											</div>
 										</td>
@@ -899,11 +728,6 @@ Description: ST0510 / JAD Assignment 1
 									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&tab=3">None</a>
 							</div>
 						</div>
-						<%if (filterCategory != null) {%> 
-						<%out.print("Filter Category is "+filterCategory);%>
-						<%} else {%>
-						 name 
-						 <%}%>
 						<form
 							action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort%>&tab=3"
 							method='post'>
@@ -983,7 +807,7 @@ Description: ST0510 / JAD Assignment 1
 					<%=Pagination3 %>
 				</div>
 		
-		<div id="userTotal" class="users-tabcontent">
+		<%-- <div id="userTotal" class="users-tabcontent">
 					<div class="mt-4 ml-4">
 						<h3>
 							<text class="text-dark font-weight-bold">Users Max
@@ -1035,7 +859,7 @@ Description: ST0510 / JAD Assignment 1
 			</div>
 
       </div>
-    </div>
+    </div> --%>
 
     <!-- FOOTER -->
     <footer class="site-footer border-top">
