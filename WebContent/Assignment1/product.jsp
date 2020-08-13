@@ -192,12 +192,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>	
@@ -227,8 +227,8 @@ Description: ST0510 / JAD Assignment 1
 
             <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"> <%= priceMsg + discountMsg %></p></strong>
 
-	
-            <form action="${pageContext.request.contextPath}/addToCart" method="POST">
+			<!-- ${pageContext.request.contextPath} -->
+            <form action="http://localhost:12978/ST0510-JAD/addToCart" method="POST">
               <div class="mb-5 row">
                 <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
                 	<div class="ml-2">

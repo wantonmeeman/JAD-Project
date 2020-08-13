@@ -23,7 +23,7 @@ int userid = 0;
 int roleID = Integer.parseInt(request.getParameter("roleID"));
 Connection conn = null;
 
-String path = request.getContextPath() + "/";
+String Path = "http://localhost:8080"+request.getContextPath()+"/";
 
 try{
 	userid = (int)Session.getAttribute("userid");  
@@ -50,7 +50,7 @@ try{
 			    	if(rs != 1){
 						out.print("Database Error"); 
 			      	}else{
-			    	  response.sendRedirect(path + "allUsersDetails?Err=DelSuccess");//Add EditSuccess at admin-page
+			    	  response.sendRedirect(Path + "allUsersDetails?Err=DelSuccess");//Add EditSuccess at admin-page
 			      	}
 			    	
 		  	    

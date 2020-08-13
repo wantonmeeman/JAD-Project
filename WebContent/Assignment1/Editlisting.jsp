@@ -6,8 +6,9 @@ Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.sql.*" %>
+    pageEncoding="ISO-8859-1" import="myclasses.*"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
  <%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +28,6 @@ Description: ST0510 / JAD Assignment 1
 	String briefDesc = "";
 	String detailedDesc = "";
 	String image = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
 	String Error = request.getParameter("Err");
 	
 	String path = request.getContextPath() + "/";
@@ -55,44 +55,18 @@ Description: ST0510 / JAD Assignment 1
     }catch(Exception e){
     		
     }    
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM products WHERE product_id ="+productID;
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-			      while(rs.next()){
-			    		name = rs.getString("name");
-			    		c_price = rs.getString("c_price");
-			    		r_price = rs.getString("r_price");
-			    		stockQuantity = rs.getString("stock_quantity");
-			    		productCat = rs.getString("product_cat");
-			    		briefDesc = rs.getString("brief_description");
-			    		detailedDesc = rs.getString("detailed_description");
-			    		image = rs.getString("image");
-			      }
-			        query = "SELECT category_name FROM categories";
-					st = conn.prepareStatement(query);
-				    rs = st.executeQuery(query);
-				   	while(rs.next()){
-				   		if(productCat.equals(rs.getString("category_name"))){
-				   			selected = "selected";
-				   		}else{
-				   			selected = "";
-				   		}
-				   		categories += "<option value='"+rs.getString("category_name")+"'"+selected+">"+rs.getString("category_name")+"</option>";
-				   }
-			      conn.close();
-		  	}
+		
+		product productObj = (product)session.getAttribute("productDetails");
+		for(int i = 0;((ArrayList<category>)session.getAttribute("categories")).size() > i;i++){
+			if(((ArrayList<category>)session.getAttribute("categories")).get(i).getCategory_name().equals(productObj.getProduct_cat())){
+				categories += "<option value='"+((ArrayList<category>)session.getAttribute("categories")).get(i).getCategory_name()+"'selected>"+((ArrayList<category>)session.getAttribute("categories")).get(i).getCategory_name()+"</option>";
+			
+			}else{
+				categories += "<option value='"+((ArrayList<category>)session.getAttribute("categories")).get(i).getCategory_name()+"'>"+((ArrayList<category>)session.getAttribute("categories")).get(i).getCategory_name()+"</option>";	
+				
+			}
+		}
+		
     	%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
@@ -137,37 +111,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-       
-	  		
-               <%
-                            if (role.equals("admin")) {
-                        %>
-                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
-                        <%
-                            } else if (role.equals("member")) {
-                        %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
-                        <%
-                            }
-                        %>
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <nav class="site-navigation text-right text-md-center" role="navigation">
-        <div class="container">
-          <ul class="site-menu js-clone-nav d-none d-md-block">
-            <li><a href="index.jsp? ">Home</a></li>
-            <li><a href="about.jsp? ">About</a></li>
-            <li><a href="categories.jsp? ">Shop</a></li>
-            <li><a href="all-listings.jsp? ">Catalogue</a></li>
-            <li><a href="contact.jsp? ">Contact</a></li>
-            <%
+       				<%
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
@@ -189,6 +133,37 @@ Description: ST0510 / JAD Assignment 1
                                 <%
                                     }
                                 %>
+	  		
+              
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <nav class="site-navigation text-right text-md-center" role="navigation">
+        <div class="container">
+          <ul class="site-menu js-clone-nav d-none d-md-block">
+            <li><a href="index.jsp? ">Home</a></li>
+            <li><a href="about.jsp? ">About</a></li>
+            <li><a href="categories.jsp? ">Shop</a></li>
+            <li><a href="all-listings.jsp? ">Catalogue</a></li>
+            <li><a href="contact.jsp? ">Contact</a></li>
+            
+                                 <%
+                            if (role.equals("admin")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
+                        <%
+                            } else if (role.equals("member")) {
+                        %>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
+                        <%
+                            }
+                        %>
           </ul>
         </div>
       </nav>
@@ -213,17 +188,17 @@ Description: ST0510 / JAD Assignment 1
 
           <div class="col-md-12">
 
-            <form action="EditProduct.jsp? " method="post">
+            <form action="${pageContext.request.contextPath}/editProductAdmin" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
                 <div class="col-md-10">
 
                   <div class="form-group row">
-					<input type="hidden" name="productID" value="<%=productID%>"></input>
+					<input type="hidden" name="productID" value="<%=productObj.getProductID()%>"></input>
                     <div class="col-md-6">
                       <label for="title" class="text-black">Title <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="title" name="name" value="<%=name%>" placeholder="Title of Product">
+                      <input type="text" class="form-control" id="title" name="name" value="<%=productObj.getProductName()%>" placeholder="Title of Product">
                     </div>
 
                   </div>
@@ -233,7 +208,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="c_price" class="text-black">Current Price <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="c_price" value="<%=c_price %>" name="c_price"
+                      <input type="text" class="form-control" id="c_price" value="<%=productObj.getProductCPrice()%>" name="c_price"
                         placeholder="Current Price ($)">
                     </div>
 
@@ -243,7 +218,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="r_price" class="text-black">Retail Price <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="r_price" name="r_price" value="<%=r_price %>"
+                      <input type="text" class="form-control" id="r_price" name="r_price" value="<%=productObj.getProductRPrice()%>"
                         placeholder="Retail Price ($)">
                     </div>
 
@@ -253,7 +228,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="stockQty" class="text-black">Stock Quantity <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="stockQty" name="stockQuantity" placeholder="Quantity" value="<%=stockQuantity%>">
+                      <input type="number" class="form-control" id="stockQty" name="stockQuantity" placeholder="Quantity" value="<%=productObj.getProductStock_Quantity()%>">
                     </div>
 
                   </div>
@@ -275,7 +250,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-8">
                       <label for="briefDesc" class="text-black">Brief Description: </label>
-                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control" value="" placeholder="Brief Description of Product"><%=briefDesc%></textarea>
+                      <textarea name="briefDesc" id="briefDesc" cols="30" rows="5" class="form-control" value="" placeholder="Brief Description of Product"><%=productObj.getProductBrief_Description()%></textarea>
                     </div>
 
                   </div>
@@ -284,7 +259,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-8">
                       <label for="fullDesc" class="text-black">Full Description: </label>
-                      <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control" value="" placeholder="Detailed Description of Product"><%=detailedDesc%></textarea>
+                      <textarea name="detailedDesc" id="fullDesc" cols="30" rows="10" class="form-control" value="" placeholder="Detailed Description of Product"><%=productObj.getProductDetailed_Description()%></textarea>
                     </div>
 
                   </div>
@@ -293,7 +268,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="ImagePath" class="text-black">Image Path</label>
-                      <input type="text" name="image" id="image" class="form-control" value="<%=image%>" placeholder="Image Path"></textarea>
+                      <input type="text" name="image" id="image" class="form-control" value="<%=productObj.getProductImage()%>" placeholder="Image Path"></textarea>
                     </div>
 
                   </div>

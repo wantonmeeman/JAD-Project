@@ -8,7 +8,11 @@ Description: ST0510 / JAD Assignment 1
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="java.sql.*" %>
+ <%@page import="myclasses.*"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
  <%@page import="java.text.DecimalFormat" %>
+ 
 <!DOCTYPE html>
 <html lang="en">
 <%  HttpSession Session = request.getSession();
@@ -23,7 +27,7 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	
 	String image = "";
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
+	
 	String Error = request.getParameter("Err");
 	
 	String path = request.getContextPath() + "/";
@@ -44,48 +48,8 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	} 
-	try{
-		if(role.equals("admin")){ 
-            AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
-            		+ "<li><a href='admin-page.jsp'>Product Control</a></li>"
-            		+ "<li><a href='view-order.jsp'>View Order History</a></li>";
-            		
-            Header = "<div class='site-top-icons'>"
-                    + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                      + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                      + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                      + "<li id='logoutButton'></li></ul></div>";              
-         } else if (role.equals("member")) {
-        	  Header = "<div class='site-top-icons'>"
-                      + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"
-                        + "<li><a href='profile.jsp'>Edit Profile</a></li>" 
-                        + "<li><a href='" + path + "invalidate?rd=index' class='btn btn-sm btn-secondary'>Logout</span></a></li>" 
-                        + "<li id='logoutButton'></li></ul></div>";     
-              AdminPage = "<li><a href='view-order.jsp'>View Order History</a></li>";
-         }}catch(Exception e){// if no id or role is detected
-    	Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-    }
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM categories WHERE category_id ="+categoryID;
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-			      while(rs.next()){
-			    		catName = rs.getString("category_name");
-			    		catImageURL = rs.getString("image");
-			      }
-			      conn.close();
-		  	}
+	category categoryObj = ((category)session.getAttribute("categoryDetails"));
+	
     	%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
@@ -173,12 +137,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -206,17 +170,17 @@ Description: ST0510 / JAD Assignment 1
 
           <div class="col-md-12">
 
-            <form action="EditCategory.jsp? " method="post">
+            <form action="${pageContext.request.contextPath}/editCategoryAdmin " method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
                 <div class="col-md-10">
 
                   <div class="form-group row">
-					<input type="hidden" name="categoryID" value="<%=categoryID%>"></input>
+				<input type="hidden" name="categoryID" value="<%=categoryObj.getCategoryID()%>"></input>
                     <div class="col-md-6">
                       <label for="catName" class="text-black">Category Name<span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="catName" name="catName" value="<%=catName %>" placeholder="Category Name">
+                      <input type="text" class="form-control" id="catName" name="catName" value="<%=categoryObj.getCategory_name()%>" placeholder="Category Name">
                     </div>
 
                   </div>
@@ -224,7 +188,7 @@ Description: ST0510 / JAD Assignment 1
                   <div class="form-group row">
                     <div class="col-md-6">
                       <label for="catImageURL" class="text-black">Image URL <span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="catImageURL" name="catImageURL" value="<%=catImageURL %>" placeholder="Image Path">
+                      <input type="text" class="form-control" id="catImageURL" name="catImageURL" value="<%=categoryObj.getCategory_image()%>" placeholder="Image Path">
                     </div>
 
                   </div>

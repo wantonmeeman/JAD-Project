@@ -5,91 +5,61 @@ Class: DIT/2A/02
 Description: ST0510 / JAD Assignment 1
 ===========================================
 --%>
-<%@ page import="java.sql.*" %>
-<%@page import="java.text.DecimalFormat" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+ <%@ page import ="myclasses.*" %>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.util.ArrayList" %>
+<%@page import="java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<%  DecimalFormat format = new DecimalFormat("#0.00"); 
+<%  
 	HttpSession Session = request.getSession();
-	String productID = "";
-	String Name = "";
-	String briefDescription = "";
-	String detailedDescription = "";
-	String cPrice = "";
-	String rPrice = "";
-	int stockQuantity = 0;
-	int numberOfProd = 0;
+	
+	
 	String role = "";
 	int userid = 0;
-	String productCat = "";
-	String catImageURL = "";
 	
-	String categoryBox = "";
-	String AdminPage = "";
-	String categoryArr[] = new String[10];
-	
-	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-	
+	double ptotal = 0;
+	ArrayList<cartObject> cart = (ArrayList<cartObject>)Session.getAttribute("cart");
+	String query = "";
+	String type = request.getParameter("type");
+	String id = request.getParameter("id");
 	String path = request.getContextPath() + "/";
 	
-		try{
-			userid = (int)Session.getAttribute("userid");  
-	    	role = (String)Session.getAttribute("role");
-		}catch(Exception e){
-		
-		}
-        	   
-	Connection conn = null;
-        
-        try{
-           Class.forName("com.mysql.jdbc.Driver");
-         	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-            // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
-           
-         	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  		
-		  	} else {
-					String query = "SELECT * FROM categories";
-					Statement st = conn.createStatement();
-					ResultSet rs = st.executeQuery(query);
-					
-	        		while (rs.next()) {
-	        	    	productCat = rs.getString("category_name");
-	        	    	catImageURL = rs.getString("image");
+	try{
+		userid = (int)Session.getAttribute("userid");  
+		role = (String)Session.getAttribute("role");
+	}catch(Exception e){
+		response.sendRedirect("404.jsp");
+	}   
+	
+	String deleteType = "";
+	String declineType = "";
+	switch(type){
+		case "cat":
+			deleteType = "deleteCategoryAdmin?catID="+id;
+		break;
+		case "list":
+			deleteType = "deleteProductAdmin?productID="+id;
+		break;
+		case "role":
+			deleteType = "deleteRoleAdmin?roleID="+id;
+		break;
+		case "user":
+			deleteType = "deleteUserAdmin?userID="+id;
+		break;
+	}
+	if(type.equals("cat") || type.equals("list")){
+		declineType = "Products";
+	}else if(type.equals("user")||type.equals("role")){
+		declineType = "Users";
+	}
 
-	        	    	
-	        	    	categoryBox += "<div class='col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0' data-aos='fade' data-aos-delay=''>"
-	                    		+ "<a class='block-2-item' href='cat-listings.jsp?cat=" + productCat +"'>"
-	                    		+ "<figure class='image'>"
-	                      		+ "<img src='" + catImageURL + "' alt='' class='img-fluid'>"
-	                    		+ "</figure>"
-	                    		+ "<div class='text'>"
-	                      		+ "<span class='text-uppercase'>Collections</span>"
-	                      		+ "<h3>" + productCat + "</h3>"
-	                    		+ "</div>"
-	                  			+ "</a>"
-	                			+ "</div>";
-	                			
-		        	} // while
-
-			} // else
-				conn.close();	
-        } catch (Exception e) {
-        	out.print(e);
-        }
-        	   
-        	   
-        	   
-        	   
-        	   
-        	   %>
-  <title>Digit Games &mdash; Categories</title>
+        %>
+  <title>Digit Games&mdash;</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -102,42 +72,14 @@ Description: ST0510 / JAD Assignment 1
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/owl.theme.default.min.css">
 
-  <link rel="stylesheet" href="css/myoverride.css">
-
 
   <link rel="stylesheet" href="css/aos.css">
 
   <link rel="stylesheet" href="css/style.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-
-
-
 </head>
 
 <body>
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="close" class="close">&times;</span>
-      <div class="form-group row">
-
-        <div class="col-md-5">
-          <form>
-            <label for="offer" class="text-black">Make Offer: </label>
-            <input type="number" class="form-control" id="offer" name="offer" placeholder="(SGD$)">
-            <button type="button" id="submitOffer">Offer</button>
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
 
   <div class="site-wrap">
     <header class="site-navbar" role="banner">
@@ -146,7 +88,7 @@ Description: ST0510 / JAD Assignment 1
           <div class="row align-items-center">
 
             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-
+              
             </div>
 
             <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
@@ -157,8 +99,7 @@ Description: ST0510 / JAD Assignment 1
 
             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
               <div class="site-top-icons">
-       
-	  		
+
                 <%
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
@@ -181,7 +122,6 @@ Description: ST0510 / JAD Assignment 1
                                 <%
                                     }
                                 %>
-
 
               </div>
             </div>
@@ -210,7 +150,6 @@ Description: ST0510 / JAD Assignment 1
                         <%
                             }
                         %>
-
           </ul>
         </div>
       </nav>
@@ -220,34 +159,22 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Categories</strong></div>
+              class="text-black">Contact</strong></div>
         </div>
       </div>
     </div>
 
     <div class="site-section">
       <div class="container">
-
         <div class="row">
-          <div class="col-md-12">
-            <div class="site-section site-blocks-2">
-              <div class="row justify-content-center text-center mb-5">
-                <div class="col-md-7 site-section-heading pt-4">
-                  <h2>Product Categories</h2>
-                </div>
-              </div>
-              <div class="row">
-              
-              <!-- CHG TO LOOP -->
-              	<%=categoryBox %>
-              
-              
-                
-
-            </div>
+          <div class="col-md-12 text-center">
+            <span class="icon-check_circle display-3 text-success"></span>
+            <h2 class="display-3 text-black">Are you sure?</h2>
+            <p class="lead mb-5">Do you really want to delete? This cannot be undone.</p>
+            <p><a href='<%=path %><%=deleteType %>' class="btn btn-sm btn-primary">Yes</a></p>
+            <p><a href='<%=path %>all<%=declineType %>Details' class="btn btn-sm btn-primary">No</a></p>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -281,7 +208,7 @@ Description: ST0510 / JAD Assignment 1
                 <li><a href="#">Where can I checkout my cart?</a></li>
                 <li><a href="#"><u><small>Any other questions? Check out our FAQs page here &rarr;</small></u></a></li>
               </ul>
-            </div>n
+            </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="block-5 mb-5">

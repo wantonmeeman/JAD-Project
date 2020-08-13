@@ -32,6 +32,7 @@ Description: ST0510 / JAD Assignment 1
   String briefDesc = request.getParameter("briefDesc");
   String detailedDesc = request.getParameter("detailedDesc");
   String image = request.getParameter("image");
+  String Path = "http://localhost:8080"+request.getContextPath()+"/";
   
   double cPriceFloat = 0;
   double rPriceFloat = 0;
@@ -92,7 +93,7 @@ Description: ST0510 / JAD Assignment 1
 				      if(rs != 1){
 				      out.print("Database Error");
 				      }else{
-				    	  response.sendRedirect("admin-page.jsp?Err=EditSuccess");//Add EditSuccess at admin-page
+				    	  response.sendRedirect(Path+"/allProductsDetails?Err=EditSuccess");//Add EditSuccess at admin-page
 				      } // else
 				      
 				      

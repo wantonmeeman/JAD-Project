@@ -22,7 +22,7 @@ Description: ST0510 / JAD Assignment 1
         	String role = (String)Session.getAttribute("role");
         	if(role.equals("admin")){ 
                 AdminPage = "<li><a href='" + path + "allUsersDetails'>User Control</a></li>"
-                		+ "<li><a href='admin-page.jsp'>Product Control</a></li>";
+                		+ "<li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>";
                 		
                 Header = "<div class='site-top-icons'>"
                         + "<ul><li><a href='cart.jsp' class='site-cart  mr-3'><span class='icon icon-shopping_cart'></span></a></li>"

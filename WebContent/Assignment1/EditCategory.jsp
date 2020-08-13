@@ -26,7 +26,7 @@ String Error = "";
 String categoryID = request.getParameter("categoryID");
 String catName = request.getParameter("catName");
 String catImageURL = request.getParameter("catImageURL");
-  
+String Path = "http://localhost:8080"+request.getContextPath()+"/";
   //What else to add? try to add image path later maybe?
 		  
 
@@ -57,7 +57,7 @@ if( catImageURL == null || catName == null || catImageURL.equals("") || catName.
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect("admin-page.jsp?Err=EditSuccess"); //Add EditSuccess at admin-page
+			    	  response.sendRedirect(Path+"/allProductsDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      

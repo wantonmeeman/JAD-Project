@@ -7,8 +7,9 @@ Description: ST0510 / JAD Assignment 1
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.sql.*" %>
- <%@page import="java.text.DecimalFormat" %>
+  <%@page import="java.text.DecimalFormat" %>
+ <%@ page import ="myclasses.*" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html lang="en">
 <%  HttpSession Session = request.getSession();
@@ -41,27 +42,7 @@ Description: ST0510 / JAD Assignment 1
 	}catch(Exception e){
 		response.sendRedirect("404.jsp");
 	} 
-
-    Connection conn = null;
-    try{
-		  	Class.forName("com.mysql.jdbc.Driver");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
-		  	}catch(Exception e){
-			    out.print(e);
-		  	}
-		  	if(conn == null){
-		  		out.print("Conn Error");
-		  		conn.close();
-		  	}else{
-		  		  String query = "SELECT * FROM roles WHERE role_id =" + dbRoleID;
-		  		  Statement st = conn.createStatement();
-			      ResultSet rs = st.executeQuery(query);
-			      while(rs.next()){
-			    	  roleName = rs.getString("role_name");
-			      }
-			      conn.close();
-		  	}
+	role roleObj = (role)Session.getAttribute("roleDetails");
     	%>
 <head>
   <title>Digit Games &mdash; Upload Product</title>
@@ -149,12 +130,12 @@ Description: ST0510 / JAD Assignment 1
                             if (role.equals("admin")) {
                         %>
                         <li><a href='${pageContext.request.contextPath}/allUsersDetails'>User Control</a></li>
-                        <li><a href='admin-page.jsp'>Product Control</a></li>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/allProductsDetails'>Product Control</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             } else if (role.equals("member")) {
                         %>
-                        <li><a href='view-order.jsp'>View Order History</a></li>
+                        <li><a href='${pageContext.request.contextPath}/viewOrders'>View Order History</a></li>
                         <%
                             }
                         %>
@@ -182,17 +163,17 @@ Description: ST0510 / JAD Assignment 1
 
           <div class="col-md-12">
 
-            <form action="EditRole.jsp? " method="post">
+            <form action="${pageContext.request.contextPath}/editRoleAdmin" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
                 <div class="col-md-10">
 
                   <div class="form-group row">
-					<input type="hidden" name="dbRoleID" value="<%=dbRoleID%>"></input>
+					<input type="hidden" name="roleID" value="<%=roleObj.getRoleid()%>"></input>
                     <div class="col-md-6">
                       <label for="roleName" class="text-black">Role Name<span class="text-danger">*</span></label>
-                      <input type="text" class="form-control" id="roleName" name="roleName" value="<%=roleName %>" placeholder="Category Name">
+                      <input type="text" class="form-control" id="roleName" name="roleName" value="<%=roleObj.getRolename()%>" placeholder="Category Name">
                     </div>
 
                   </div>

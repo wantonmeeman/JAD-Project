@@ -26,7 +26,7 @@ String Error = "";
 String dbRoleID = request.getParameter("dbRoleID");
 String roleName = request.getParameter("roleName");
 
-String path = request.getContextPath() + "/";
+String Path = "http://localhost:8080"+request.getContextPath()+"/";
   
   //What else to add? try to add image path later maybe?
 try{
@@ -58,7 +58,7 @@ try{
 			      if(rs != 1){
 			      out.print("Database Error");
 			      }else{
-			    	  response.sendRedirect(path + "allUsersDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
+			    	  response.sendRedirect(Path + "allUsersDetails?Err=EditSuccess"); //Add EditSuccess at admin-page
 			      }
 			      
 			      
