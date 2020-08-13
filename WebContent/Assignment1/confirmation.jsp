@@ -38,23 +38,18 @@ Description: ST0510 / JAD Assignment 1
 	
 	String deleteType = "";
 	String declineType = "";
-	String deleteQuery = "";
 	switch(type){
 		case "cat":
-			deleteQuery = "categoryID="+id;
-			deleteType = "DeleteCategory";
+			deleteType = "deleteCategoryAdmin?catID="+id;
 		break;
 		case "list":
-			deleteQuery = "productID="+id;
-			deleteType = "DeleteListing";
+			deleteType = "deleteProductAdmin?productID="+id;
 		break;
 		case "role":
-			deleteQuery = "roleID="+id;
-			deleteType = "DeleteRole";
+			deleteType = "deleteRoleAdmin?roleID="+id;
 		break;
 		case "user":
-			deleteQuery = "dbUserID="+id;
-			deleteType = "DeleteUser";
+			deleteType = "deleteUserAdmin?userID="+id;
 		break;
 	}
 	if(type.equals("cat") || type.equals("list")){
@@ -176,7 +171,7 @@ Description: ST0510 / JAD Assignment 1
             <span class="icon-check_circle display-3 text-success"></span>
             <h2 class="display-3 text-black">Are you sure?</h2>
             <p class="lead mb-5">Do you really want to delete? This cannot be undone.</p>
-            <p><a href='<%=deleteType %>.jsp?<%=deleteQuery %>' class="btn btn-sm btn-primary">Yes</a></p>
+            <p><a href='<%=path %><%=deleteType %>' class="btn btn-sm btn-primary">Yes</a></p>
             <p><a href='<%=path %>all<%=declineType %>Details' class="btn btn-sm btn-primary">No</a></p>
           </div>
         </div>

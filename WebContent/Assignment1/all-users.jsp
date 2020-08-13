@@ -88,11 +88,13 @@ Description: ST0510 / JAD Assignment 1
 	/* String Pagination4 = "";
 	int PageNumber4 = 0; */
 	
-	/* try{		Old way to do error handling, leave it here incase we need to revert back
+	try{		//Old way to do error handling, leave it here incase we need to revert back
 	   	if(Error.equals("NullError")){		
 	   		out.print("<script>alert('Please fill in all required fields!')</script>");			
 	   	}	
-	   		
+	   	if(Error.equals("DatabaseError")){		
+	   		out.print("<script>alert('Database Error')</script>");			
+	   	}	
 		if(Error.equals("DelSuccess")){	
 			out.print("<script>alert('Successfully deleted.')</script>");	
 		}	
@@ -107,7 +109,7 @@ Description: ST0510 / JAD Assignment 1
 			
 	} catch(Exception e) {	
 			
-	} */
+	} 
 	
 	String Path = "http://localhost:8080"+request.getContextPath()+"/";
 	if(tab == null){
@@ -296,7 +298,7 @@ Description: ST0510 / JAD Assignment 1
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   
   <script>
-  if (<%=Error %> == "NullError") {
+  <%-- if (<%=Error %> == "NullError") {
 		alert('Please fill in all required fields!')
 	}		
 			
@@ -309,7 +311,7 @@ Description: ST0510 / JAD Assignment 1
 			
 	if (<%=Error %> == "EditSuccess") {
 		alert('Changes saved.')
-	}
+	} --%>
     /* $(document).ready(function () {
       var modal = document.getElementById("myModal");
       var span = document.getElementById("close");
@@ -599,7 +601,7 @@ Description: ST0510 / JAD Assignment 1
 											<div class='row'>
 												<div class='col-md-8'>
 													<div class='ml-2 col-md-1'>
-														<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a>
+														<a href='${pageContext.request.contextPath}/getUserDetails?userID=<%=user.getUserid()%>&rd=0'><span class='icon icon-pencil'></span></a>
 													</div>
 													<div class='ml-2 col-md-1'>
 														<a href='confirmation.jsp?id=<%=user.getUserid()%>&type=user' class='deleteUser'><span class='icon icon-trash'></span></a>
@@ -651,7 +653,7 @@ Description: ST0510 / JAD Assignment 1
 										<td>
 											<div class='row'>
 												<div class='col-md-3'>
-													<a href='edit-role.jsp?dbRoleID=<%=userRole.getRoleid() %>'><span class='icon icon-pencil'></span></a>
+													<a href='${pageContext.request.contextPath}/getRoleDetails?roleID=<%=userRole.getRoleid()%>'><span class='icon icon-pencil'></span></a>
 												</div>
 												<div class='col-md-2'>
 													<a href='confirmation.jsp?id=<%=userRole.getRoleid()%>&type=role' class='deleteRole'><span class='icon icon-trash'></span></a>

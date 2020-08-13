@@ -111,6 +111,9 @@ Description: ST0510 / JAD Assignment 1
 	if(Error.equals("EditSuccess")){
 		out.print("<script>alert('Changes saved.')</script>");
 	}
+	if(Error.equals("DatabaseError")){		
+   		out.print("<script>alert('Database Error')</script>");			
+   	}	
 	if(Error.equals("DelSuccess")){
 		out.print("<script>alert('Successfully deleted.')</script>");
 	}
@@ -132,7 +135,7 @@ Description: ST0510 / JAD Assignment 1
 		        	  +Tab1.get(i).getProductID()+"</th><td>"+Tab1.get(i).getProduct_cat()+"</td><td>"
 		        	  +Tab1.get(i).getProductName()+"</td><td>$"+Tab1.get(i).getProductCPrice()+"</td><td>$"
 		        	  +Tab1.get(i).getProductRPrice()+"</td><td>"+Tab1.get(i).getProductStock_Quantity()+"</td><td>"
-		        	  +Tab1.get(i).getSold()+"</td><td><div class='row'><div class='col-md-8'><a href='Editlisting.jsp?productID="
+		        	  +Tab1.get(i).getSold()+"</td><td><div class='row'><div class='col-md-8'><a href='"+Path+"getProductDetails?productID="
 		        	  +Tab1.get(i).getProductID()+"'><span class='icon icon-pencil'></span></a></div><div class='col-md-2'>"
 		        	  +"<a href='confirmation.jsp?id="+Tab1.get(i).getProductID()+"&type=list' class='deleteProduct'><span class='icon icon-trash'></span></a></div></div></td></tr>";
  				}
@@ -142,7 +145,7 @@ Description: ST0510 / JAD Assignment 1
 	        	    		+ "<th scope='row'>" + Tab2.get(i).getCategoryID() + "</th>"
 	        	    		+ "<td>" + Tab2.get(i).getCategory_name() + "</td>"
 	        	    		+ "<td>" + Tab2.get(i).getCategory_image() + "</td>"
-	        	    		+ "<td><div class='row'><div class='col-md-4'><a href='edit-category.jsp?categoryID="+Tab2.get(i).getCategoryID()+"'><span class='icon icon-pencil'></span></a></div>"
+	        	    		+ "<td><div class='row'><div class='col-md-4'><a href='"+Path+"getCategoryDetails?categoryID="+Tab2.get(i).getCategoryID()+"'><span class='icon icon-pencil'></span></a></div>"
 	        	    		+ "<div class='col-md-8'>"
 	        	    		+ "<a href='confirmation.jsp?id="+Tab2.get(i).getCategoryID()+"&type=cat'><span class='icon icon-trash'></span></a></div></div></td></tr>";
 	        	    
