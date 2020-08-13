@@ -29,14 +29,14 @@ try{
 }
   Connection conn = null; 
   String Error = "";
-  
+
   String catName = request.getParameter("catName");
   String catImageURL = request.getParameter("catImageURL");
 
   	
   //What else to add? try to add image path later maybe?
  if( catName.equals("") || catImageURL.equals("")){
-	 response.sendRedirect("http://localhost:12978/ST0510-JAD/allUsersDetails?Err=NullError");
+	 response.sendRedirect(request.getContextPath() + "/allUsersDetails?Err=NullError");
 	 
  } else {
 
