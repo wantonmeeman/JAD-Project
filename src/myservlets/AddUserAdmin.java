@@ -48,6 +48,7 @@ public class AddUserAdmin extends HttpServlet {
 		String phonenumber = request.getParameter("phonenumber");
 		
 		Connection conn = null;
+		
 		try{
 		  	Class.forName("com.mysql.jdbc.Driver");
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -75,7 +76,7 @@ public class AddUserAdmin extends HttpServlet {
 			      if(rs == 1){
 				      response.sendRedirect(request.getContextPath() + "/allUsersDetails");
 				     }else{
-				    	 response.sendRedirect("JAD-Project/WebContent/Assignment1/all-users.jsp?Err=DatabaseError");
+				    	 response.sendRedirect(request.getContextPath() + "/Assignment1/all-users.jsp?Err=DatabaseError");
 				     }
 		  	}
 		}catch(SQLException e) {

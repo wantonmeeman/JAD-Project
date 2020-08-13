@@ -166,203 +166,7 @@ Description: ST0510 / JAD Assignment 1
 				break;
 		}
         
-        switch(filterCategory){//This handles the memory of the switch case.And yes, i know it's very ineffecient, go replace it or smth if u dont like it and we can just get rid of it.
-			case "username":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username' selected>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "email":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email' selected>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "phonenumber":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber' selected>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "cardnumber":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber' selected>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "ccv":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv' selected>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "expirydate":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate' selected>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "address":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address' selected>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "zipcode":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode' selected>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "company":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company' selected>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "total":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total' selected>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "quantity":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity' selected>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				break;
-			case "notes":
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes' selected>Notes</option>";
-				break;
-			default:
-				options = "<option value = 'name'>Product</option>"
-				  		+"<option value = 'username'>Username</option>"
-				  		+"<option value = 'email'>Email</option>"
-				  		+"<option value = 'phonenumber'>Phone Number</option>"
-				  		+"<option value = 'cardnumber'>Card Number</option>"
-				  		+"<option value = 'ccv'>CCV</option>"
-				  		+"<option value = 'expirydate'>Expiry Date</option>"
-				  		+"<option value = 'address'>Address</option>"
-				  		+"<option value = 'zipcode'>Zip Code</option>"
-				  		+"<option value = 'company'>Company</option>"
-				  		+"<option value = 'quantity'>Quantity</option>"
-				  		+"<option value = 'total'>Total</option>"
-				  		+"<option value = 'notes'>Notes</option>";
-				  break;
-		}
+      
         
 		  		  		try{
 		        		for(int i = 0;Tab1.size() > i;i++){ //First Tab
@@ -434,7 +238,7 @@ Description: ST0510 / JAD Assignment 1
 				        		
 		        		//Fourth Tab, Maybe combine with first?
 		        		try{
-						for(int i = 0;Tab4.size() > i;i++){
+						for(int i = 0	;Tab4.size() > i;i++){
 							userTotals += "<tr>"
 					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
 			        	    		+ "<td>" + Tab4.get(i).getUsername() + "</td>"
@@ -717,6 +521,9 @@ Description: ST0510 / JAD Assignment 1
           	<div class="p-2">
             	<a href="#" class="addRole btn btn-sm btn-dark">Add New Role</a>
          	 </div>
+         	 <div class="p-2">
+            	<a href="${pageContext.request.contextPath}/AddUserAdmin">Add New User</a>
+         	 </div>
 
         </div>
 
@@ -909,7 +716,7 @@ Description: ST0510 / JAD Assignment 1
 							method='post'>
 							<label>Search by:</label> <select name="filterCategory">
 								<option value='name' <%if (filterCategory != null) { if (filterCategory.equals("name")) { %> selected <% } } else {%> selected <%}%>>Product</option>
-<<<<<<< HEAD
+
 								<option value='username' <%if (filterCategory != null) { if (filterCategory.equals("username")) { %> selected <% } } %>>Username</option>
 								<option value='email' <%if (filterCategory != null) { if (filterCategory.equals("email")) { %> selected <% } } %>>Email</option>
 								<option value='phonenumber' <%if (filterCategory != null) { if (filterCategory.equals("phonenumber")) { %> selected <% } } %>>Phone Number</option>
@@ -922,7 +729,6 @@ Description: ST0510 / JAD Assignment 1
 								<option value='quantity' <%if (filterCategory != null) { if (filterCategory.equals("quantity")) { %> selected <% } } %>>Quantity</option>
 								<option value='total' <%if (filterCategory != null) { if (filterCategory.equals("total")) { %> selected <% } } %>>Total</option>
 								<option value='notes' <%if (filterCategory != null) { if (filterCategory.equals("notes")) { %> selected <% } } %>>Notes</option>
-=======
 								<option value='username' <%if (filterCategory != null) { if (filterCategory.equals("username")) { %> selected <% } } else {%> selected <%}%>>Username</option>
 								<option value='email' <%if (filterCategory != null) { if (filterCategory.equals("email")) { %> selected <% } } else {%> selected <%}%>>Email</option>
 								<option value='phonenumber' <%if (filterCategory != null) { if (filterCategory.equals("phonenumber")) { %> selected <% } } else {%> selected <%}%>>Phone Number</option>
@@ -935,7 +741,6 @@ Description: ST0510 / JAD Assignment 1
 								<option value='quantity' <%if (filterCategory != null) { if (filterCategory.equals("quantity")) { %> selected <% } } else {%> selected <%}%>>Quantity</option>
 								<option value='total' <%if (filterCategory != null) { if (filterCategory.equals("total")) { %> selected <% } } else {%> selected <%}%>>Total</option>
 								<option value='notes' <%if (filterCategory != null) { if (filterCategory.equals("notes")) { %> selected <% } } else {%> selected <%}%>>Notes</option>
->>>>>>> refs/remotes/origin/master
 							</select> <br> <input type='text' name='filterValue'
 								value="<%=filterValue%>" placeholder="Keyword"></input> <input
 								type='submit' value="Search">

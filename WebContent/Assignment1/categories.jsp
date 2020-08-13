@@ -47,8 +47,8 @@ Description: ST0510 / JAD Assignment 1
         
         try{
            Class.forName("com.mysql.jdbc.Driver");
-         	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+         	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+            // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
            
          	if(conn == null){
 		  		out.print("Conn Error");
@@ -281,7 +281,7 @@ Description: ST0510 / JAD Assignment 1
                 <li><a href="#">Where can I checkout my cart?</a></li>
                 <li><a href="#"><u><small>Any other questions? Check out our FAQs page here &rarr;</small></u></a></li>
               </ul>
-            </div>
+            </div>n
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="block-5 mb-5">

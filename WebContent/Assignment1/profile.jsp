@@ -111,8 +111,8 @@ Description: ST0510 / JAD Assignment 1
 	Connection conn = null; 
 	try{
 		Class.forName("com.mysql.jdbc.Driver");
-		//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		// conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/digitgames?characterEncoding=latin1","admin","@dmin1!");
 	}catch(Exception e){
 	    out.print(e);
 	}

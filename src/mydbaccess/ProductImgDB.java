@@ -4,7 +4,7 @@ import java.sql.*;
 
 import myclasses.ProductClass;
 
-public class ProductDB {
+public class ProductImgDB {
 	
 	public static ProductClass getProductByName (String name) {
 		ProductClass product = null;

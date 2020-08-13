@@ -20,7 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import myclasses.ProductClass;
-import mydbaccess.ProductDB;
+import mydbaccess.ProductImgDB;
 
 /**
  * Servlet implementation class AddProductServlet
@@ -178,10 +178,10 @@ public class AddProductServlet2 extends HttpServlet {
 				detailedDesc = inputArray[6];
 				sold = "0";
 
-				ProductClass product = ProductDB.getProductByName(name);
+				ProductClass product = ProductImgDB.getProductByName(name);
 
 				if (product == null) {
-					int productId = ProductDB.addProduct(name, briefDesc, detailedDesc, c_price, r_price, stockQuantity, productCat, sold);
+					int productId = ProductImgDB.addProduct(name, briefDesc, detailedDesc, c_price, r_price, stockQuantity, productCat, sold);
 
 					if (countImages > 0) {
 						iter = formItems.iterator();
@@ -200,7 +200,7 @@ public class AddProductServlet2 extends HttpServlet {
 									
 									System.out.println(filePath);
 
-									int addProductImage = ProductDB.addProdImg(productId, fileName);
+									int addProductImage = ProductImgDB.addProdImg(productId, fileName);
 								}
 							}
 						}
