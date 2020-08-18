@@ -45,15 +45,17 @@ public class viewOrders extends HttpServlet {
 		}
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("Orders", getDB.getOrderHistory(((int)session.getAttribute("userid")),Integer.valueOf(page)));
+		session.setAttribute("Orders", getDB.getOrderHistory(request.getParameter("orderSort"),((int)session.getAttribute("userid")),Integer.valueOf(page)));
 		
 		session.setAttribute("OrdersT", getDB.getOrderHistoryTotal((int)session.getAttribute("userid")));
 		
 		//System.out.print("\nOrders: "+((ArrayList<order>)request.getSession().getAttribute("Orders")).size());
 		response.setContentType("text/html");
 		
-		response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/view-order.jsp");
-		//response.sendRedirect(request.getContextPath() +"/Assignment1/view-order.jsp");
+		// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/view-order.jsp?orderSort="+request.getParameter("orderSort"));
+		// response.sendRedirect(request.getContextPath() +"/Assignment1/view-order.jsp");
+		
+		response.sendRedirect(request.getContextPath() + "/Assignment1/view-order.jsp?orderSort="+request.getParameter("orderSort"));
 		
 		
 	}

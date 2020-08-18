@@ -1,6 +1,8 @@
 package myservlets;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,6 +35,8 @@ public class CartServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+		String currency = request.getParameter("currency") == null ? "SGD" : request.getParameter("currency");
+		
 		Client client = ClientBuilder.newClient();
         WebTarget target = client.target("https://api.exchangeratesapi.io/").path("latest").queryParam("base",
                 "SGD");
@@ -43,12 +47,10 @@ public class CartServlet extends HttpServlet {
             JSONObject ratesObj = (JSONObject) (new JSONObject(resp.readEntity(new GenericType<String>() {
             }))).get("rates");
 
-            request.setAttribute("rates", ratesObj);
+            request.getSession().setAttribute("rates", ratesObj);
 
-            if (request.getParameter("currency") != null) {
-                request.setAttribute("rate", ratesObj.getDouble(request.getParameter("currency")));
-                request.setAttribute("currency", request.getParameter("currency"));
-            }
+            request.getSession().setAttribute("rate", ratesObj.getDouble(currency));
+            request.getSession().setAttribute("currency", currency);
             
             response.sendRedirect(request.getContextPath() + "/Assignment1/cart.jsp");
         }

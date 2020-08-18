@@ -9,8 +9,9 @@ Description: ST0510 / JAD Assignment 1
 	pageEncoding="ISO-8859-1"%>
 <%@ page import ="myclasses.*" %>
 <%@ page import="java.sql.*"%>
-<%@ page import="java.util.ArrayList" %>
 <%@page import="java.text.DecimalFormat"%>
+<%@ page import="java.util.*"%>
+<%@ page import="org.json.JSONObject"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,13 +57,13 @@ try{
 }
 try{
 	for(int x = 0;x < cart.size();x++){
-		rows += "<tr><td class='product-thumbnail'><img src='" + cart.get(x).getProductImage()
+		rows += "<tr><td class='product-thumbnail'><img src='" + request.getContextPath() + "/images/" + cart.get(x).getProductImage()
 				+ "' alt='Image' class='img-fluid'></td><td class='product-name'><h2 class='h5 text-black'>"
-				+ cart.get(x).getProductName() + "</h2></td><td>$" + cart.get(x).getProductPrice()
-				+ "</td><td><div class='input-group mb-3' style='max-width: 120px;'><form action='http://localhost:12978/ST0510-JAD/changeQuantity?productID="+cart.get(x).getProductID()+"' method='POST'><input type='number' name='quantity' value="
+				+ cart.get(x).getProductName() + "</h2></td><td>$" + format.format(cart.get(x).getProductPrice() * ((Double) session.getAttribute("rate"))) + " (" + session.getAttribute("currency") + ")"
+				+ "</td><td><div class='input-group mb-3' style='max-width: 200px;'><form action='" + path +"changeQuantity?productID="+cart.get(x).getProductID()+"' method='POST'><input type='number' name='quantity' value="
 				+ cart.get(x).getProductQuantity() + "></input></div></td><td>$"
-				+ format.format(cart.get(x).getProductQuantity() * cart.get(x).getProductPrice()) + "</td>"
-				+"<th class='product-total'><a href='http://localhost:12978/ST0510-JAD/deleteFromCart?productID="+cart.get(x).getProductID()+"'>Delete</a><input type='submit' class='btn btn-primary btn-sm btn-block' value='Update Quantity'></input></form></th></tr>";
+				+ format.format(cart.get(x).getProductQuantity() * cart.get(x).getProductPrice() * ((Double) session.getAttribute("rate"))) + " (" + session.getAttribute("currency") + ")" + "</td>"
+				+"<th class='product-total'><input type='submit' class='mt-4 btn btn-primary btn-sm btn-block' value='Update Quantity'></input><a class='mt-3 ml-4 m-2 btn btn-sm btn-danger' href='" + path + "deleteFromCart?productID="+cart.get(x).getProductID()+"'>Remove from Cart</a></form></th></tr>";
 		total += cart.get(x).getProductQuantity() * cart.get(x).getProductPrice();//For prices
 		//out.print(cart.get(x).getError());//Error Debugging
 
@@ -71,9 +72,8 @@ try{
 	disabled = "disabled";//new code to check if cart is empty
 }
 
-
-String strTotal = format.format(total);
-String strTotalGST = format.format(total*1.07); 
+String strTotal = format.format(total * ((double) session.getAttribute("rate")));
+String strTotalGST = format.format(total * 1.07 * ((double) session.getAttribute("rate"))); 
 %>
 <title>Digit Games &mdash; Shopping Cart</title>
 <meta charset="utf-8">
@@ -125,7 +125,7 @@ String strTotalGST = format.format(total*1.07);
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -247,7 +247,30 @@ String strTotalGST = format.format(total*1.07);
 								</div>
 								<div class="row mb-3">
 									<div class="col-md-6">
-										<span class="text-black">Total</span>
+										<label>Currency: </label>
+										<select id="currencySelect" onchange="currencyChange()">
+											<%
+				                            JSONObject rates = (JSONObject) session.getAttribute("rates");
+				
+				                            for (Iterator iterator = rates.keySet().iterator(); iterator.hasNext();) {
+				                                String option = (String) iterator.next();
+				                                if (!option.equals(session.getAttribute("currency"))) {
+				                            %>
+				                            <option value="<%=option%>"><%=option%></option>
+				                            <%
+				                                } else {
+				                            %>
+				                            <option value="<%=option%>" selected><%=option%></option>
+				                            <%
+				                                }
+				                            }
+				                            %>
+										</select>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<span class="text-black">Total (<%=session.getAttribute("currency") %>)</span>
 									</div>
 									<div class="col-md-6 text-right">
 										<strong class="text-black">$<%=strTotal%></strong>
@@ -255,7 +278,7 @@ String strTotalGST = format.format(total*1.07);
 								</div>
 								<div class="row mb-2">
 									<div class="col-md-6">
-										<span class="text-black">Total(With GST)</span>
+										<span class="text-black">Total (With GST)</span>
 									</div>
 									<div class="col-md-6 text-right">
 										<strong class="text-black">$<%=strTotalGST%></strong>
@@ -354,6 +377,12 @@ String strTotalGST = format.format(total*1.07);
 	<script src="js/aos.js"></script>
 
 	<script src="js/main.js"></script>
+	
+	<script>
+	function currencyChange() {
+		window.location.href = "${pageContext.request.contextPath}" + "/CartServlet?currency=" + document.getElementById("currencySelect").value
+	}
+	</script>
 
 </body>
 

@@ -29,11 +29,10 @@ import mydbaccess.ProductImgDB;
 public class AddProductServlet2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final String UPLOAD_DIRECTORY = "images"; // Upload Image Directory
-	private static final int THRESHOLD_SIZE = 1024 * 1024 * 1; // Size of image where image stored in memory = 1MB
-	private static final int MAX_FILE_SIZE = 1024 * 1024 * 100; // Size of Maximum Image Size = 100MB
-	private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 150; // Size of Maximum Request Size = 150MB (include all
-																	// other input of form)
+	private static final String UPLOAD_DIRECTORY = "images";
+	private static final int THRESHOLD_SIZE = 1024 * 1024 * 1;
+	private static final int MAX_FILE_SIZE = 1024 * 1024 * 100;
+	private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 150;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -49,40 +48,7 @@ public class AddProductServlet2 extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		/*
-		 * if (request.getSession().getAttribute("admin") != null) { Client client =
-		 * ClientBuilder.newClient(); WebTarget target =
-		 * client.target(request.getScheme() + "://" + request.getServerName() + ":" +
-		 * request.getServerPort() + request.getContextPath() + "/api/categories/");
-		 * Invocation.Builder invoBuilder = target.request(MediaType.APPLICATION_JSON);
-		 * Response resp = invoBuilder.get();
-		 * 
-		 * if (resp.getStatus() == Response.Status.OK.getStatusCode()) { JSONArray
-		 * categoryArr = new JSONArray(resp.readEntity(new GenericType<String>() { }));
-		 * ArrayList<Category> categories = new ArrayList<Category>();
-		 * 
-		 * for (int i = 0; i < categoryArr.length(); i++) { JSONObject categoryObj =
-		 * (JSONObject) categoryArr.get(i);
-		 * 
-		 * Category category = new Category(categoryObj.getInt("id"),
-		 * categoryObj.getString("name"), categoryObj.getString("description"));
-		 * 
-		 * if (categoryObj.has("imageURL")) {
-		 * category.setImageURL(categoryObj.getString("imageURL")); }
-		 * 
-		 * categories.add(category); }
-		 * 
-		 * request.setAttribute("categories", categories);
-		 * 
-		 * // Forward to /WEB-INF/views/categories.jsp // (Users can not access directly
-		 * into JSP pages placed in WEB-INF) RequestDispatcher dispatcher =
-		 * request.getServletContext()
-		 * .getRequestDispatcher("/WEB-INF/views/addproduct.jsp");
-		 * dispatcher.forward(request, response);
-		 * 
-		 * } } else { response.sendRedirect(request.getContextPath() + "/admin-login");
-		 * }
-		 */
+
 	}
 
 	/**
@@ -93,13 +59,6 @@ public class AddProductServlet2 extends HttpServlet {
 			throws ServletException, IOException {
 		
 		if (request.getSession().getAttribute("role").equals("admin")) {
-/*			String productName = null;
-			Double productPrice = 0.0;
-			int productQuantity = 0;
-			String productBriefDesc = null;
-			String productDetailedDesc = null;
-			int categoryId = 0;
-			Double productCostPrice = 0.0;*/
 			
 			String name = "";
 			String c_price = "";
@@ -110,31 +69,29 @@ public class AddProductServlet2 extends HttpServlet {
 			String detailedDesc = "";
 			// String image = "";
 			String sold = "";
+			String selectedTab = "&tab=1";
+			int lowStockRange = 100;
 
-			// configures upload settings
-			DiskFileItemFactory factory = new DiskFileItemFactory(); // Manages file content either in memory or on disk
-			factory.setSizeThreshold(THRESHOLD_SIZE); // Set size of image to determine if image stored in disk or
-														// memory
-			factory.setRepository(new File(System.getProperty("java.io.tmpdir"))); // Specify which repository image
-																					// will be stored under
+			// Upload Settings
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			factory.setSizeThreshold(THRESHOLD_SIZE);
+			
+			factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
 
-			ServletFileUpload upload = new ServletFileUpload(factory); // Set a real directory in file to store image,
-																		// java only stores temporarily
-			upload.setFileSizeMax(MAX_FILE_SIZE); // Set maximum size of a single file upload
-			upload.setSizeMax(MAX_REQUEST_SIZE); // Set maximum size of the request
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			upload.setFileSizeMax(MAX_FILE_SIZE);
+			upload.setSizeMax(MAX_REQUEST_SIZE);
 
-			// Constructs the directory path to store upload file
+
 			String uploadPath = "";
-			String[] fileArray = (getServletContext().getRealPath("")).split("\\\\"); // getServletContext().getRealPath("")
-																						// gives
-																						// WORKSPACE\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\PROJECTNAME
+			String[] fileArray = (getServletContext().getRealPath("")).split("\\\\");
 			for (int i = 0; i <= fileArray.length - 7; i++) {
 				uploadPath += fileArray[i] + File.separator;
 			}
 			uploadPath += fileArray[fileArray.length - 1] + File.separator + "WebContent" + File.separator
 					+ UPLOAD_DIRECTORY;
 
-			// Creates the directory if it does not exist
+
 			File uploadDir = new File(uploadPath);
 			if (!uploadDir.exists()) {
 				uploadDir.mkdir();
@@ -159,15 +116,6 @@ public class AddProductServlet2 extends HttpServlet {
 						}
 					}
 				}
-
-/*				name = inputArray[0];
-				productPrice = Double.parseDouble(inputArray[1]);
-				productCostPrice = Double.parseDouble(inputArray[2]);
-				categoryId = Integer.parseInt(inputArray[3]);
-				productQuantity = Integer.parseInt(inputArray[4]);
-				productBriefDesc = inputArray[5];
-				productDetailedDesc = inputArray[6];*/
-				
 				
 				name = inputArray[0];
 				c_price = inputArray[1];
@@ -188,12 +136,10 @@ public class AddProductServlet2 extends HttpServlet {
 
 						while (iter.hasNext()) {
 							FileItem item = (FileItem) iter.next();
-							// Processes only fields that are not form fields
 							if (!item.isFormField()) {
 								String fileName = new File(item.getName()).getName();
 
 								if (!fileName.equals("") && fileName != null && fileName.length() > 0) {
-									// Saves the file on disk
 									String filePath = uploadPath + File.separator + fileName;
 									File storeFile = new File(filePath);
 									item.write(storeFile);
@@ -207,10 +153,12 @@ public class AddProductServlet2 extends HttpServlet {
 					}
 				} else {
 					request.getSession().setAttribute("error", "Duplicate Product Found.");
-					response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
+					// response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
+					response.sendRedirect(request.getContextPath() +"/Assignment1/admin-page.jsp?productSort="+request.getParameter("productSort")+"&productFilter="+request.getParameter("productFilter")+"&productSearch="+request.getParameter("productSearch")+"&LowStockValue="+lowStockRange+selectedTab);
 				}
 
-				response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
+				// response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp");
+				response.sendRedirect(request.getContextPath() +"/Assignment1/admin-page.jsp?productSort="+request.getParameter("productSort")+"&productFilter="+request.getParameter("productFilter")+"&productSearch="+request.getParameter("productSearch")+"&LowStockValue="+lowStockRange+selectedTab);
 			} catch (Exception e) {
 				System.err.println("Error: " + e);
 			}

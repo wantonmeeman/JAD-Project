@@ -34,7 +34,8 @@ public class editCategoryAdmin extends HttpServlet {
 		String catName = request.getParameter("catName");
 		String catImageURL = request.getParameter("catImageURL");
 		int catid = Integer.valueOf(request.getParameter("categoryID"));//(int)request.getSession().getAttribute("userid");
-		productDB getDB = new productDB();
+		
+		CategoryDB getDB = new CategoryDB();
 		boolean result = getDB.editCategory(catid,catImageURL,catName);
 			      if(result == true){
 			    	  response.sendRedirect("allProductsDetails?Err=EditSuccess");

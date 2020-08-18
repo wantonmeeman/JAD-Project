@@ -115,7 +115,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -188,7 +188,7 @@ Description: ST0510 / JAD Assignment 1
 
           <div class="col-md-12">
 
-            <form action="${pageContext.request.contextPath}/editProductAdmin" method="post">
+            <form action="${pageContext.request.contextPath}/editProductAdmin" method="post" enctype="multipart/form-data">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 
@@ -267,8 +267,12 @@ Description: ST0510 / JAD Assignment 1
                   <div class="form-group row">
 
                     <div class="col-md-6">
-                      <label for="ImagePath" class="text-black">Image Path</label>
-                      <input type="text" name="image" id="image" class="form-control" value="<%=productObj.getProductImage()%>" placeholder="Image Path"></textarea>
+                      <label for="ImagePath" class="text-black">Upload Image</label>
+                      <input type="file" name="file" id="imagefile" class="form-control" placeholder="Image Path">
+                      <div class="m-3">
+	                      <label>Current Product Image: </label>
+	                      <img src="${pageContext.request.contextPath}/images/<%=productObj.getProductImage() %>" width="200" height="200"/>
+                      </div>
                     </div>
 
                   </div>

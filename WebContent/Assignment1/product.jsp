@@ -154,7 +154,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -219,7 +219,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <img src="<%=image %>" alt="Image" class="img-fluid">
+            <img src="${pageContext.request.contextPath}/images/<%=image %>" alt="Image" class="img-fluid">
           </div>
           <div class="col-md-6">
             <h2 class="text-black"><%=name %></h2>
@@ -228,7 +228,7 @@ Description: ST0510 / JAD Assignment 1
             <p class="r_price"><span class="text-black">Price: </span><strong class="text-primary h4"> <%= priceMsg + discountMsg %></p></strong>
 
 			<!-- ${pageContext.request.contextPath} -->
-            <form action="http://localhost:12978/ST0510-JAD/addToCart" method="POST">
+            <form action="${pageContext.request.contextPath}/addToCart" method="POST">
               <div class="mb-5 row">
                 <p class="r_price mt-1 ml-3"><span class="text-black">Quantity: </p>
                 	<div class="ml-2">

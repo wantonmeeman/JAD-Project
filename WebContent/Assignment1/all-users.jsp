@@ -26,11 +26,14 @@ Description: ST0510 / JAD Assignment 1
 	String filterCategory = request.getParameter("filterCategory");
 	String filterValue = request.getParameter("filterValue");
 	String timeSort = request.getParameter("timeSort");
+	String roleFilter = request.getParameter("roleFilter");
 	String userCategory = request.getParameter("userCategory");
 	String userSearch = request.getParameter("userSearch");
 	
 	String timeSuffix = "";
 	
+	String delDate = "";
+	String buttons = "";
 	String AdminPage = "";
 	String dbUserID = "";
 	
@@ -178,98 +181,14 @@ Description: ST0510 / JAD Assignment 1
 	        	out.print(e);
 	        }
         
-		  		  	/* try{
-		        		for(int i = 0;Tab1.size() > i;i++){ //First Tab
-		        	    	
-		        	    	// image = rs.getString("image");
-		        	    	rows += "<tr>"
-		        	    		+ "<th scope='row'>" + Tab1.get(i).getUserid() + "</th>"
-		        	    		+ "<td>" + Tab1.get(i).getUsername() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getFirstname() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getLastname() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getEmail() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getRole() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getPhonenumber() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getCardnumber().replaceFirst(".{12}", "**************") + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getCompany() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getAddress() + "</td>"
-		        	    		+ "<td>" + Tab1.get(i).getCountry() + "</td>"
-		        	    		+ "<td><div class='row'><div class='col-md-8'>"
-		        	    		+ "<div class='ml-2 col-md-1'>"
-		        	    		+ "<a href='EditUser.jsp'><span class='icon icon-pencil'></span></a></div>"
-		        	    		+ "<div class='ml-2 col-md-1'>"
-				        	    + "<a href='#' class='deleteUser'><span class='icon icon-trash'></span></a></div>"
-		        	    		+ "</div></td></tr>";
-		        		}
-		  		  		}catch(Exception e){
-		  		  			
-		  		  		} */
 		        		
-		  		  		/* try{
-		        		for(int i = 0;Tab2.size() > i;i++){//Second Tab
-		        	    	
-		        	    		roleTable += "<tr>"
-			        	    		+ "<th scope='row'>" + Tab2.get(i).getRoleid() + "</th>"
-			        	    		+ "<td>" + Tab2.get(i).getRolename() + "</td>"
-			        	    		+ "<td><div class='row'><div class='col-md-3'><a href='edit-role.jsp?dbRoleID="+Tab2.get(i).getRoleid()+"'><span class='icon icon-pencil'></span></a></div>"
-			        	    		+ "<div class='col-md-2'>"
-			        	    		+ "<a href='#' class='deleteRole'><span class='icon icon-trash'></span></a></div></div></td></tr>";
-		        		}
-		  		  		}catch(Exception e){
-		  		  			
-		  		  		} */
-		        		
-		        		//Third Tab
-		        		/* try{
-		        		for(int i = 0;Tab3.size() > i;i++){
-							orders += "<tr>"
-					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + Tab3.get(i).getOrderProduct() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderUsername() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderEmail() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderPhoneNumber() + "</td>"
-					        	    + "<td>" + Tab3.get(i).getOrderCardNumber().replaceFirst(".{12}", "**************") + "</td>"
-					        	    + "<td>" + Tab3.get(i).getOrderCCV() + "</td>"
-					        	    + "<td>" + Tab3.get(i).getOrderExpiryDate() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderAddress() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderZipCode() + "</td>"
-			        	    		+ "<td>" + Tab3.get(i).getOrderCompany() + "</td>"
-			                	    + "<td>" + Tab3.get(i).getOrderQuantity()+ "</td>"
-			                	    + "<td>$" + format.format(Tab3.get(i).getOrderTotal())+ "</td>"
-			                	    + "<td>" + Tab3.get(i).getOrderDate() + "</td>"
-			                	    + "<td>" + Tab3.get(i).getOrderNotes() + "</td>"
-			        	    		+ "</div></td></tr>";
-							//}
-						}
-		        		}catch(Exception e){
-		        			out.print("Exception is "+e);
-		        			
-		        		} */
-		        		
-		        		
-				        		
-		        		/* //Fourth Tab, Maybe combine with first?
-		        		try{
-						for(int i = 0;Tab4.size() > i;i++){
-							userTotals += "<tr>"
-					    			//+ "<td><img width='200' height='200' src='"+ orderImage + "'></img></td>" This code adds the image, left it out for formatting and space
-			        	    		+ "<td>" + Tab4.get(i).getUsername() + "</td>"
-			        	    		+ "<td>" + Tab4.get(i).getEmail() + "</td>"
-			        	    		+ "<td>" + Tab4.get(i).getPhonenumber() + "</td>"
-			        	    		+ "<td>$" + format.format(Tab4.get(i).getTotal()) + "</td>"
-			        	    		+ "</div></td></tr>";
-							}
-		        		}catch(Exception e){
-		        			
-		        		} */
-		        		
-						if(filterValue == null || filterValue.equals("null")){
-							filterValue = "";
-						}
-		        		
-		        		if(userSearch == null || userSearch.equals("null")){
-		        			userSearch = "";
-		        		}
+			if(filterValue == null || filterValue.equals("null")){
+				filterValue = "";
+			}
+       		
+       		if(userSearch == null || userSearch.equals("null")){
+       			userSearch = "";
+       		}
 		        		
 		        		
 						
@@ -399,7 +318,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="form-group row">
 
         <div class="col-md-5">
-          <form action="AddRole.jsp" method="post">
+          <form action="${pageContext.request.contextPath}/AddRoleServlet" method="post">
 			<h3 mb-5 class="text-dark">Add Role</h3>
 			
 			<div class="col-md-12 mt-4">
@@ -446,7 +365,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -517,6 +436,10 @@ Description: ST0510 / JAD Assignment 1
           	<div class="p-2">
             	<a href="#" class="addRole btn btn-sm btn-dark">Add New Role</a>
          	 </div>
+         	 
+         	 <div class="p-2">
+            	<a href="${pageContext.request.contextPath}/addUserAdmin" class="btn btn-sm btn-secondary">Add New User</a>
+         	 </div>
 
         </div>
 
@@ -534,7 +457,30 @@ Description: ST0510 / JAD Assignment 1
 						</h3>
 						<form action="${pageContext.request.contextPath}/allUsersDetails" method='post'>
 						
+						
 						<div class="btn-group">
+							<button type="button"
+								class="btn btn-secondary btn-sm dropdown-toggle"
+								id="dropdownMenuReference" data-toggle="dropdown">Sorting</button>
+							<div class="dropdown-menu"
+								aria-labelledby="dropdownMenuReference">
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>">None</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Acompany&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Company, A-Z</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Dcompany&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Company, Z-A</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Acountry&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Country, A-Z</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Dcountry&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Country, Z-A</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Aaddress&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Address, A-Z</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=Daddress&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Address, Z-A</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=ATotal&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Total, Ascending</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?userSort=DTotal&userSearch=<%=userSearch%>&userCategory=<%=userCategory%>&roleFilter=<%=roleFilter%>">Total, Descending</a>
+							</div>
+						</div>
+						
+						<div class="m-3 btn-group">
 							<button type="button"
 								class="btn btn-secondary btn-sm dropdown-toggle"
 								id="dropdownMenuReference" data-toggle="dropdown">Filter By Roles</button>
@@ -545,6 +491,7 @@ Description: ST0510 / JAD Assignment 1
 							</div>
 						</div>
 						
+						<br>
 						<label>Search by:</label> <select name="userCategory">
 								<option value='username' <%if (userCategory != null) { if (userCategory.equals("username")) { %> selected <% } } else {%> selected <%}%>>Username</option>
 								<option value='firstname' <%if (userCategory != null) { if (userCategory.equals("firstname")) { %> selected <% } } else {%> selected <%}%>>First Name</option>
@@ -557,8 +504,8 @@ Description: ST0510 / JAD Assignment 1
 								<option value='company' <%if (userCategory != null) { if (userCategory.equals("company")) { %> selected <% } } else {%> selected <%}%>>Company</option>
 						
 							</select> 
-							<input type='text' name='userSearch' value=<%=userSearch %>></input> <input
-								type='submit' placeholder="Search For User"></input>
+							<input type='text' placeholder="Keyword" name='userSearch' value=<%=userSearch %>></input>
+							<input type='submit' value="Search"></input>
 						</form>
 						<div class="mt-4">
 							<table class="table table-hover">
@@ -689,23 +636,16 @@ Description: ST0510 / JAD Assignment 1
 								id="dropdownMenuReference" data-toggle="dropdown">Sorting</button>
 							<div class="dropdown-menu"
 								aria-labelledby="dropdownMenuReference">
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DTime&timeSort=<%=timeSort%>&tab=3">Time</a>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=ATime&timeSort=<%=timeSort%>&tab=3">Time,
-									Descending</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Ddate&timeSort=<%=timeSort%>&tab=3">Time</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Adate&timeSort=<%=timeSort%>&tab=3">Time, Descending</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DTotal&timeSort=<%=timeSort%>&tab=3">Total</a>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=ATotal&timeSort=<%=timeSort%>&tab=3">Total,
-									Descending</a>
+								
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Dtotal&timeSort=<%=timeSort%>&tab=3">Total</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Atotal&timeSort=<%=timeSort%>&tab=3">Total, Descending</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=DQuantity&timeSort=<%=timeSort%>&tab=3">Quantity</a>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=AQuantity&timeSort=<%=timeSort%>&tab=3">Quantity,
-									Descending</a>
+								
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Dquantity&timeSort=<%=timeSort%>&tab=3">Quantity</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=Aquantity&timeSort=<%=timeSort%>&tab=3">Quantity, Descending</a>
 							</div>
 						</div>
 						<div class="m-3 btn-group">
@@ -713,43 +653,39 @@ Description: ST0510 / JAD Assignment 1
 								class="btn btn-secondary btn-sm dropdown-toggle"
 								id="dropdownMenuReference" data-toggle="dropdown">Filter
 								By Date</button>
-							<div class="dropdown-menu"
-								aria-labelledby="dropdownMenuReference">
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today&tab=3">Today</a>
+								
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Today&tab=3">Today</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week&tab=3">This
-									Week</a>
+								
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Week&tab=3">This Week</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month&tab=3">This
-									Month</a>
+								
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=Month&tab=3">This Month</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item"
-									href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&tab=3">None</a>
+								
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&tab=3">None</a>
 							</div>
 						</div>
-						<form
-							action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort%>&tab=3"
-							method='post'>
-							<label>Search by:</label> <select name="filterCategory">
+						<form action="${pageContext.request.contextPath}/allUsersDetails?orderSort=<%=orderSort%>&timeSort=<%=timeSort%>&tab=3" method='post'>
+							<label>Search by:</label>
+							<select name="filterCategory">
 								<option value='name' <%if (filterCategory != null) { if (filterCategory.equals("name")) { %> selected <% } } else {%> selected <%}%>>Product</option>
 								<option value='username' <%if (filterCategory != null) { if (filterCategory.equals("username")) { %> selected <% } } else {%> selected <%}%>>Username</option>
 								<option value='email' <%if (filterCategory != null) { if (filterCategory.equals("email")) { %> selected <% } } else {%> selected <%}%>>Email</option>
 								<option value='phonenumber' <%if (filterCategory != null) { if (filterCategory.equals("phonenumber")) { %> selected <% } } else {%> selected <%}%>>Phone Number</option>
-								<option value='cardnumber' <%if (filterCategory != null) { if (filterCategory.equals("cardnumber")) { %> selected <% } } else {%> selected <%}%>>Card Number</option>
-								<option value='ccv' <%if (filterCategory != null) { if (filterCategory.equals("ccv")) { %> selected <% } } else {%> selected <%}%>>CCV</option>
-								<option value='expirydate' <%if (filterCategory != null) { if (filterCategory.equals("expirydate")) { %> selected <% } } else {%> selected <%}%>>Expiry Date</option>
 								<option value='address' <%if (filterCategory != null) { if (filterCategory.equals("address")) { %> selected <% } } else {%> selected <%}%>>Address</option>
 								<option value='zipcode' <%if (filterCategory != null) { if (filterCategory.equals("zipcode")) { %> selected <% } } else {%> selected <%}%>>Zip Code</option>
 								<option value='company' <%if (filterCategory != null) { if (filterCategory.equals("company")) { %> selected <% } } else {%> selected <%}%>>Company</option>
 								<option value='quantity' <%if (filterCategory != null) { if (filterCategory.equals("quantity")) { %> selected <% } } else {%> selected <%}%>>Quantity</option>
 								<option value='total' <%if (filterCategory != null) { if (filterCategory.equals("total")) { %> selected <% } } else {%> selected <%}%>>Total</option>
 								<option value='notes' <%if (filterCategory != null) { if (filterCategory.equals("notes")) { %> selected <% } } else {%> selected <%}%>>Notes</option>
-							</select> <br> <input type='text' name='filterValue'
-								value="<%=filterValue%>" placeholder="Keyword"></input> <input
-								type='submit' value="Search">
+								<option value='status' <%if (filterCategory != null) { if (filterCategory.equals("status")) { %> selected <% } } else {%> selected <%}%>>Status</option>
+							</select> 
+							
+							<input type='text' name='filterValue' value="<%=filterValue%>" placeholder="Keyword"></input> 
+							<input type='submit' value="Search">
+							
 						</form>
 						<div class="mt-4">
 							<table class="table table-hover">
@@ -759,9 +695,6 @@ Description: ST0510 / JAD Assignment 1
 										<th scope="col">Username</th>
 										<th scope="col">Email</th>
 										<th scope="col">Phone Number</th>
-										<th scope="col">Card Number</th>
-										<th scope="col">CCV</th>
-										<th scope="col">Expiry Date</th>
 										<th scope="col">Address</th>
 										<th scope="col">Zip Code</th>
 										<th scope="col">Company</th>
@@ -769,6 +702,9 @@ Description: ST0510 / JAD Assignment 1
 										<th scope="col">Total</th>
 										<th scope="col">Time</th>
 										<th scope="col">Notes</th>
+										<th scope="col">Delivery Date</th>
+										<th scope="col">Status</th>
+										<th scope="col">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -781,16 +717,63 @@ Description: ST0510 / JAD Assignment 1
 										<td><%=order.getOrderUsername() %></td>
 										<td><%=order.getOrderEmail() %></td>
 										<td><%=order.getOrderPhoneNumber() %></td>
-										<td><%=order.getOrderCardNumber().replaceFirst(".{12}", "**************") %></td>
-										<td><%=order.getOrderCCV() %></td>
-										<td><%=order.getOrderExpiryDate() %></td>
 										<td><%=order.getOrderAddress() %></td>
 										<td><%=order.getOrderZipCode() %></td>
 										<td><%=order.getOrderCompany() %></td>
 										<td><%=order.getOrderQuantity() %></td>
-										<td><%=format.format(order.getOrderTotal()) %></td>
+										<td>$<%=format.format(order.getOrderTotal()) %></td>
 										<td><%=order.getOrderDate() %></td>
 										<td><%=order.getOrderNotes() %></td>
+										<% if(order.getOrderDelDate() == null){
+											delDate = "NA";
+										}else{
+											delDate = order.getOrderDelDate();
+										}%>
+										<td><%=delDate%></td>
+										<td><%=order.getOrderStatus() %></td>
+										<% if(order.getOrderStatus().equals("Delivered")){
+											buttons = "<td>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Pending'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='On Hold/Pending' disabled>"
+													+"</input></a>"
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivering'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivering' disabled>"
+													+"</input></a> "
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivered'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivered' disabled>"
+													+"</input></a></td>";
+										}else if(order.getOrderStatus().equals("Delivering")){
+											buttons = "<td>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Pending'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='On Hold/Pending'>"
+													+"</input></a>"
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivering' >"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivering' disabled>"
+													+"</input></a> "
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivered'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivered'>"
+													+"</input></a></td>";
+										}else{
+											buttons = "<td>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Pending'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='On Hold/Pending' disabled>"
+													+"</input></a>"
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivering'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivering'>"
+													+"</input></a> "
+													+"<br>"
+													+"<a href='"+Path+"editOrderStatus?orderid="+order.getOrderid()+"&action=Delivered'>"
+													+"<input type='submit' class='btn btn-primary btn-sm btn-block' value='Delivered'>"
+													+"</input></a></td>";
+											
+										}
+										%>
+										<%=buttons%>
 									</tr>
 									<%
 										}

@@ -33,7 +33,7 @@ public class editRoleAdmin extends HttpServlet {
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		String roleName = request.getParameter("roleName");
 		int roleID = Integer.valueOf(request.getParameter("roleID"));//(int)request.getSession().getAttribute("userid");
-		userDetailsDB getDB = new userDetailsDB();
+		RoleDB getDB = new RoleDB();
 			
 		boolean result = getDB.editRoleDetails(roleName,roleID);
 			      if(result == true){

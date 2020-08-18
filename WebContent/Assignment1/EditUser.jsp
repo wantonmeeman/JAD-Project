@@ -121,7 +121,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -185,12 +185,12 @@ Description: ST0510 / JAD Assignment 1
         <div class="row">
 
           <div class="col-md-12">
-            <h2 class="h3 mb-3 text-black">Edit User(Admin)</h2>
+            <h2 class="h3 mb-3 text-black">Edit User (Admin)</h2>
           </div>
 
           <div class="col-md-12">
 
-            <form action="<%=path %>/editUserAdmin" method="post">
+            <form action="${pageContext.request.contextPath}/editUserAdmin" method="post">
 
               <div class="p-3 p-lg-5 border row justify-content-center">
 

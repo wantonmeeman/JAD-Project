@@ -32,11 +32,11 @@ public class deleteProductAdmin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String Path = "http://localhost:8080"+request.getContextPath()+"/";
+		// String Path = "http://localhost:8080"+request.getContextPath()+"/";
 		int userID = Integer.parseInt(request.getParameter("productID"));
 		productDB getDB = new productDB();
 		if(getDB.deleteProduct(userID)) {
-			response.sendRedirect(Path+"allProductsDetails?Err=DelSuccess");
+			response.sendRedirect(request.getContextPath()+"/allProductsDetails?Err=DelSuccess");
 		}
 		System.out.print("Error");
 		

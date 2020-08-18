@@ -1,28 +1,26 @@
 package myservlets;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-
-import mydbaccess.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import mydbaccess.RoleDB;
+import mydbaccess.UserDB;
 
 /**
- * Servlet implementation class editDeliveryDetails
+ * Servlet implementation class AddRoleServlet
  */
-@WebServlet("/deleteCategoryAdmin")
-public class deleteCategoryAdmin extends HttpServlet {
+@WebServlet("/AddRoleServlet")
+public class AddRoleServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public deleteCategoryAdmin() {
+    public AddRoleServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,16 +30,7 @@ public class deleteCategoryAdmin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		int catID = Integer.parseInt(request.getParameter("catID"));
-		CategoryDB getDB = new CategoryDB();
-		
-		if(getDB.deleteCategory(catID)) {
-			response.sendRedirect(request.getContextPath() +"/allProductsDetails?Err=DelSuccess");
-		} else {
-			System.out.print("Error");
-		}
-		  		  
+		// response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -50,6 +39,19 @@ public class deleteCategoryAdmin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+		
+		String roleName = request.getParameter("dbRole");
+
+		RoleDB getDB = new RoleDB();
+			
+		int result = getDB.addRole(roleName);
+	      if(result == 1){
+	    	  response.sendRedirect(request.getContextPath() + "/Assignment1/all-users.jsp?Err=EditSuccess");
+		      //response.sendRedirect(request.getContextPath() +"/Assignment1/all-users.jsp?Err=Success");
+		  }else{
+			  response.sendRedirect(request.getContextPath() + "/Assignment1/all-users.jsp?Err=DatabaseError");
+		    	 //response.sendRedirect(request.getContextPath() +"/Assignment1/all-users.jsp?Err=DatabaseError");
+		  }
 	}
 
 }

@@ -26,7 +26,7 @@ String Error = "";
 String categoryID = request.getParameter("categoryID");
 String catName = request.getParameter("catName");
 String catImageURL = request.getParameter("catImageURL");
-String Path = "http://localhost:8080"+request.getContextPath()+"/";
+String Path = request.getContextPath()+"/";
   //What else to add? try to add image path later maybe?
 		  
 

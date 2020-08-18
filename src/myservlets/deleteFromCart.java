@@ -38,7 +38,8 @@ public class deleteFromCart extends HttpServlet {
 		userCartDB getDB = new userCartDB();
 		ArrayList<cartObject> newCart = getDB.deleteObject(cart,productID);//No error Handling for this one
 		request.getSession().setAttribute("cart",newCart);
-		response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+		// response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+		response.sendRedirect(request.getContextPath() +"/Assignment1/cart.jsp");
 		
 
 	}

@@ -1,28 +1,26 @@
 package myservlets;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-
-import mydbaccess.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import mydbaccess.CategoryDB;
+import mydbaccess.RoleDB;
 
 /**
- * Servlet implementation class editDeliveryDetails
+ * Servlet implementation class AddCategoryServlet
  */
-@WebServlet("/deleteCategoryAdmin")
-public class deleteCategoryAdmin extends HttpServlet {
+@WebServlet("/AddCategoryServlet")
+public class AddCategoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public deleteCategoryAdmin() {
+    public AddCategoryServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,16 +30,7 @@ public class deleteCategoryAdmin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		int catID = Integer.parseInt(request.getParameter("catID"));
-		CategoryDB getDB = new CategoryDB();
-		
-		if(getDB.deleteCategory(catID)) {
-			response.sendRedirect(request.getContextPath() +"/allProductsDetails?Err=DelSuccess");
-		} else {
-			System.out.print("Error");
-		}
-		  		  
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -50,6 +39,20 @@ public class deleteCategoryAdmin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+
+		String catName = request.getParameter("catName");
+		String imageName = request.getParameter("catImageURL");
+
+		CategoryDB getDB = new CategoryDB();
+			
+		int result = getDB.addCategory(catName, imageName);
+	      if(result == 1){
+	    	  response.sendRedirect(request.getContextPath() + "/Assignment1/index.jsp");
+		      // response.sendRedirect(request.getContextPath() +"/Assignment1/all-users.jsp?Err=Success");
+		  }else{
+			  response.sendRedirect(request.getContextPath() + "/Assignment1/admin-page.jsp?Err=DatabaseError");
+			  // response.sendRedirect(request.getContextPath() +"/Assignment1/all-users.jsp?Err=DatabaseError");
+		  }
 	}
 
 }

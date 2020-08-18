@@ -38,17 +38,17 @@ Description: ST0510 / JAD Assignment 1
 	String role = "";
 	
 	String Header = "<ul><li><a href='loginpage.jsp'>Login</a></li><li><a href='register.jsp'>Register</span></a></li><li id='logoutButton'></li></ul>";
-	
 	String path = request.getContextPath() + "/";
 	
 	try{
 		userid = (int)Session.getAttribute("userid");  
 		role = (String)Session.getAttribute("role");
+		
 	}catch(Exception e){
 		
 	} 
+	
     Connection conn = null;
-        
         try{
            Class.forName("com.mysql.jdbc.Driver");
            conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
@@ -65,6 +65,7 @@ Description: ST0510 / JAD Assignment 1
 				while(rs1.next()) {
 					numberOfProd = rs1.getInt("COUNT(*)");
 					// System.out.println("total number:" + numberOfProd);
+					
 				} // while
 				
 				
@@ -102,7 +103,7 @@ Description: ST0510 / JAD Assignment 1
           	        	if (roundDiscount != 0) {
           	        		priceMsg = "<s>$ " + rPrice + "</s> $" + cPrice;
           	        		discountMsg = " (" + roundDiscount + "% Off)";
-          	        	} else if (roundDiscount == 0){
+          	        	} else if (roundDiscount == 0) {
           	        		priceMsg = "$" + rPrice;
           	        		discountMsg = "";
           	        	}
@@ -182,7 +183,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'

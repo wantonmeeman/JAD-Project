@@ -20,7 +20,12 @@ public class order {
 	private String orderDate;
 	private String orderExpiryDate;
 	private int totalOrders;
-	public order(String orderUsername,String orders,String orderPhoneNumber,String orderAddress,String orderCountry,String orderProduct,String orderEmail,int orderUserID,int orderProductID,String orderCompany,String orderQuantity,double orderTotal,String orderNotes,String orderCCV,String orderZipCode,String orderCardNumber,String orderImage,String orderDate,String orderExpiryDate,int totalOrders) {
+	private int orderid;
+	private String orderDelDate;
+	private String orderStatus;
+	
+	
+	public order(int orderid,String orderUsername,String orders,String orderPhoneNumber,String orderAddress,String orderCountry,String orderProduct,String orderEmail,int orderUserID,int orderProductID,String orderCompany,String orderQuantity,double orderTotal,String orderNotes,String orderCCV,String orderZipCode,String orderCardNumber,String orderImage,String orderDate,String orderExpiryDate,int totalOrders,String orderDelDate,String orderStatus) {
 		this.orderUsername = orderUsername;
 		this.orderPhoneNumber = orderPhoneNumber;
 		this.orderAddress = orderAddress;
@@ -39,9 +44,17 @@ public class order {
 		this.orderImage = orderImage;
 		this.orderDate = orderDate;
 		this.orderExpiryDate = orderExpiryDate;
+		this.orderDelDate = orderDelDate;
+		this.orderStatus = orderStatus;
 	}
 	public order() {
 		
+	}
+	public int getOrderid() {
+		return orderid;
+	}
+	public void setOrderid(int orderid) {
+		this.orderid = orderid;
 	}
 	public String getOrderUsername() {
 		return orderUsername;
@@ -156,6 +169,18 @@ public class order {
 	}
 	public void setTotalOrders(int totalOrders) {
 		this.totalOrders = totalOrders;
+	}
+	public String getOrderDelDate() {
+		return orderDelDate;
+	}
+	public void setOrderDelDate(String orderDelDate) {
+		this.orderDelDate = orderDelDate;
+	}
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 	
 }

@@ -184,7 +184,10 @@ Description: ST0510 / JAD Assignment 1
 		        	    	
 		        	    rowsSold += "<tr style='"+lowStockAlert+"' ><th scope='row'>"+productID+"</th><td>"+productCat+"</td><td>"+Name+"</td><td>$"+cPrice+"</td><td>$"+rPrice+"</td><td>"+stockQuantity+"</td><td>"+sold+"</td><td></td></tr>";
 		        	} */
-
+	if(productSearch.equals("null") || productSearch == null){
+		productSearch = "";
+	}
+		        	
 		  	
 
 %>
@@ -301,7 +304,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="form-group row">
 
         <div class="col-md-5">
-          <form action="AddCategory.jsp? " method="post">
+          <form action="${pageContext.request.contextPath}/AddCategoryServlet" method="post">
 			<h3 mb-5 class="text-dark">Add New Category</h3>
 			
 			<div class="col-md-12 mt-4">
@@ -374,7 +377,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -469,13 +472,20 @@ Description: ST0510 / JAD Assignment 1
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Sorting</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=cPrice&productSearch=<%=productSearch%>">Cost Price</a>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=rPrice&productSearch=<%=productSearch%>">Retail Price</a>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Quantity&productSearch=<%=productSearch%>">Quantity</a>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=itemsSold&productSearch=<%=productSearch%>">Items Sold</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Ac_price&productSearch=<%=productSearch%>">Cost Price, Ascending</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Dc_price&productSearch=<%=productSearch%>">Cost Price, Descending</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Ar_price&productSearch=<%=productSearch%>">Retail Price, Ascending</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Dr_price&productSearch=<%=productSearch%>">Retail Price, Descending</a>
+                     <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Astock_quantity&productSearch=<%=productSearch%>">Quantity, Ascending</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Dstock_quantity&productSearch=<%=productSearch%>">Quantity, Descending</a>
+                     <div class="dropdown-divider"></div>
+                     <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Asold&productSearch=<%=productSearch%>">Items Sold, Ascending</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=Dsold&productSearch=<%=productSearch%>">Items Sold, Descending</a>
                     </div>
                </div>
-               <div class="btn-group">
+               <div class="btn-group m-3">
                     <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
                       data-toggle="dropdown">Filter by Categories</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
@@ -485,8 +495,9 @@ Description: ST0510 / JAD Assignment 1
                     </div>
                </div>
 			  <form action="${pageContext.request.contextPath}/allProductsDetails?productFilter=<%=productFilter%>&productSort=<%=productSort%>" method='post'>
-			  	<input type='text' name='productSearch'></input>
-			  	<input type='submit' placeholder="Search For Product"></input>
+			  <label>Search by Product Name: </label>
+			  	<input type='text' placeholder="Name" name='productSearch' value="<%=productSearch%>"></input>
+			  	<input type='submit' placeholder="Search For Product" value="Search"></input>
 			  </form>
 			  
 			  <div class="mt-4">
@@ -538,8 +549,9 @@ Description: ST0510 / JAD Assignment 1
 		  <div class="mt-4 ml-4">
 			  <h3><text class="text-dark font-weight-bold">Low Stock List</text></h3>
 			  <form action="${pageContext.request.contextPath}/allProductsDetails" method='post'>
+			  <label>Search by quantity under: </label>
 			  	<input type='number' name='lowStockRange' value=<%=LSRValue %>></input>
-			  	<input type='submit' placeholder="Set Range"></input>
+			  	<input type='submit' placeholder="Set Range" value="Search"></input>
 			  </form>
 			  <div class="mt-4">
 		          <table class="table table-hover">

@@ -16,7 +16,7 @@ public class user {
 	private String cardnumber;
 	private String ccv;
 	private String expirydate;
-	private double total;
+	private String total;
 	public user(){
 		
 	}
@@ -27,7 +27,7 @@ public class user {
 			String lastname,String phonenumber,
 			String address,String country,
 			String zipcode,String company,
-			String ccv,String expirydate,double total) {
+			String ccv,String expirydate,String total) {
 		this.userid = userid;
 		this.username = username;
 		this.password = password;
@@ -166,12 +166,12 @@ public class user {
 		this.expirydate = expirydate;
 	}
 
-	public double getTotal() {
+	public String getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
-		this.total = total;
+	public void setTotal(String result) {
+		this.total = result;
 	}
 	
 }

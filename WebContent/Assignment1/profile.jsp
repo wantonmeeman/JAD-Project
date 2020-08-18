@@ -177,7 +177,7 @@ input::-webkit-inner-spin-button {
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -299,7 +299,7 @@ input::-webkit-inner-spin-button {
           <div id="editProfileTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="VerifyChange.jsp" method="post" class="test">
+              <form action="${pageContext.request.contextPath}/editUserInfo" method="post" class="test">
 
                 <div class="p-3 p-lg-5 border">
 
@@ -339,8 +339,8 @@ input::-webkit-inner-spin-button {
                     </div>
 
                     <div class="col-md-5">
-                      <label for="email" class="text-black">Phone Number <span class="text-danger">*</span></label>
-                      <input type="number" class="form-control" id="email" name="phonenumber" placeholder="" value="<%=phonenumber%>">
+                      <label for="phonenumber" class="text-black">Phone Number <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" id="phonenumber" name="phonenumber" placeholder="" value="<%=phonenumber%>">
                     </div>
                   </div>
 
@@ -358,7 +358,7 @@ input::-webkit-inner-spin-button {
           <div id="addressTab" class="tabcontent">
             <div class="col-md-12">
 
-              <form action="<%=path %>editDeliveryDetails" method="post">
+              <form action="${pageContext.request.contextPath}/editUserAddress" method="post">
 
                 <div class="p-3 p-lg-5 border">
 
@@ -397,7 +397,7 @@ input::-webkit-inner-spin-button {
                     </div>
                     <div class="col-md-3">
                       <label for="postal" class="text-black">Expiry Date</label>
-                      <input type="text" class="form-control" id="zipcode" name="expirydate" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY"> 
+                      <input type="text" class="form-control" id="expirydate" name="expirydate" value="<%=expirydate%>" pattern="(?:0[1-9]|1[0-2])/[0-9]{2}" placeholder="MM/YY"> 
                     </div>
                   </div>
                   

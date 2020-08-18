@@ -32,8 +32,8 @@ Description: ST0510 / JAD Assignment 1
         Connection conn = null;
         try{
 		  	Class.forName("com.mysql.jdbc.Driver");
-		  	//conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=root&password=alastair123&serverTimezone=UTC");
+		  	// conn = DriverManager.getConnection("jdbc:mysql://localhost/digitgames?user=admin&password=@dmin1!&serverTimezone=UTC&characterEncoding=latin1");
 		}catch(Exception e){
 			out.print(e);
 		}
@@ -113,7 +113,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -266,7 +266,7 @@ Description: ST0510 / JAD Assignment 1
 
                     <div class="col-md-6">
                       <label for="ImagePath" class="text-black">Upload Image</label>
-                      <input type="file" name="file" id="imagefile" class="form-control" placeholder="Image Path"></textarea>
+                      <input type="file" name="file" id="imagefile" class="form-control" placeholder="Image Path">
                     </div>
 
                   </div>

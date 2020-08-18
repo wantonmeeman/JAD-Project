@@ -116,7 +116,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -171,7 +171,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <a
-              href="cart.jsp">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong>
+              href="${pageContext.request.contextPath}/CartServlet">Cart</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong>
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@ Description: ST0510 / JAD Assignment 1
             <h2 class="h3 mb-3 text-black">Billing Details</h2>
             <div class="p-3 p-lg-5 border">
               
-              <form method="POST" id="details" action="http://localhost:12978/ST0510-JAD/checkout">
+              <form method="POST" id="details" action="${pageContext.request.contextPath}/checkout">
               
               <div class="form-group row">
               <div class="col-md-12">

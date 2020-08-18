@@ -3,7 +3,8 @@ package myservlets;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mydbaccess.userDetailsDB;
+import mydbaccess.RoleDB;
+import mydbaccess.UserDB;
 import mydbaccess.userOrderDB;
 
 import javax.servlet.ServletException;
@@ -34,21 +35,22 @@ public class getUserDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		userDetailsDB getDB = new userDetailsDB();
+		UserDB getDB = new UserDB();
+		RoleDB roleDB = new RoleDB();
 		
 		HttpSession session = request.getSession();
 		if(request.getParameter("rd") == null) {
 			user userDetails = getDB.getUserDetails((int)session.getAttribute("userid"));
 			session.setAttribute("userDetails", userDetails);
-			response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/checkout.jsp");
-			//response.sendRedirect(request.getContextPath() +"/Assignment1/checkout.jsp");
+			// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/checkout.jsp");
+			response.sendRedirect(request.getContextPath() +"/Assignment1/checkout.jsp");
 		}else {
 			user userDetails = getDB.getUserDetails(Integer.valueOf(request.getParameter("userID")));
-			ArrayList<role> allRoles = getDB.getAllRoles();
+			ArrayList<role> allRoles = roleDB.getAllRoles();
 			session.setAttribute("roles", allRoles);
 			session.setAttribute("userDetails", userDetails);
-			response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/EditUser.jsp");
-			//response.sendRedirect(request.getContextPath() +"/Assignment1/EditUser.jsp");
+			// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/EditUser.jsp");
+			response.sendRedirect(request.getContextPath() +"/Assignment1/EditUser.jsp");
 		}
     	 
 	}

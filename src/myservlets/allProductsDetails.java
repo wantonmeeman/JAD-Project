@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
+import mydbaccess.CategoryDB;
 import mydbaccess.productDB;
 
 import javax.servlet.ServletException;
@@ -37,7 +38,9 @@ public class allProductsDetails extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		productDB getDB = new productDB();
+		CategoryDB categoryDB = new CategoryDB();
 		String selectedTab = "";
+		String error = request.getParameter("Err");
 		String Tab = request.getParameter("tab");
 		String page1Num = request.getParameter("page1");
 
@@ -73,29 +76,32 @@ public class allProductsDetails extends HttpServlet {
 		if(request.getParameter("lowStockRange") != null) {
 			lowStockRange = Integer.valueOf(request.getParameter("lowStockRange"));
 		}
+		//First Tab
+		ArrayList<product> Tab1 = getDB.getProducts(request.getParameter("productSort"),request.getParameter("productFilter"),request.getParameter("productSearch"),Integer.valueOf(page1Num));
 		
-		ArrayList<product> Tab1 = getDB.getAllProducts(request.getParameter("productSort"),request.getParameter("productFilter"),request.getParameter("productSearch"),Integer.valueOf(page1Num));
-		ArrayList<category> Tab2 = getDB.getAllCategories(Integer.valueOf(page2Num));
+		//Second Tab
+		ArrayList<category> Tab2 = categoryDB.getCategories(Integer.valueOf(page2Num));
+		
+		//Third Tab
 		ArrayList<product> Tab3 = getDB.getLowProducts(lowStockRange,Integer.valueOf(page3Num));
-		
-		//int total_users = getDB.getTotalUsers(request.getParameter("userSearch"));
-		//int total_roles = getDB.getTotalRoles();
-		//int total_orders = getDB.getTotalOrders(request.getParameter("orderSort"),request.getParameter("timeSort"),request.getParameter("filterValue"),request.getParameter("filterCategory"));
 	
 		
-		HttpSession session = request.getSession(true);//Hopefully we can change this to setAttribute
+		HttpSession session = request.getSession();//Hopefully we can change this to setAttribute
 		session.setAttribute("Tab1", Tab1);
 		session.setAttribute("Tab2", Tab2);
 		session.setAttribute("Tab3", Tab3);
-
-		session.setAttribute("Tab1T",getDB.getTotalProducts(request.getParameter("productSort"),request.getParameter("productFilter"),request.getParameter("productSearch")));
-		session.setAttribute("Tab2T",getDB.getTotalCategories());
-		session.setAttribute("Tab3T",getDB.getTotalLowProducts(lowStockRange));
+		
+		//This gets Tab Totals
+		session.setAttribute("Tab1T", getDB.getTotalProducts(request.getParameter("productSort"),request.getParameter("productFilter"),request.getParameter("productSearch")));
+		session.setAttribute("Tab2T", categoryDB.getTotalCategories());
+		session.setAttribute("Tab3T", getDB.getTotalLowProducts(lowStockRange));
 		
 		
 		response.setContentType("text/html");
 		
-		response.sendRedirect("JAD-Project/WebContent/Assignment1/admin-page.jsp?productSort="+request.getParameter("productSort")+"&productFilter="+request.getParameter("productFilter")+"&productSearch="+request.getParameter("productSearch")+"&LowStockValue="+lowStockRange+selectedTab);
+		
+		// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/admin-page.jsp?Err="+error+"&productSort="+request.getParameter("productSort")+"&productFilter="+request.getParameter("productFilter")+"&productSearch="+request.getParameter("productSearch")+"&LowStockValue="+lowStockRange+selectedTab);
+		response.sendRedirect(request.getContextPath() +"/Assignment1/admin-page.jsp?productSort="+request.getParameter("productSort")+"&productFilter="+request.getParameter("productFilter")+"&productSearch="+request.getParameter("productSearch")+"&LowStockValue="+lowStockRange+selectedTab);
 		
 	}
 

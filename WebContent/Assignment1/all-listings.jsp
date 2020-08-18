@@ -112,7 +112,7 @@ Description: ST0510 / JAD Assignment 1
         	    	stockQuantity = rs.getInt("stock_quantity");
         	    	image = rs.getString("image");
         	    	cells += "<div id='searchresults' class='col-sm-6 col-lg-4 mb-4' data-aos='fade-up'><div class='block-4 text-center border'><figure class='block-4-image'><a href='product.jsp?productid="+productID+"'>"
-        	    		+ "<img src="+image+" alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
+        	    		+ "<img src='"+request.getContextPath()+"/images/"+image+"'alt='Image placeholder'class='img-fluid' height='350' width='350'></a></figure><div class='block-4-text p-4'><h3><a href='product.jsp?productid="+productID+"'>"+Name+"</a></h3><p class='mb-0' style='white-space: pre-line;'>"+briefDescription+"</p>"
         	    		+ "<p class='text-primary font-weight-bold'>" + priceMsg + discountMsg + "</p><a href='product.jsp?productid="+productID+"' id='productDetail' class='makeOffer'>Read more...</button></div></div></div>";
         		}
         		query = "SELECT category_name FROM categories";
@@ -205,7 +205,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -305,7 +305,7 @@ Description: ST0510 / JAD Assignment 1
             </div>
 
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-6 mb-4">
                 <form action="all-listings.jsp" class="">
                   <span class="icon icon-search2"></span>
                   <input type="text" class="col-md-8 border-1" id="keyword" placeholder="Search" name="search">

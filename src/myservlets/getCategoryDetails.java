@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
+import mydbaccess.CategoryDB;
 import mydbaccess.productDB;
 
 import javax.servlet.ServletException;
@@ -34,13 +35,13 @@ public class getCategoryDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		productDB getDB = new productDB();
+		CategoryDB getDB = new CategoryDB();
 		
 		category categoryDetails = getDB.getCategory(Integer.valueOf(request.getParameter("categoryID")));
 		HttpSession session = request.getSession();
 		session.setAttribute("categoryDetails", categoryDetails);
-		response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/edit-category.jsp");
-    	 //response.sendRedirect(request.getContextPath() +"/Assignment1/edit-category.jsp");
+		//response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/edit-category.jsp");
+    	response.sendRedirect(request.getContextPath() +"/Assignment1/edit-category.jsp");
 	}
 
 	/**

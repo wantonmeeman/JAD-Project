@@ -3,7 +3,7 @@ package myservlets;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mydbaccess.userDetailsDB;
+import mydbaccess.RoleDB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,11 +31,12 @@ public class deleteRoleAdmin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String Path = "http://localhost:8080"+request.getContextPath()+"/";
+		
 		int roleID = Integer.parseInt(request.getParameter("roleID"));
-		userDetailsDB getDB = new userDetailsDB();
+		
+		RoleDB getDB = new RoleDB();
 		if(getDB.deleteRole(roleID)) {
-			response.sendRedirect(Path+"allUsersDetails?Err=DelSuccess");
+			response.sendRedirect(request.getContextPath()+"/allUsersDetails?Err=DelSuccess");
 		}
 		System.out.print("Error");
 		

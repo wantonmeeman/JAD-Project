@@ -42,15 +42,22 @@ public class checkout extends HttpServlet {
 		String CCV = request.getParameter("CCV");
 		String expirydate = request.getParameter("expirydate");
 		String notes = request.getParameter("notes");
+		
+		
 		ArrayList<cartObject> cart = (ArrayList<cartObject>)request.getSession().getAttribute("cart");
 		userCartDB getDB = new userCartDB();
+		
 		boolean checkoutStatus = getDB.checkout(cart, userid, company, address, country, zipcode, cardnumber, CCV, expirydate, notes);
+		
 		if(checkoutStatus) {
 			request.getSession().removeAttribute("cart");
-			response.sendRedirect(request.getContextPath() + "/Assignment1/thankyou.jsp");
-		} else {
+			//response.sendRedirect(request.getContextPath() +"/Assignment1/thankyou.jsp");
+			// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/thankyou.jsp");
+			response.sendRedirect(request.getContextPath() +"/Assignment1/thankyou.jsp");
+		}else {
 			System.out.print("Error");
-			response.sendRedirect(request.getContextPath() + "/Assignment1/errorThankYou.jsp");
+			// response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/errorThankYou.jsp");
+			response.sendRedirect(request.getContextPath() +"/Assignment1/errorThankYou.jsp");
 		}
 
 	}

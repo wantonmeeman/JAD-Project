@@ -47,10 +47,13 @@ public class addToCart extends HttpServlet {
 			System.out.print("Servlet Error: "+Error);
 			if(Error == null) {
 				request.getSession().setAttribute("cart",newCart);
-				response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+				// response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+				
+				response.sendRedirect(request.getContextPath() + "/Assignment1/cart.jsp");
 			}else{
 				newCart.remove(newCart.size()-1);
-				response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp?Err="+Error);
+				// response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp?Err="+Error);
+				response.sendRedirect(request.getContextPath() + "/Assignment1/cart.jsp?Err="+Error);
 			}
 		}else{
 			newCart = getDB.addToCart(cart,productID,quantity);
@@ -60,10 +63,12 @@ public class addToCart extends HttpServlet {
 			if(Error == null) {
 				request.getSession().setAttribute("cart",newCart);
 				//System.out.print(newCart.size());
-				response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+				// response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp");
+				response.sendRedirect(request.getContextPath() + "/Assignment1/cart.jsp");
 			}else{
 				newCart.remove(newCart.size()-1);
-				response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp?Err="+Error);
+				// response.sendRedirect("JAD-Project/WebContent/Assignment1/cart.jsp?Err="+Error);
+				response.sendRedirect(request.getContextPath() + "/Assignment1/cart.jsp?Err="+Error);
 			}
 			
 		}

@@ -3,7 +3,7 @@ package myservlets;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mydbaccess.userDetailsDB;
+import mydbaccess.RoleDB;
 import mydbaccess.userOrderDB;
 
 import javax.servlet.ServletException;
@@ -34,12 +34,14 @@ public class getRoleDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		userDetailsDB getDB = new userDetailsDB();
+		
+		RoleDB getDB = new RoleDB();
 		
 		role roleDetails = getDB.getRoleDetails((Integer.valueOf(request.getParameter("roleID"))));
 		HttpSession session = request.getSession();
 		session.setAttribute("roleDetails", roleDetails);
-		response.sendRedirect("http://localhost:12978/ST0510-JAD/JAD-Project/WebContent/Assignment1/edit-role.jsp");
+		
+		response.sendRedirect(request.getContextPath() + "/Assignment1/edit-role.jsp");
 		
     	 
 	}

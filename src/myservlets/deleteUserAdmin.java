@@ -2,9 +2,8 @@ package myservlets;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
 
-import mydbaccess.userDetailsDB;
+import mydbaccess.AdminUserDB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,14 +31,15 @@ public class deleteUserAdmin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String Path = "http://localhost:8080"+request.getContextPath()+"/";
-		int userID = Integer.parseInt(request.getParameter("userID"));
-		userDetailsDB getDB = new userDetailsDB();
-		if(getDB.deleteUser(userID)) {
-			response.sendRedirect(Path+"allUsersDetails?Err=DelSuccess");
-		}
-		System.out.print("Error");
 		
+		int userID = Integer.parseInt(request.getParameter("userID"));
+		AdminUserDB getDB = new AdminUserDB();
+		
+		if(getDB.deleteUser(userID)) {
+			response.sendRedirect(request.getContextPath() + "/allUsersDetails?Err=DelSuccess");
+		} else {
+			System.out.print("Error");
+		}
 		  		  
 	}
 

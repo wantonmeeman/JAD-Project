@@ -2,7 +2,7 @@
 ==========================================
 Author: Alastair Tan (P1936096) & Yu Dong En (P1936348)
 Class: DIT/2A/02
-Description: ST0510 / JAD Assignment 1
+Description: ST0510 / JAD Assignment 2
 ===========================================
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -59,7 +59,7 @@ Description: ST0510 / JAD Assignment 1
 	}
 
         %>
-  <title>Digit Games&mdash;</title>
+  <title>Digit Games &mdash; Warning</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -104,7 +104,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -159,7 +159,7 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 mb-0"><a href="index.jsp">Home</a> <span class="mx-2 mb-0">/</span> <strong
-              class="text-black">Contact</strong></div>
+              class="text-black">Warning</strong></div>
         </div>
       </div>
     </div>
@@ -168,11 +168,13 @@ Description: ST0510 / JAD Assignment 1
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <span class="icon-check_circle display-3 text-success"></span>
-            <h2 class="display-3 text-black">Are you sure?</h2>
-            <p class="lead mb-5">Do you really want to delete? This cannot be undone.</p>
-            <p><a href='<%=path %><%=deleteType %>' class="btn btn-sm btn-primary">Yes</a></p>
-            <p><a href='<%=path %>all<%=declineType %>Details' class="btn btn-sm btn-primary">No</a></p>
+            <span class="icon-error_outline display-3 text-danger"></span>
+            <h2 class="display-3 text-black">Warning</h2>
+            <p class="lead mb-5">Are you sure you want to delete this entry? This cannot be undone.</p>
+            <div class="m-2">
+            	<a href='<%=path %><%=deleteType %>' class="btn btn-sm btn-danger m-3">Confirm</a>
+            	<a href='<%=path %>all<%=declineType %>Details' class="btn btn-sm btn-secondary">Cancel</a>
+            </div>
           </div>
         </div>
       </div>

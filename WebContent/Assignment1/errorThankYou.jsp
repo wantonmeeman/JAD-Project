@@ -79,7 +79,7 @@ Description: ST0510 / JAD Assignment 1
                                     if (role.equals("admin") || role.equals("member")) {
                                 %>
                                 <ul>
-                                    <li><a href='cart.jsp' class='site-cart  mr-3'><span
+                                    <li><a href='${pageContext.request.contextPath}/CartServlet' class='site-cart  mr-3'><span
                                             class='icon icon-shopping_cart'></span></a></li>
                                     <li><a href='profile.jsp'>Edit Profile</a></li>
                                     <li><a href='${pageContext.request.contextPath}/invalidate?rd=index'
@@ -145,7 +145,7 @@ Description: ST0510 / JAD Assignment 1
           <div class="col-md-12 text-center">
             <h2 class="display-3 text-black">Error!</h2>
             <p class="lead mb-5">Something Went Wrong</p>
-            <p><a href='index.jsp' class="btn btn-sm btn-primary">Back to Cart</a></p>
+            <p><a href='${pageContext.request.contextPath}/CartServlet' class="btn btn-sm btn-primary">Back to Cart</a></p>
           </div>
         </div>
       </div>
